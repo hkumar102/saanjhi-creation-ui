@@ -1,0 +1,14 @@
+<p-card>
+  <ng-container *ngIf="image">
+    <img [src]="image" alt="card image" class="w-full" />
+  </ng-container>
+
+  <ng-template pTemplate="header">
+    <h3 class="m-0">{{ title }}</h3>
+  </ng-template>
+
+  <ng-template pTemplate="content">
+    <p *ngIf="content">{{ content }}</p>
+    <ng-content *ngIf="!content" />
+  </ng-template>
+</p-card>

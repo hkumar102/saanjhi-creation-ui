@@ -1,0 +1,13 @@
+<input
+  pInputText
+  [type]="type"
+  [placeholder]="placeholder"
+  [value]="value"
+  [disabled]="disabled"
+  class="w-full"
+  (input)="handleInput($event)"
+  (blur)="handleBlur()"
+/>
+@if (errorMessage) {
+  <small class="p-error">{{ errorMessage }}</small>
+}

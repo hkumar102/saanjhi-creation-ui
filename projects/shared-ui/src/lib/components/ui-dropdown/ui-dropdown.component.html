@@ -1,0 +1,10 @@
+<p-dropdown
+  [options]="options"
+  [optionLabel]="optionLabel"
+  [placeholder]="placeholder"
+  [(ngModel)]="value"
+  (onChange)="onChange($event.value)"
+  (onBlur)="onTouched()"
+  [disabled]="disabled"
+  class="w-full"
+/>
