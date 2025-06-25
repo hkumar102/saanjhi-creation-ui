@@ -5,7 +5,7 @@ import {
   UrlTree
 } from '@angular/router';
 import { Observable, of } from 'rxjs';
-import { AuthService } from './auth.service';
+import { UserContextService } from '../services';
 
 @Injectable({
   providedIn: 'root',
@@ -13,9 +13,9 @@ import { AuthService } from './auth.service';
 export class AuthGuard implements CanActivate {
 
   constructor(
-    private authService: AuthService,
+    private authService: UserContextService,
     private router: Router
-  ) {}
+  ) { }
 
   /**
    * Guards routes and prevents access to unauthenticated users.
@@ -24,6 +24,6 @@ export class AuthGuard implements CanActivate {
    * @returns Observable<boolean | UrlTree> - true if logged in, redirect URL if not
    */
   canActivate(): Observable<boolean | UrlTree> {
-    return this.authService.getCurrentUser() ? of(true) : of(this.router.parseUrl('/auth/login'))
+    return this.authService.isAuthenticated() ? of(true) : of(this.router.parseUrl('/login'))
   }
 }

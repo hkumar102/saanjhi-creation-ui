@@ -1,0 +1,12 @@
+<p-fileUpload
+  mode="basic"
+  [multiple]="multiple"
+  [accept]="accept"
+  [disabled]="disabled"
+  [auto]="false"
+  customUpload="true"
+  chooseLabel="{{ placeholder }}"
+  (onSelect)="onFileSelect($event)"
+  (uploadHandler)="uploadRequested.emit()"
+  class="flex">
+</p-fileUpload>

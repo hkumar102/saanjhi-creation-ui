@@ -1,0 +1,81 @@
+<!-- Header with Add Button -->
+<div class="flex justify-content-between mb-4">
+    <h2 class="text-xl font-bold">Product List</h2>
+    <saanjhi-ui-button label="Add Product" icon="pi pi-plus" (click)="onAddProduct()" />
+</div>
+
+<form [formGroup]="form" (ngSubmit)="onFilterChange()" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+    <saanjhi-ui-form-field label="Search">
+        <saanjhi-ui-input inputId="search" formControlName="search" />
+    </saanjhi-ui-form-field>
+
+    <saanjhi-ui-form-field label="Category">
+        <saanjhi-ui-multiselect formControlName="categoryId" [options]="[]" optionLabel="name" optionValue="id">
+        </saanjhi-ui-multiselect>
+    </saanjhi-ui-form-field>
+
+    <saanjhi-ui-form-field label="Price Range">
+        <div class="flex gap-2">
+            <saanjhi-ui-input type="number" formControlName="minPrice" />
+            <span>to</span>
+            <saanjhi-ui-input type="number" formControlName="maxPrice" />
+        </div>
+    </saanjhi-ui-form-field>
+
+    <saanjhi-ui-form-field label="Rentable">
+        <saanjhi-ui-input type="checkbox" formControlName="isRentable" />
+    </saanjhi-ui-form-field>
+
+    <saanjhi-ui-button type="submit" label="Apply" icon="pi pi-save" />
+</form>
+
+<hr class="my-4" />
+
+<!-- Product Cards -->
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2 p-4">
+    <div *ngFor="let product of products"
+        class="surface-card border-round shadow-2 p-3 transition-shadow hover:shadow-4 w-full md:w-4 lg:w-3">
+
+        <!-- Carousel -->
+        <p-carousel [value]="product.media!" [numVisible]="1" [circular]="true" [autoplayInterval]="30000"
+            [showNavigators]="true" [showIndicators]="true" class="mb-3">
+            <ng-template pTemplate="item" let-image>
+                <div class="h-full align-content-center">
+                    <img [src]="image.url" class="border-round w-full h-30" />
+                </div>
+            </ng-template>
+        </p-carousel>
+
+        <!-- Product Details -->
+        <div class="mb-2 font-bold text-lg">{{ product.name }}</div>
+        <div class="text-sm text-color-secondary mb-2">{{ product.description }}</div>
+        <div class="text-sm text-color-secondary mb-2">Category: <strong>{{ product.categoryName }}</strong></div>
+
+        <div class="text-sm mb-2">
+            Quantity: <strong>{{ product.quantity }}</strong>
+            <span *ngIf="product.quantity === 0" class="ml-2 p-badge p-component p-badge-danger">Out of stock</span>
+        </div>
+
+        <div class="text-sm mb-2">Price: ₹{{ product.price }}</div>
+
+        <!-- Rental Info -->
+        <div *ngIf="product.isRentable" class="text-sm mb-2">
+            <div>Rental Price: ₹{{ product.rentalPrice }}</div>
+            <div>Security Deposit: ₹{{ product.securityDeposit }}</div>
+        </div>
+
+        <!-- Status -->
+        <div class="text-sm mb-3">
+            Status:
+            <span class="inline-block ml-1" [ngClass]="{
+          'text-green-600': product.isActive,
+          'text-red-500': !product.isActive
+        }">
+                {{ product.isActive ? 'Active' : 'Inactive' }}
+            </span>
+        </div>
+        <div class="col-12 flex justify-end">
+            <saanjhi-ui-button type="submit" class="w-full" label="Edit" icon="pi pi-save" (onClick)="onEditClicked(product)" />
+        </div>
+    </div>
+</div>

@@ -1,6 +1,7 @@
 import { Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TableModule } from 'primeng/table';
+import { BaseFormControl } from '../base-form-control';
 
 /**
  * A shared wrapper around PrimeNG's p-table, providing a reusable table component
@@ -11,9 +12,12 @@ import { TableModule } from 'primeng/table';
   standalone: true,
   imports: [CommonModule, TableModule],
   templateUrl: './ui-table.component.html',
-  styleUrls: ['./ui-table.component.scss']
+  styleUrls: ['./ui-table.component.scss'],
+  host: {
+    class: 'saanjhi-component'
+  }
 })
-export class UiTableComponent<T = any> {
+export class UiTableComponent<T = any> extends BaseFormControl {
   /**
    * Array of records to display in the table.
    */

@@ -1,11 +1,2 @@
-<div class="flex align-items-center gap-2">
-  <p-checkbox
-    [(ngModel)]="value"
-    [binary]="true"
-    [inputId]="inputId"
-    [disabled]="disabled"
-    (onChange)="onChange(value)"
-    (onBlur)="onTouched()"
-  />
-  <label [for]="inputId">{{ label }}</label>
-</div>
+<p-checkbox [(ngModel)]="value" [binary]="true" [inputId]="inputId" [disabled]="disabled" (onChange)="onChange(value)"
+  (onBlur)="onTouched()" [attr.id]="id"/>

@@ -7,7 +7,10 @@ import { CommonModule } from '@angular/common';
   standalone: true,
   imports: [CommonModule, CardModule],
   templateUrl: './ui-card.component.html',
-  styleUrls: ['./ui-card.component.scss']
+  styleUrls: ['./ui-card.component.scss'],
+  host: {
+    class: 'saanjhi-component'
+  }
 })
 export class UiCardComponent {
   /**

@@ -1,0 +1,11 @@
+// _form-control-styles.scss
+
+// Style all invalid inputs inside forms
+.saanjhi-component.ng-invalid.ng-touched input,
+.ng-invalid.ng-submitted input,
+.saanjhi-component.ng-invalid.ng-touched textarea,
+.ng-invalid.ng-submitted textarea,
+.saanjhi-component.ng-invalid.ng-touched select,
+.ng-invalid.ng-submitted select {
+  border-color: var(--p-form-field-invalid-border-color, red);
+}

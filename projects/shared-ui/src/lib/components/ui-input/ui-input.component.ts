@@ -10,6 +10,7 @@ import {
   FormsModule
 } from '@angular/forms';
 import { InputTextModule } from 'primeng/inputtext';
+import { BaseFormControl } from '../base-form-control';
 /**
  * UI wrapper input compatible with Angular Reactive Forms
  */
@@ -25,12 +26,15 @@ import { InputTextModule } from 'primeng/inputtext';
       multi: true
     }
   ],
-  imports: [FormsModule, ReactiveFormsModule, InputTextModule]
+  imports: [FormsModule, ReactiveFormsModule, InputTextModule],
+  host: {
+    class: 'saanjhi-component'
+  }
+
 })
-export class UiInputComponent implements ControlValueAccessor {
+export class UiInputComponent extends BaseFormControl implements ControlValueAccessor {
   @Input() type = 'text';
   @Input() placeholder = '';
-  @Input() errorMessage = '';
 
   value = '';
   disabled = false;

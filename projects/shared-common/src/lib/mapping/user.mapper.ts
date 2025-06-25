@@ -17,7 +17,7 @@ export function mapFirebaseUserToUserModel(user: User): UserModel {
   }));
 
   return {
-    firebaseUid: user.uid,
+    firebaseUserId: user.uid,
     email: user.email ?? '',
     displayName: user.displayName ?? '',
     photoUrl: user.photoURL ?? '',

@@ -2,7 +2,7 @@ import { AuthProviderModel } from './auth-provider.model';
 
 export interface UserModel {
   id?: string;
-  firebaseUid: string;
+  firebaseUserId: string;
   email: string;
   displayName?: string;
   photoUrl?: string;

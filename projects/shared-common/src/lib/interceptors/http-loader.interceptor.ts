@@ -6,7 +6,7 @@ import {
 } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
 import { Observable, finalize } from 'rxjs';
-import { UiLoaderService } from './loader.service';
+import { UiLoaderService } from '../services/loader.service';
 
 /**
  * Automatically toggles global loader during HTTP requests.

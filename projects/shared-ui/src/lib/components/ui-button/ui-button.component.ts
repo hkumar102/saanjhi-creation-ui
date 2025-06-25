@@ -1,5 +1,6 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { ButtonModule } from 'primeng/button';
+import { BaseFormControl } from '../base-form-control';
 
 /**
  * Standalone UI Button wrapper around PrimeNG <p-button>.
@@ -10,6 +11,7 @@ import { ButtonModule } from 'primeng/button';
   standalone: true,
   imports: [ButtonModule],
   template: `
+  <div class="saanjhi-component">
     <button
       pButton
       [type]="type"
@@ -19,11 +21,15 @@ import { ButtonModule } from 'primeng/button';
       [disabled]="disabled || loading"
       [class]="styleClass"
       (click)="handleClick($event)"
+      [attr.id]="id" class="w-full"
       ></button>
-
+  </div>
   `,
+  host: {
+    class: 'saanjhi-component'
+  }
 })
-export class UiButtonComponent {
+export class UiButtonComponent extends BaseFormControl {
   /** Text label of the button */
   @Input() label: string = '';
 

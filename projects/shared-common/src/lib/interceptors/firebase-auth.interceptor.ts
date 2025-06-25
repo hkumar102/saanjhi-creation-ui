@@ -1,35 +1,32 @@
-import { Inject, Injectable, inject } from '@angular/core';
+import { inject, Inject, Injectable } from '@angular/core';
 import { HttpEvent, HttpHandler, HttpInterceptor, HttpRequest } from '@angular/common/http';
 import { Observable, from } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
-import { getAuth, onAuthStateChanged } from 'firebase/auth';
+import { onAuthStateChanged } from 'firebase/auth';
 import { APP_CONFIG, AppConfig } from '../core/app-config.token';
+import { Auth } from '@angular/fire/auth';
 
 /**
  * Intercepts HTTP requests and attaches Firebase ID token (if user is logged in).
  */
-@Injectable()
+@Injectable({ providedIn: 'root' })
 export class FirebaseAuthInterceptor implements HttpInterceptor {
 
-  /**
-   *
-   */
-  constructor(@Inject(APP_CONFIG) private config: AppConfig) { }
+  private auth: Auth = inject(Auth);
+
 
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
 
-    const shouldIntercept = req.url.startsWith(this.config.userServiceBaseUrl);
+    // const shouldIntercept = req.url.startsWith(this.config.userServiceBaseUrl);
 
-    if (!shouldIntercept) {
-      return next.handle(req); // skip token injection
-    }
-
-    const auth = getAuth();
+    // if (!shouldIntercept) {
+    //   return next.handle(req); // skip token injection
+    // }
 
     // Observable that resolves to the current user token (if logged in)
     return from(
       new Promise<string | null>((resolve) => {
-        const unsubscribe = onAuthStateChanged(auth, async (user) => {
+        const unsubscribe = onAuthStateChanged(this.auth, async (user) => {
           unsubscribe();
           if (user) {
             const token = await user.getIdToken();

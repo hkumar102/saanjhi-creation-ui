@@ -1,0 +1,120 @@
+<form *ngIf="form" [formGroup]="form" (ngSubmit)="onSubmit()" class="grid">
+
+  <div class="col-12 md:col-6">
+    <saanjhi-ui-form-field label="Name" for="name">
+      <saanjhi-ui-input inputId="name" formControlName="name" />
+      <saanjhi-ui-form-error [control]="form.get('name')" />
+    </saanjhi-ui-form-field>
+  </div>
+
+  <div class="col-12 md:col-6">
+    <saanjhi-ui-form-field label="Description" for="description">
+      <saanjhi-ui-input inputId="description" formControlName="description" />
+      <saanjhi-ui-form-error [control]="form.get('description')" />
+    </saanjhi-ui-form-field>
+  </div>
+
+  <div class="col-12 md:col-6">
+    <saanjhi-ui-form-field label="Price" for="price">
+      <saanjhi-ui-input inputId="price" formControlName="price" type="number" />
+      <saanjhi-ui-form-error [control]="form.get('price')" />
+    </saanjhi-ui-form-field>
+  </div>
+
+  <div class="col-12 md:col-6">
+    <saanjhi-ui-form-field label="Quantity" for="quantity">
+      <saanjhi-ui-input inputId="quantity" formControlName="quantity" type="number" />
+      <saanjhi-ui-form-error [control]="form.get('quantity')" />
+    </saanjhi-ui-form-field>
+  </div>
+
+  <div class="col-6 md:col-3">
+    <saanjhi-ui-form-field label="Active" for="isActive">
+      <saanjhi-ui-switch inputId="isActive" formControlName="isActive" />
+      <saanjhi-ui-form-error [control]="form.get('isActive')" />
+    </saanjhi-ui-form-field>
+  </div>
+
+  <div class="col-6 md:col-3">
+    <saanjhi-ui-form-field label="Rentable" for="isRentable">
+      <saanjhi-ui-switch inputId="isRentable" formControlName="isRentable" />
+      <saanjhi-ui-form-error [control]="form.get('isRentable')" />
+    </saanjhi-ui-form-field>
+  </div>
+
+  <div class="col-12 md:col-6">
+    <saanjhi-ui-form-field label="Rental Price" for="rentalPrice">
+      <saanjhi-ui-input inputId="rentalPrice" formControlName="rentalPrice" type="number" />
+      <saanjhi-ui-form-error [control]="form.get('rentalPrice')" />
+    </saanjhi-ui-form-field>
+  </div>
+
+  <div class="col-12 md:col-6">
+    <saanjhi-ui-form-field label="Security Deposit" for="securityDeposit">
+      <saanjhi-ui-input inputId="securityDeposit" formControlName="securityDeposit" type="number" />
+      <saanjhi-ui-form-error [control]="form.get('securityDeposit')" />
+    </saanjhi-ui-form-field>
+  </div>
+
+  <div class="col-12 md:col-6">
+    <saanjhi-ui-form-field label="Max Rental Days" for="maxRentalDays">
+      <saanjhi-ui-input inputId="maxRentalDays" formControlName="maxRentalDays" type="number" />
+      <saanjhi-ui-form-error [control]="form.get('maxRentalDays')" />
+    </saanjhi-ui-form-field>
+  </div>
+
+  <div class="col-12 md:col-6">
+    <saanjhi-ui-form-field label="Category" for="categoryId">
+      <saanjhi-ui-dropdown inputId="categoryId" formControlName="categoryId" [options]="categories" optionLabel="name"
+        optionValue="id"></saanjhi-ui-dropdown>
+      <saanjhi-ui-form-error [control]="form.get('categoryId')" />
+    </saanjhi-ui-form-field>
+  </div>
+
+  <div class="col-12 md:col-6">
+    <saanjhi-ui-form-field label="Media Type" for="selectedMediaType">
+      <saanjhi-ui-dropdown inputId="selectedMediaType" formControlName="mediaType" [options]="mediaTypeOptions"
+        optionLabel="label" optionValue="id"></saanjhi-ui-dropdown>
+    </saanjhi-ui-form-field>
+  </div>
+
+  <div class="col-12">
+    <div class="flex flex-wrap gap-2">
+      <ng-container *ngIf="model.media?.length! > 0">
+        <ng-container *ngFor="let file of model.media; let i = index">
+          <div class="relative">
+            <img [src]="file.url" alt="Preview" class="w-6rem h-6rem border-round shadow-2 object-cover" />
+            <button type="button"
+              class="absolute top-0 right-0 bg-white border-none p-1 rounded-full shadow cursor-pointer"
+              (click)="removeExistingImage(i)">
+              <i class="pi pi-times text-xs"></i>
+            </button>
+          </div>
+        </ng-container>
+      </ng-container>
+
+      <ng-container *ngFor="let file of selectedImages; let i = index">
+        <div class="relative">
+          <img [src]="getImagePreview(file)" alt="Preview" class="w-6rem h-6rem border-round shadow-2 object-cover" />
+          <button type="button"
+            class="absolute top-0 right-0 bg-white border-none p-1 rounded-full shadow cursor-pointer"
+            (click)="removeImage(i)">
+            <i class="pi pi-times text-xs"></i>
+          </button>
+        </div>
+      </ng-container>
+    </div>
+  </div>
+
+  <div class="col-12 md:col-6">
+    <saanjhi-ui-form-field label="Media Upload" for="mediaFile">
+      <saanjhi-ui-fileupload inputId="mediaFile" [accept]="mediaTypeAccept"
+        (fileSelected)="onFileSelected($event)"></saanjhi-ui-fileupload>
+    </saanjhi-ui-form-field>
+  </div>
+
+  <div class="col-12 flex justify-end">
+    <saanjhi-ui-button type="submit" label="Save" icon="pi pi-save" />
+  </div>
+
+</form>

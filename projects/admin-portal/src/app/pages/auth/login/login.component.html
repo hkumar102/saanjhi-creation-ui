@@ -1,17 +1,19 @@
 <div class="max-w-md mx-auto">
   <h2 class="text-xl font-semibold mb-4">Login</h2>
 
-  <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+  <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" [saanjhiAutoSubmit]="loginForm">
     <div class="flex flex-column gap-4">
-      <saanjhi-ui-form-field label="Email" id="email">
-        <saanjhi-ui-input id="email" type="email" formControlName="email" placeholder="Enter your email" />
+      <saanjhi-ui-form-field label="Email">
+        <saanjhi-ui-input inputId="email" type="email" formControlName="email" placeholder="Enter your email" />
+        <saanjhi-ui-form-error [control]="loginForm.get('email')"></saanjhi-ui-form-error>
       </saanjhi-ui-form-field>
 
-      <saanjhi-ui-form-field label="Password" id="password">
-        <saanjhi-ui-password id="password" formControlName="password" placeholder="Enter your password" />
+      <saanjhi-ui-form-field label="Password">
+        <saanjhi-ui-password inputId="password" formControlName="password" placeholder="Enter your password" />
+        <saanjhi-ui-form-error [control]="loginForm.get('password')"></saanjhi-ui-form-error>
       </saanjhi-ui-form-field>
 
-      <saanjhi-ui-button type="submit" label="Login" class="mt-6 w-full" [disabled]="!loginForm.valid">
+      <saanjhi-ui-button type="submit" label="Login">
       </saanjhi-ui-button>
     </div>
 

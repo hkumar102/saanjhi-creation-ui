@@ -1,0 +1,27 @@
+<form [formGroup]="profileForm" (ngSubmit)="onSubmit()" saanjhi-ui-form>
+
+    <div class="flex flex-column gap-3">
+        <saanjhi-ui-form-field label="Display Name" for="displayName">
+            <saanjhi-ui-input formControlName="displayName" inputId="displayName" />
+            <saanjhi-ui-form-error [control]="profileForm.get('displayName')" />
+        </saanjhi-ui-form-field>
+
+        <saanjhi-ui-form-field label="Photo URL" for="photoUrl">
+            <saanjhi-ui-fileupload accept="image/*" inputId="photoUrl" (fileSelected)="onFileChosen($event)">
+            </saanjhi-ui-fileupload>
+        </saanjhi-ui-form-field>
+
+        <saanjhi-ui-form-field label="Phone Number" for="phoneNumber">
+            <saanjhi-ui-input formControlName="phoneNumber" inputId="phoneNumber" type="tel" />
+            <saanjhi-ui-form-error [control]="profileForm.get('phoneNumber')" />
+        </saanjhi-ui-form-field>
+
+        <saanjhi-ui-form-field label="Roles" for="roles">
+            <saanjhi-ui-multiselect formControlName="roles" inputId="roles" id="roles" [options]="roles"
+                labelKey="name" />
+            <saanjhi-ui-form-error [control]="profileForm.get('roles')" />
+        </saanjhi-ui-form-field>
+
+        <saanjhi-ui-button type="submit" label="Update Profile" icon="pi pi-save" />
+    </div>
+</form>

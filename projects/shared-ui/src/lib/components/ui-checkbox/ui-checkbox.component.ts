@@ -2,6 +2,7 @@ import { Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { CheckboxModule } from 'primeng/checkbox';
 import { NG_VALUE_ACCESSOR, ControlValueAccessor, FormsModule } from '@angular/forms';
+import { BaseFormControl } from '../base-form-control';
 
 /**
  * Wrapper around PrimeNG's p-checkbox.
@@ -18,11 +19,13 @@ import { NG_VALUE_ACCESSOR, ControlValueAccessor, FormsModule } from '@angular/f
       multi: true,
       useExisting: UiCheckboxComponent
     }
-  ]
+  ],
+  host: {
+    class: 'saanjhi-component'
+  }
 })
-export class UiCheckboxComponent implements ControlValueAccessor {
+export class UiCheckboxComponent extends BaseFormControl implements ControlValueAccessor {
   @Input() label = '';
-  @Input() inputId = '';
   @Input() disabled = false;
 
   value: boolean = false;

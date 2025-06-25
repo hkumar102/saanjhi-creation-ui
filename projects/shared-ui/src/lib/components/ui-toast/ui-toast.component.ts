@@ -9,6 +9,7 @@ import { ToastModule } from 'primeng/toast';
     standalone: true,
     imports: [ToastModule],
     templateUrl: './ui-toast.component.html',
+    styleUrls: ['./ui-toast.component.scss'],
 })
 export class UiToastComponent {
 }

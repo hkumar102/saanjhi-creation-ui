@@ -1,7 +1,6 @@
 import { Component, computed, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { UiLoaderService } from './loader.service';
-
+import { UiLoaderService } from '@saanjhi-creation-ui/shared-common'
 /**
  * Fullscreen overlay loader shown when LoaderService signals activity.
  */
