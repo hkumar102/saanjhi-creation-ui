@@ -8,9 +8,7 @@
     "build:admin:dev": "npx ng build admin-portal --configuration=development",
     "build": "npx ng build",
     "watch": "npx ng build --watch --configuration development",
-    "test": "npx ng test",
-    "start": "node server.js",
-    "render-build": "npm install --legacy-peer-deps && npx ng build admin-portal --configuration=production"
+    "test": "npx ng test"
   },
   "private": true,
   "dependencies": {

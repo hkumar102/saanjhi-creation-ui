@@ -17,6 +17,7 @@
         "build": {
           "builder": "@angular/build:application",
           "options": {
+            "outputPath": "dist/public-portal",
             "browser": "projects/public-portal/src/main.ts",
             "polyfills": [
               "zone.js"
@@ -30,16 +31,30 @@
               }
             ],
             "styles": [
+              "node_modules/primeicons/primeicons.css",
+              "node_modules/primeflex/primeflex.css",
               "projects/public-portal/src/styles.scss"
-            ]
+            ],
+            "stylePreprocessorOptions": {
+              "includePaths": [
+                "projects"
+              ]
+            }
           },
           "configurations": {
             "production": {
+              "outputPath": "dist/public-portal",
+              "fileReplacements": [
+                {
+                  "replace": "projects/public-portal/src/environments/environment.ts",
+                  "with": "projects/public-portal/src/environments/environment.prod.ts"
+                }
+              ],
               "budgets": [
                 {
                   "type": "initial",
-                  "maximumWarning": "500kB",
-                  "maximumError": "1MB"
+                  "maximumWarning": "5MB",
+                  "maximumError": "10MB"
                 },
                 {
                   "type": "anyComponentStyle",
@@ -108,6 +123,7 @@
         "build": {
           "builder": "@angular/build:application",
           "options": {
+            "outputPath": "dist/admin-portal",
             "browser": "projects/admin-portal/src/main.ts",
             "polyfills": [
               "zone.js"
@@ -133,6 +149,7 @@
           },
           "configurations": {
             "production": {
+              "outputPath": "dist/admin-portal",
               "fileReplacements": [
                 {
                   "replace": "projects/admin-portal/src/environments/environment.ts",
