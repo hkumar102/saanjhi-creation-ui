@@ -11,7 +11,7 @@ export const environment = {
     },
     services: {
         userServiceBaseUrl: 'https://user-service-lfm6.onrender.com/api',
-        mediaServiceBaseUrl: 'https://localhost:7172/api',
+        mediaServiceBaseUrl: 'https://media-service-wxbi.onrender.com/api',
         categoryServiceBaseUrl: 'https://category-service-lrtc.onrender.com/api',
         productServiceBaseUrl: 'https://product-service-kox4.onrender.com/api',
         customerServiceBaseUrl: 'https://customer-service-5ats.onrender.com/api',
