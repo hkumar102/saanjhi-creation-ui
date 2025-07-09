@@ -134,6 +134,11 @@
               {
                 "glob": "**/*",
                 "input": "projects/admin-portal/public"
+              },
+              {
+                "glob": "_redirects",
+                "input": "projects/admin-portal/public",
+                "output": "/"
               }
             ],
             "styles": [
