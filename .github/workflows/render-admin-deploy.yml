@@ -1,0 +1,26 @@
+name: Deploy Admin Portal to Render
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - 'projects/admin-portal/**'
+      - 'projects/shared-common/**'
+      - 'projects/shared-ui/**'
+      - 'package.json'
+      - 'angular.json'
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Trigger Render Deploy
+      run: |
+        curl -X POST ${{ secrets.RENDER_ADMIN_DEPLOY_HOOK }}
+      env:
+        RENDER_ADMIN_DEPLOY_HOOK: ${{ secrets.RENDER_ADMIN_DEPLOY_HOOK }}
