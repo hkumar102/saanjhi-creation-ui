@@ -4,11 +4,16 @@
   "scripts": {
     "ng": "ng",
     "admin": "npx ng serve admin-portal --port 4201",
+    "public": "npx ng serve public-portal --port 4200",
     "build:admin": "npx ng build admin-portal --configuration=production",
     "build:admin:dev": "npx ng build admin-portal --configuration=development",
+    "build:public": "npx ng build public-portal --configuration=production",
+    "build:public:dev": "npx ng build public-portal --configuration=development",
     "build": "npx ng build",
     "watch": "npx ng build --watch --configuration development",
-    "test": "npx ng test"
+    "test": "npx ng test",
+    "render-build-admin": "npm install --legacy-peer-deps && npx ng build admin-portal --configuration=production",
+    "render-build-public": "npm install --legacy-peer-deps && npx ng build public-portal --configuration=production"
   },
   "private": true,
   "dependencies": {
