@@ -1,8 +1,9 @@
-import { Component, Input, Output, EventEmitter, OnInit, inject } from '@angular/core';
+import { Component, Input, Output, EventEmitter, OnInit, inject, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { CategoryDto, CategoryServiceClient, CreateProductCommand, MediaServiceClient, MediaType, MediaTypeDto, ProductMediaDto, UpdateProductCommand } from '@saanjhi-creation-ui/shared-common';
+import { CategoryDto, CategoryServiceClient, CreateProductCommand, MediaServiceClient, MediaType, MediaTypeDto, ProductMediaDto, UpdateProductCommand, ImageCompressionService } from '@saanjhi-creation-ui/shared-common';
 import { UiInputComponent, UiButtonComponent, UiFormFieldComponent, UiFormErrorComponent, UiFileuploadComponent, UiDropdownComponent, UiSwitchComponent } from '@saanjhi-creation-ui/shared-ui';
+import { AdminBaseComponent } from '../../common/components/base/admin-base.component';
 
 @Component({
   standalone: true,
@@ -19,10 +20,11 @@ import { UiInputComponent, UiButtonComponent, UiFormFieldComponent, UiFormErrorC
   ],
   templateUrl: './product-form.component.html'
 })
-export class ProductFormComponent implements OnInit {
+export class ProductFormComponent extends AdminBaseComponent implements OnInit, OnDestroy {
   private fb = inject(FormBuilder);
   private mediaService = inject(MediaServiceClient);
   private categoryService = inject(CategoryServiceClient);
+  private imageCompressionService = inject(ImageCompressionService);
 
   @Input() model: UpdateProductCommand = {
     name: '',
@@ -47,10 +49,7 @@ export class ProductFormComponent implements OnInit {
   selectedImages: { file: File; previewUrl: string }[] = [];
   categories: CategoryDto[] = [];
 
-  async ngOnInit() {
-    this.mediaTypeOptions = await this.mediaService.getMediaTypes();
-    this.loadCategories();
-
+  private initializeForm(): void {
     this.form = this.fb.group({
       name: [this.model.name, Validators.required],
       description: [this.model.description],
@@ -66,7 +65,18 @@ export class ProductFormComponent implements OnInit {
       media: [this.model.media], // default to Image
       id: [this.model.id]
     });
+  }
 
+  async ngOnInit() {
+    await Promise.all([
+      this.loadMediaTypes(),
+      this.loadCategories()
+    ]);
+    this.initializeForm();
+  }
+
+  private async loadMediaTypes(): Promise<void> {
+    this.mediaTypeOptions = await this.mediaService.getMediaTypes();
   }
 
   async loadCategories() {
@@ -74,56 +84,69 @@ export class ProductFormComponent implements OnInit {
     this.categories = res;
   }
 
+  get selectedMediaType(): MediaType {
+    return this.form?.get('mediaType')?.value as MediaType;
+  }
+
   get mediaTypeAccept(): string {
-    const type = this.form?.get('mediaType')?.value as MediaTypeDto;
-    return type && type.id === MediaType.Video ? 'video/*' : 'image/*';
+    return this.selectedMediaType === MediaType.Video ? 'video/*' : 'image/*';
   }
 
-  onFileSelected(files: File[]) {
+  async onFileSelected(files: File[]) {
     for (const file of files) {
-      const previewUrl = URL.createObjectURL(file);
-      this.selectedImages.push({ file, previewUrl });
-    }
-  }
-
-  async onMediaSelected(files: File[]) {
-    const mediaType = this.form.get('mediaType')?.value as MediaType;
-    if (files && files.length > 0) {
-      const file = files[0];
-      const result = await this.mediaService.upload(file, mediaType);
-      this.mediaFiles.push({
-        url: result.url,
-        publicId: result.publicId,
-        mediaType: result.mediaType,
-        id: '' // Use publicId as id if available
-      });
+      try {
+        const compressedFile = await this.imageCompressionService.compressImage(file);
+        const previewUrl = URL.createObjectURL(compressedFile);
+        this.selectedImages.push({ file: compressedFile, previewUrl });
+      } catch (error) {
+        throw error;
+      }
     }
   }
 
   async onSubmit() {
-    if (this.form.invalid) return;
-    await this.uploadAllMedia();
-    await this.formSubmit.emit(this.form.value);
+    if (this.form.invalid) {
+      this.form.markAllAsTouched();
+      return;
+    }
+    
+    try {
+      await this.uploadAllMedia();
+      const formValue = this.form.value as CreateProductCommand | UpdateProductCommand;
+      this.formSubmit.emit(formValue);
+    } catch (error) {
+      console.error('Error submitting form:', error);
+    }
   }
 
   async uploadAllMedia() {
-    if (this.selectedImages.length === 0) {
-      return;
-    }
-
-    const mediaType = this.form.get('mediaType')?.value as MediaType;
-    const results = await Promise.all(this.selectedImages.map(file => this.mediaService.upload(file.file, mediaType)));
-    this.model.media?.push(...(results as ProductMediaDto[]))
+    if (this.selectedImages.length === 0) return;
+    
+    const results = await Promise.all(
+      this.selectedImages.map(file => this.mediaService.upload(file.file, this.selectedMediaType))
+    );
+    this.model.media?.push(...(results as ProductMediaDto[]));
     this.form.get('media')?.setValue(this.model.media);
-
   }
 
   getImagePreview(fileWrapper: { previewUrl: string }): string {
     return fileWrapper.previewUrl;
   }
 
+  ngOnDestroy(): void {
+    // Clean up object URLs to prevent memory leaks
+    this.selectedImages.forEach(img => {
+      if (img.previewUrl) {
+        URL.revokeObjectURL(img.previewUrl);
+      }
+    });
+  }
+
   removeImage(index: number): void {
-    this.selectedImages.splice(index, 1);
+    const removed = this.selectedImages.splice(index, 1)[0];
+    if (removed?.previewUrl) {
+      URL.revokeObjectURL(removed.previewUrl);
+    }
   }
 
   removeExistingImage(index: number) {

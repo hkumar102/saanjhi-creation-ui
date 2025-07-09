@@ -40,14 +40,14 @@ export interface UpdateProductCommand extends CreateProductCommand {
 }
 
 export interface ProductFilter {
-  Search?: string;
-  CategoryId?: string;
-  IsRentable?: boolean;
-  IsActive?: boolean;
-  MinPrice?: number;
-  MaxPrice?: number;
-  MinRentalPrice?: number;
-  MaxRentalPrice?: number;
-  Page?: number;
-  PageSize?: number;
+  search?: string;
+  categoryId?: string;
+  isRentable?: boolean;
+  isActive?: boolean;
+  minPrice?: number;
+  maxPrice?: number;
+  minRentalPrice?: number;
+  maxRentalPrice?: number;
+  page?: number;
+  pageSize?: number;
 }

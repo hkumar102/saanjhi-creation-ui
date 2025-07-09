@@ -1,0 +1,47 @@
+<div class="flex flex-column shadow-2 hover:shadow-4 border-round clothing-card">
+    <!-- Image Section -->
+    <div class="relative flex-1">
+        <!-- Category -->
+        <div
+            class="absolute left-0 top-0 ml-2 mt-2 bg-black-alpha-70 text-white text-xs font-semibold px-2 py-1 border-round z-5 flex align-items-center gap-1">
+            <span>{{product.categoryName}}</span>
+        </div>
+
+        <!-- Edit Icon -->
+        <div class="absolute right-0 top-0 mr-2 mt-2 z-5">
+            <button pButton icon="pi pi-pencil" [outlined]="true" severity="secondary" [rounded]="true"
+                class="edit-icon-btn" type="button" (click)="onEditClicked()" tabindex="0" aria-label="Edit product">
+            </button>
+        </div>
+
+        <!-- Image Indicators -->
+        <div *ngIf="product.media && product.media.length > 1"
+            class="absolute bottom-0 text-center mr-2 mb-2 flex gap-1 z-5 w-full">
+            <div class="flex justify-content-center gap-2 w-full">
+                <span *ngFor="let media of product.media; let i = index" class="indicator-dot"
+                    [class.active]="i === activeIndex">
+                </span>
+            </div>
+        </div>
+
+        <!-- Product Image -->
+        <div class="w-full h-full" tabindex="0" (click)="changeImage()">
+            <img [src]="selectedImage || 'assets/images/default-clothing.png'" alt="Product image"
+                class="w-full h-full object-cover border-round-top" />
+        </div>
+    </div>
+
+    <!-- Content Section -->
+    <div class="p-3 flex flex-column gap-2">
+        <!-- Product Name -->
+        <div class="font-bold text-lg text-900 line-height-3">{{ product.name }}</div>
+
+        <!-- Product Description -->
+        <div class="text-600 line-height-3">{{ product.description }}</div>
+
+        <!-- Price Section -->
+        <div class="flex align-items-center gap-2">
+            <span class="font-bold text-xl text-900">Rent Rs. {{ product.rentalPrice }}</span>
+        </div>
+    </div>
+</div>

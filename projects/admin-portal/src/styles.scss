@@ -1,8 +1,12 @@
-
-
 /* You can add global styles to this file, and also import other style files */
-@use 'shared-ui/src/styles/form-control-styles';
-body{
+@use 'shared-ui/src/styles/form-control-styles' as *;
+@use './assets/styles/variable' as *;
+
+:root {
+  --max-width: #{$max-width};
+}
+
+body {
   margin: 0;
   padding: 0;
 

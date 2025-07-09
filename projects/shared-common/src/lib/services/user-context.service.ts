@@ -1,22 +1,20 @@
 import { Injectable, computed, signal } from '@angular/core';
-import { Auth, onAuthStateChanged } from '@angular/fire/auth';
-import { inject } from '@angular/core';
-import { UserModel } from '../models';
-import { UserServiceClient } from '@saanjhi-creation-ui/shared-common';
+import { UserDto as UserModel } from '../models';
 
 /**
  * Provides current Firebase user context throughout the app.
  */
 @Injectable({ providedIn: 'root' })
 export class UserContextService {
-    private auth = inject(Auth);
-    private userSignal = signal<UserModel | null>(null);
-    private userServiceClient = inject(UserServiceClient);
 
+    private userSignal = signal<UserModel | null>(null);
+    private accessTokenSignal = signal<string | undefined>(undefined);
     constructor() {
     }
 
     readonly user = computed(() => this.userSignal());
+    readonly isAuthenticated = computed(() => this.userSignal() !== null);
+    readonly accessToken = computed(() => this.accessTokenSignal());
 
     get firebaseUserId(): string {
         return this.user()?.firebaseUserId!;
@@ -34,11 +32,14 @@ export class UserContextService {
         return this.user()?.displayName ?? null;
     }
 
-    isAuthenticated(): boolean {
-        return !!this.firebaseUserId;
-    }
-
     setUser(user: UserModel | null) {
         this.userSignal.set(user);
+        if (!user) {
+            this.setAccessToken(undefined);
+        }
+    }
+
+    setAccessToken(token: string | undefined) {
+        this.accessTokenSignal.set(token);
     }
 }

@@ -14,3 +14,6 @@ export * from './form';
 export * from './ui-multiselect/ui-multiselect.component';
 export * from './ui-fileupload/ui-fileupload.component';
 export * from './ui-switch/ui-switch.component';
+export * from './product-card/product-card.component';
+export * from './ui-dialog/ui-confirm-dialog.component';
+export * from './ui-paginator/ui-paginator.component';

@@ -133,6 +133,12 @@
           },
           "configurations": {
             "production": {
+              "fileReplacements": [
+                {
+                  "replace": "projects/admin-portal/src/environments/environment.ts",
+                  "with": "projects/admin-portal/src/environments/environment.prod.ts"
+                }
+              ],
               "budgets": [
                 {
                   "type": "initial",

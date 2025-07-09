@@ -4,6 +4,7 @@ import { UiInputComponent, UiPasswordComponent, UiButtonComponent, UiFormFieldCo
 import { AuthService, ToastService } from '@saanjhi-creation-ui/shared-common'; // Assuming AuthService is in shared-ui
 import { AppMessages } from '@saanjhi-creation-ui/shared-common';
 import { NavigationService } from '../../../services/navigation.service';
+import { ActivatedRoute } from '@angular/router';
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
@@ -24,6 +25,7 @@ export class LoginComponent {
   private fb = inject(FormBuilder);
   private authService = inject(AuthService);
   private navigationService = inject(NavigationService);
+  private route = inject(ActivatedRoute);
 
   loginForm: FormGroup = this.fb.group({
     email: ['', [Validators.required, Validators.email]],
@@ -34,7 +36,8 @@ export class LoginComponent {
     if (this.loginForm.valid) {
       const { email, password } = this.loginForm.value;
       await this.authService.login(email, password);
-      this.navigationService.goToProducts();
+      const returnUrl = this.route.snapshot.queryParamMap.get('returnUrl') ?? '/products';
+      this.navigationService.goTo(returnUrl);
     }
   }
 }

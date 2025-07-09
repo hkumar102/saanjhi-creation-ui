@@ -10,7 +10,7 @@ import { MediaType, MediaTypeDto, UploadMediaResult } from '../models';
 })
 export class MediaServiceClient {
     private config = inject(APP_CONFIG) as AppConfig;
-    private baseUrl = `${this.config.mediaServiceBaseUrl}`;
+    private baseUrl = `${this.config.mediaServiceBaseUrl}/media`;
     private http = inject(HttpClient);
 
 

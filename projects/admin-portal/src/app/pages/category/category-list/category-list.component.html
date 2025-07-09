@@ -1,0 +1,38 @@
+<saanjhi-ui-confirm-dialog #confirmDialog />
+<div class="flex justify-content-between align-items-end gap-3">
+  <div class="flex-1">
+    <saanjhi-ui-form-field label="Search" for="search">
+      <saanjhi-ui-input inputId="search" placeholder="Search categories" [(ngModel)]="searchTerm"
+        (ngModelChange)="applyFilter()" />
+    </saanjhi-ui-form-field>
+  </div>
+  <div>
+    <saanjhi-ui-button type="submit" label="Add Category" (click)="onCreate()"></saanjhi-ui-button>
+  </div>
+</div>
+
+<p-table [value]="filtered.slice(page * rows, (page + 1) * rows)">
+  <ng-template pTemplate="header">
+    <tr>
+      <th>Name</th>
+      <th>Description</th>
+      <th class="text-right">Actions</th>
+    </tr>
+  </ng-template>
+  <ng-template pTemplate="body" let-category>
+    <tr>
+      <td>{{ category.name }}</td>
+      <td>{{ category.description }}</td>
+      <td class="text-right">
+        <div class="flex gap-2 justify-content-end">
+          <saanjhi-ui-button type="button" icon="pi pi-pencil" (click)="onEdit(category.id)"></saanjhi-ui-button>
+          <saanjhi-ui-button type="button" icon="pi pi-trash" (click)="onDelete(category)"
+            severity="danger"></saanjhi-ui-button>
+        </div>
+      </td>
+    </tr>
+  </ng-template>
+</p-table>
+
+<saanjhi-ui-paginator [rows]="rows" [totalRecords]="totalRecords" [rowsPerPageOptions]="[5, 10, 20]"
+  (onPageChange)="onPageChange($event)"></saanjhi-ui-paginator>

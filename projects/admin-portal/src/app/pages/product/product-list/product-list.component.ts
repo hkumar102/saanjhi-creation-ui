@@ -1,11 +1,9 @@
 import { CommonModule } from '@angular/common';
 import { Component, inject, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
-import { ProductDto, ProductFilter, ProductServiceClient } from '@saanjhi-creation-ui/shared-common';
-import { UiButtonComponent, UiFormFieldComponent, UiInputComponent, UiMultiselectComponent } from '@saanjhi-creation-ui/shared-ui';
-import { NavigationService } from '../../../services/navigation.service';
-// Add the correct import for CarouselModule below. Adjust the path if needed.
-import { CarouselModule } from 'primeng/carousel';
+import { CategoryDto, CategoryServiceClient, ProductDto, ProductFilter, ProductServiceClient } from '@saanjhi-creation-ui/shared-common';
+import { ProductCardComponent, UiButtonComponent, UiDropdownComponent, UiFormFieldComponent, UiInputComponent, UiMultiselectComponent } from '@saanjhi-creation-ui/shared-ui';
+import { AdminBaseComponent } from '../../../common/components/base/admin-base.component';
 
 type ProductViewModel = ProductDto & { selectedImage?: string };
 
@@ -19,42 +17,51 @@ type ProductViewModel = ProductDto & { selectedImage?: string };
         UiFormFieldComponent,
         UiMultiselectComponent,
         ReactiveFormsModule,
-        CarouselModule
+        ProductCardComponent,
+        UiDropdownComponent
     ],
     templateUrl: './product-list.component.html',
 })
-export class ProductListComponent implements OnInit {
-
-    private readonly navigationService = inject(NavigationService);
+export class ProductListComponent extends AdminBaseComponent implements OnInit {
     private readonly productClient = inject(ProductServiceClient);
     private readonly fb = inject(FormBuilder);
+    private categoryService = inject(CategoryServiceClient);
 
-    form!: FormGroup;
+    form: FormGroup = this.fb.group({
+        search: [''],
+        categoryId: [''],
+        isRentable: [null],
+        isActive: [null],
+        minPrice: [null],
+        maxPrice: [null],
+        minRentalPrice: [null],
+        maxRentalPrice: [null],
+        page: [1],
+        pageSize: [20]
+    });
     products: ProductViewModel[] = [];
     totalCount = 0;
+    categories: CategoryDto[] = [];
 
+    async ngOnInit() {
+        await this.loadProducts();
+        await this.loadCategories();
+    }
 
-    ngOnInit(): void {
-        this.form = this.fb.group({
-            search: [''],
-            categoryId: [''],
-            isRentable: [null],
-            isActive: [null],
-            minPrice: [null],
-            maxPrice: [null],
-            minRentalPrice: [null],
-            maxRentalPrice: [null],
-            page: [1],
-            pageSize: [12]
-        });
-
-        this.loadProducts();
+    async loadCategories() {
+        const res = await this.categoryService.getAll();
+        this.categories = res;
     }
 
     async loadProducts() {
         const query: ProductFilter = this.form.value;
         const result = await this.productClient.getAll(query);
-        this.products = result.items ?? [];
+
+        if (this.form.value.page > 1) {
+            this.products = [...this.products, ...(result.items ?? [])];
+        } else {
+            this.products = result.items ?? [];
+        }
         this.totalCount = result.totalCount;
     }
 
@@ -69,11 +76,45 @@ export class ProductListComponent implements OnInit {
     }
 
     onAddProduct() {
-        this.navigationService.goToProductCreate();
+        this.navigation.goToProductCreate();
     }
 
     onEditClicked(product: ProductViewModel) {
-       this.navigationService.goToProductEdit(product.id);
+        this.navigation.goToProductEdit(product.id);
     }
 
+    onScroll(event: Event) {
+        const el = event.target as HTMLElement;
+        const threshold = 200;
+
+        if (el.scrollTop + el.clientHeight + threshold >= el.scrollHeight) {
+            const nextPage = this.form.value.page + 1;
+            this.form.patchValue({ page: nextPage });
+            this.loadProducts();
+        }
+    }
+
+    onLoadMore() {
+        const currentPage = this.form.value.page ?? 1;
+        const nextPage = currentPage + 1;
+        this.form.patchValue({ page: nextPage });
+        this.loadProducts();
+    }
+
+    onClearFilters(): void {
+        this.form.reset({
+            search: '',
+            categoryId: null,
+            minPrice: null,
+            maxPrice: null,
+            isRentable: null,
+            isActive: null,
+            minRentalPrice: null,
+            maxRentalPrice: null,
+            page: 1,
+            pageSize: 20
+        });
+
+        this.loadProducts();
+    }
 }

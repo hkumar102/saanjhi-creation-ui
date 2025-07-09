@@ -4,78 +4,58 @@
     <saanjhi-ui-button label="Add Product" icon="pi pi-plus" (click)="onAddProduct()" />
 </div>
 
-<form [formGroup]="form" (ngSubmit)="onFilterChange()" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-    <saanjhi-ui-form-field label="Search">
+<form [formGroup]="form" (ngSubmit)="onFilterChange()" class="flex flex-wrap gap-2">
+    <saanjhi-ui-form-field label="Search" for="search">
         <saanjhi-ui-input inputId="search" formControlName="search" />
     </saanjhi-ui-form-field>
 
-    <saanjhi-ui-form-field label="Category">
-        <saanjhi-ui-multiselect formControlName="categoryId" [options]="[]" optionLabel="name" optionValue="id">
+    <saanjhi-ui-form-field label="Category" for="categoryId">
+        <saanjhi-ui-multiselect valueKey="id" inputId="categoryId" formControlName="categoryId" [options]="categories"
+            labelKey="name">
         </saanjhi-ui-multiselect>
     </saanjhi-ui-form-field>
 
-    <saanjhi-ui-form-field label="Price Range">
+    <!-- <saanjhi-ui-form-field label="Price Range">
         <div class="flex gap-2">
             <saanjhi-ui-input type="number" formControlName="minPrice" />
             <span>to</span>
             <saanjhi-ui-input type="number" formControlName="maxPrice" />
         </div>
+    </saanjhi-ui-form-field> -->
+
+    <saanjhi-ui-form-field label="Rentable" for="isRentable">
+        <saanjhi-ui-dropdown inputId="isRentable" formControlName="isRentable" [options]="[
+            { label: 'All', value: null },
+            { label: 'Rentable', value: true },
+            { label: 'Not Rentable', value: false }
+        ]" placeholder="Select Rentable Status" optionValue="value"></saanjhi-ui-dropdown>
     </saanjhi-ui-form-field>
 
-    <saanjhi-ui-form-field label="Rentable">
-        <saanjhi-ui-input type="checkbox" formControlName="isRentable" />
+    <saanjhi-ui-form-field label="Availability" for="isActive">
+        <saanjhi-ui-dropdown inputId="isActive" formControlName="isActive" [options]="[
+      { label: 'All', value: null },
+      { label: 'Active', value: true },
+      { label: 'Inactive', value: false }
+    ]" placeholder="Select Status" optionValue="value"></saanjhi-ui-dropdown>
     </saanjhi-ui-form-field>
 
-    <saanjhi-ui-button type="submit" label="Apply" icon="pi pi-save" />
+    <div class="flex lg:flex-1 align-items-end gap-2 w-full md:w-auto justify-content-between md:justify-content-end">
+        <saanjhi-ui-button type="button" label="Clear" icon="pi pi-times" severity="secondary"
+            (click)="onClearFilters()" />
+
+        <saanjhi-ui-button type="submit" label="Apply" icon="pi pi-save" />
+    </div>
 </form>
 
 <hr class="my-4" />
 
 <!-- Product Cards -->
-<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2 p-4">
-    <div *ngFor="let product of products"
-        class="surface-card border-round shadow-2 p-3 transition-shadow hover:shadow-4 w-full md:w-4 lg:w-3">
+<div class="flex flex-wrap justify-content-start gap-2">
+    <saanjhi-product-card *ngFor="let product of products" [product]="product"
+        (edit)="onEditClicked($event)"></saanjhi-product-card>
 
-        <!-- Carousel -->
-        <p-carousel [value]="product.media!" [numVisible]="1" [circular]="true" [autoplayInterval]="30000"
-            [showNavigators]="true" [showIndicators]="true" class="mb-3">
-            <ng-template pTemplate="item" let-image>
-                <div class="h-full align-content-center">
-                    <img [src]="image.url" class="border-round w-full h-30" />
-                </div>
-            </ng-template>
-        </p-carousel>
-
-        <!-- Product Details -->
-        <div class="mb-2 font-bold text-lg">{{ product.name }}</div>
-        <div class="text-sm text-color-secondary mb-2">{{ product.description }}</div>
-        <div class="text-sm text-color-secondary mb-2">Category: <strong>{{ product.categoryName }}</strong></div>
-
-        <div class="text-sm mb-2">
-            Quantity: <strong>{{ product.quantity }}</strong>
-            <span *ngIf="product.quantity === 0" class="ml-2 p-badge p-component p-badge-danger">Out of stock</span>
-        </div>
-
-        <div class="text-sm mb-2">Price: ₹{{ product.price }}</div>
-
-        <!-- Rental Info -->
-        <div *ngIf="product.isRentable" class="text-sm mb-2">
-            <div>Rental Price: ₹{{ product.rentalPrice }}</div>
-            <div>Security Deposit: ₹{{ product.securityDeposit }}</div>
-        </div>
-
-        <!-- Status -->
-        <div class="text-sm mb-3">
-            Status:
-            <span class="inline-block ml-1" [ngClass]="{
-          'text-green-600': product.isActive,
-          'text-red-500': !product.isActive
-        }">
-                {{ product.isActive ? 'Active' : 'Inactive' }}
-            </span>
-        </div>
-        <div class="col-12 flex justify-end">
-            <saanjhi-ui-button type="submit" class="w-full" label="Edit" icon="pi pi-save" (onClick)="onEditClicked(product)" />
-        </div>
-    </div>
+</div>
+<!-- Load More Button -->
+<div class="flex justify-content-center mt-4">
+    <saanjhi-ui-button label="Load More" icon="pi pi-angle-down" (onClick)="onLoadMore()" />
 </div>

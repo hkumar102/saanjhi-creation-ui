@@ -1,5 +1,5 @@
 import { User } from 'firebase/auth';
-import { UserModel } from '../models/user.model';
+import { UserDto as UserModel } from '../models/user.model';
 import { AuthProviderModel } from '../models/auth-provider.model';
 
 /**
@@ -24,6 +24,8 @@ export function mapFirebaseUserToUserModel(user: User): UserModel {
     phoneNumber: user.phoneNumber ?? '',
     emailVerified: user.emailVerified,
     roles: [], // roles can be updated after backend fetch
-    providers
+    authProviders: providers,
+    id: '', // ID will be set after user creation in backend
+    isActive: true // Default to active, can be updated later
   };
 }

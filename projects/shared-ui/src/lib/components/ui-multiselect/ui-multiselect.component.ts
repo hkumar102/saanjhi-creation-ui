@@ -1,11 +1,12 @@
 // shared-ui/saanjhi-ui-multiselect/saanjhi-ui-multiselect.component.ts
 import { Component, forwardRef, Input, Output, EventEmitter } from '@angular/core';
-import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
+import { ControlValueAccessor, FormsModule, NG_VALUE_ACCESSOR, ReactiveFormsModule } from '@angular/forms';
 import { MultiSelectModule } from 'primeng/multiselect';
 import { BaseFormControl } from '../base-form-control';
 @Component({
     selector: 'saanjhi-ui-multiselect',
     templateUrl: './ui-multiselect.component.html',
+    styleUrls: ['./ui-multiselect.component.scss'],
     providers: [
         {
             provide: NG_VALUE_ACCESSOR,
@@ -14,7 +15,7 @@ import { BaseFormControl } from '../base-form-control';
         }
     ],
     standalone: true,
-    imports: [MultiSelectModule],
+    imports: [MultiSelectModule, FormsModule, ReactiveFormsModule],
     host: {
         class: 'saanjhi-component'
     }

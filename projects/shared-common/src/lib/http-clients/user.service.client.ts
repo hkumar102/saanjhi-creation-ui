@@ -1,82 +1,73 @@
-import { inject, Inject, Injectable } from '@angular/core';
-import { HttpClient, HttpErrorResponse, HttpParams } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
+import { inject, Injectable } from '@angular/core';
+import {
+    CreateUserCommand,
+    UpdateUserCommand,
+    UserDto,
+    UserDtoPaginatedResult,
+    UserRoleDto,
+    UpdateUserProfileCommand
+} from '../models';
 import { lastValueFrom } from 'rxjs';
-import { APP_CONFIG, AppConfig, UserModel } from '@saanjhi-creation-ui/shared-common';
-import { ShippingAddressDto } from '../models/address.model';
-import { PaginatedResult, PaginationQuery } from '../models/pagination.model';
+import { APP_CONFIG, AppConfig } from '@saanjhi-creation-ui/shared-common';
 
 @Injectable({ providedIn: 'root' })
 export class UserServiceClient {
-
     private config = inject(APP_CONFIG) as AppConfig;
-    private baseUrl = `${this.config.userServiceBaseUrl}`;
     private http = inject(HttpClient);
+    private baseUrl = `${this.config.userServiceBaseUrl}/User`;
 
-    async createUser(user: UserModel): Promise<void> {
-        await lastValueFrom(this.http.post<void>(`${this.baseUrl}`, user));
+    createUser(command: CreateUserCommand): Promise<UserDto> {
+        return lastValueFrom(this.http.post<UserDto>(`${this.baseUrl}`, command));
     }
 
-    async updateUser(user: UserModel): Promise<void> {
-        await lastValueFrom(this.http.put<void>(`${this.baseUrl}`, user));
+    updateUser(command: UpdateUserCommand): Promise<UserDto> {
+        return lastValueFrom(this.http.put<UserDto>(`${this.baseUrl}`, command));
     }
 
-    async addShippingAddress(address: ShippingAddressDto): Promise<void> {
-        await lastValueFrom(this.http.post<void>(`${this.baseUrl}/address`, address));
+    getUser(userId: string): Promise<UserDto> {
+        return lastValueFrom(this.http.get<UserDto>(`${this.baseUrl}/${userId}`));
     }
 
-    async deactivateUser(userId: string): Promise<void> {
-        await lastValueFrom(this.http.post<void>(`${this.baseUrl}/${userId}/deactivate`, {}));
+    getUserByFirebaseUid(firebaseUserId: string): Promise<UserDto> {
+        return lastValueFrom(this.http.get<UserDto>(`${this.baseUrl}/firebase/${firebaseUserId}`));
     }
 
-    async activateUser(userId: string): Promise<void> {
-        await lastValueFrom(this.http.post<void>(`${this.baseUrl}/${userId}/activate`, {}));
+    getUserRoles(userId: string): Promise<UserRoleDto[]> {
+        return lastValueFrom(this.http.get<UserRoleDto[]>(`${this.baseUrl}/${userId}/roles`));
     }
 
-    async getUserByFirebaseId(firebaseUserId: string): Promise<UserModel> {
-        return await lastValueFrom(this.http.get<UserModel>(`${this.baseUrl}/firebase/${firebaseUserId}`));
+    updateUserRoles(userId: string, roles: UserRoleDto[]): Promise<UserRoleDto[]> {
+        return lastValueFrom(this.http.put<UserRoleDto[]>(`${this.baseUrl}/${userId}/Roles`, roles));
     }
 
-    async getUserById(userId: string): Promise<UserModel> {
-        return await lastValueFrom(this.http.get<UserModel>(`${this.baseUrl}/${userId}`));
+    deactivateUser(userId: string): Promise<void> {
+        return lastValueFrom(this.http.post<void>(`${this.baseUrl}/${userId}/deactivate`, {}));
     }
 
-    async getUserRoles(userId: string): Promise<string[]> {
-        return await lastValueFrom(this.http.get<string[]>(`${this.baseUrl}/${userId}/roles`));
+    activateUser(userId: string): Promise<void> {
+        return lastValueFrom(this.http.post<void>(`${this.baseUrl}/${userId}/activate`, {}));
     }
 
-    async searchUsers(query: PaginationQuery): Promise<PaginatedResult<UserModel>> {
-        const params = new HttpParams()
-            .set('name', query.name || '')
-            .set('email', query.email || '')
-            .set('phone', query.phone || '')
-            .set('page', query.page.toString())
-            .set('pageSize', query.pageSize.toString());
-
-        return await lastValueFrom(this.http.get<PaginatedResult<UserModel>>(`${this.baseUrl}/search`, { params }));
-    }
-
-    async updateUserRoles(userId: string, roles: UserModel[]): Promise<void> {
-        await lastValueFrom(this.http.put<void>(`${this.baseUrl}/${userId}/roles`, roles));
-    }
-
-    /**
-    * Gets a user from the backend by Firebase UID.
-    * Throws if the user is not found.
-    * @param firebaseUid The Firebase UID to lookup
-    */
-    async getUserByFirebaseUid(firebaseUid: string): Promise<UserModel | null> {
-        try {
-            return await lastValueFrom(this.http
-                .get<UserModel>(`${this.baseUrl}/firebase/${firebaseUid}`));
-        } catch (error: any) {
-            if (error instanceof HttpErrorResponse && error.status === 404) {
-                return null
+    searchUsers(query: {
+        Name?: string;
+        Email?: string;
+        Phone?: string;
+        Page?: number;
+        PageSize?: number;
+    }): Promise<UserDtoPaginatedResult> {
+        const params = new URLSearchParams();
+        Object.entries(query).forEach(([key, value]) => {
+            if (value !== undefined && value !== null) {
+                params.append(key, value.toString());
             }
-            throw error;
-        }
+        });
+        return lastValueFrom(
+            this.http.get<UserDtoPaginatedResult>(`${this.baseUrl}/search?${params.toString()}`)
+        );
     }
 
-    async updateProfile(user: UserModel): Promise<void> {
-        await lastValueFrom(this.http.put<void>(`${this.baseUrl}/profile`, user));
+    updateUserProfile(command: UpdateUserProfileCommand): Promise<void> {
+        return lastValueFrom(this.http.put<void>(`${this.baseUrl}/profile`, command));
     }
 }

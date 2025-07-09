@@ -1,0 +1,64 @@
+<saanjhi-ui-confirm-dialog #confirmDialog />
+<div class="flex flex-column gap-3 mb-4">
+    <form [formGroup]="filtersForm" (ngSubmit)="loadRentals()">
+        <div class="grid gap-3">
+            <div class="col-12 md:col-6 lg:col-3">
+                <saanjhi-ui-form-field label="Customer ID" inputId="customerId">
+                    <saanjhi-ui-input formControlName="customerId" inputId="customerId" />
+                </saanjhi-ui-form-field>
+            </div>
+            <div class="col-12 md:col-6 lg:col-3">
+                <saanjhi-ui-form-field label="Product ID" inputId="productId">
+                    <saanjhi-ui-input formControlName="productId" inputId="productId" />
+                </saanjhi-ui-form-field>
+            </div>
+            <div class="col-12 md:col-6 lg:col-3">
+                <saanjhi-ui-form-field label="From Date" inputId="fromDate">
+                    <p-datePicker formControlName="fromDate" inputId="fromDate" dateFormat="yy-mm-dd" />
+                </saanjhi-ui-form-field>
+            </div>
+            <div class="col-12 md:col-6 lg:col-3">
+                <saanjhi-ui-form-field label="To Date" inputId="toDate">
+                    <p-datePicker formControlName="toDate" inputId="toDate" dateFormat="yy-mm-dd" />
+                </saanjhi-ui-form-field>
+            </div>
+        </div>
+
+        <div class="flex flex-wrap justify-content-between mt-2 gap-2">
+            <saanjhi-ui-button type="submit" label="Search" icon="pi pi-search" />
+            <saanjhi-ui-button type="button" label="Reset" icon="pi pi-refresh" severity="secondary"
+                (click)="onResetFilters()" />
+            <saanjhi-ui-button type="button" label="Add Rental" icon="pi pi-plus" severity="success"
+                (click)="onCreate()" />
+        </div>
+    </form>
+</div>
+
+<p-table [value]="rentals()" [lazy]="true" [paginator]="true" [totalRecords]="totalRecords()" [loading]="loading()"
+    [rows]="pageSize" [rowsPerPageOptions]="[10, 20, 50]" (onLazyLoad)="loadRentals($event)" [sortField]="sortField"
+    [sortOrder]="sortOrder" dataKey="id" responsiveLayout="scroll" class="shadow-1">
+    <ng-template pTemplate="header">
+        <tr>
+            <th pSortableColumn="startDate">Start Date <p-sortIcon field="startDate" /></th>
+            <th pSortableColumn="endDate">End Date <p-sortIcon field="endDate" /></th>
+            <th>Customer</th>
+            <th>Product</th>
+            <th>Status</th>
+            <th>Actions</th>
+        </tr>
+    </ng-template>
+
+    <ng-template pTemplate="body" let-rental>
+        <tr>
+            <td>{{ rental.startDate | date: 'shortDate' }}</td>
+            <td>{{ rental.endDate | date: 'shortDate' }}</td>
+            <td>{{ rental.customer?.name }}</td>
+            <td>{{ rental.product?.name }}</td>
+            <td>{{ rental.status }}</td>
+            <td class="flex gap-2">
+                <saanjhi-ui-button icon="pi pi-pencil" size="small" (click)="onEdit(rental)" />
+                <saanjhi-ui-button icon="pi pi-trash" severity="danger" size="small" (click)="onDelete(rental)" />
+            </td>
+        </tr>
+    </ng-template>
+</p-table>

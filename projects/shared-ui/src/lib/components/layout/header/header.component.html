@@ -1,8 +1,45 @@
-<header class="p-4 shadow bg-primary flex items-center justify-between">
-  <div class="text-xl font-bold">Saanjhi Creation</div>
-  <nav class="space-x-4">
-    <a routerLink="/" class="hover:underline">Home</a>
-    <a routerLink="/products" class="hover:underline">Products</a>
-    <a routerLink="/login" class="hover:underline">Login</a>
-  </nav>
+<header class="p-2 gap-3 shadow bg-primary text-white flex align-items-center">
+  <div class="text-lg font-bold">
+    <a routerLink="/" class="text-white no-underline">Saanjhi Creation</a>
+  </div>
+  <!-- Menu Items -->
+  <div class="flex-1 flex justify-content-between align-items-center">
+    @if (isLoggedIn()) {
+    <nav class="hidden flex gap-4 justify-content-center">
+      <a routerLink="/products" routerLinkActive="font-bold underline" class="text-white no-underline">Products</a>
+      <a routerLink="/category" routerLinkActive="font-bold underline" class="text-white no-underline">Categories</a>
+      <a routerLink="/customer" routerLinkActive="font-bold underline" class="text-white no-underline">Customers</a>
+      <a routerLink="/users" routerLinkActive="font-bold underline" class="text-white no-underline">Users</a>
+      <a routerLink="/rental" routerLinkActive="font-bold underline" class="text-white no-underline">Rentals</a>
+    </nav>
+    <saanjhi-ui-button type="button" label="Logout" icon="pi pi-sign-out" (onClick)="onLogout()"
+      severity="secondary"></saanjhi-ui-button>
+    }
+    @else {
+    <nav class="hidden flex gap-4 justify-content-center">
+      <a routerLink="/login" routerLinkActive="font-bold underline" class="text-white no-underline">Login</a>
+    </nav>
+    }
+  </div>
 </header>
+
+
+<ng-template #authorized>
+  <!-- Desktop Nav -->
+  <nav class="hidden flex gap-4 justify-content-center">
+    <a routerLink="/" routerLinkActive="font-bold underline" class="text-white no-underline">Home</a>
+    <a routerLink="/products" routerLinkActive="font-bold underline" class="text-white no-underline">Products</a>
+    <a routerLink="/categories" routerLinkActive="font-bold underline" class="text-white no-underline">Categories</a>
+  </nav>
+  <!-- Mobile Menu Icon -->
+  <saanjhi-ui-button icon="pi pi-bars text-2xl" class="block md:hidden p-2" type="button"></saanjhi-ui-button>
+</ng-template>
+
+<ng-template #unauthorized>
+  <!-- Desktop Nav -->
+  <nav class="hidden flex gap-4 justify-content-center">
+    <a routerLink="/login" routerLinkActive="font-bold underline" class="text-white no-underline">Login</a>
+  </nav>
+  <!-- Mobile Menu Icon -->
+  <saanjhi-ui-button icon="pi pi-bars text-2xl" class="block md:hidden p-2" type="button"></saanjhi-ui-button>
+</ng-template>

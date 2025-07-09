@@ -1,0 +1,37 @@
+<form [formGroup]="form" (ngSubmit)="save()" class="grid gap-4">
+
+    <saanjhi-ui-form-field label="Firebase User Id" inputId="firebaseUserId">
+        <saanjhi-ui-input formControlName="firebaseUserId" inputId="firebaseUserId" />
+        <saanjhi-ui-form-error [control]="form.get('firebaseUserId')" />
+    </saanjhi-ui-form-field>
+
+    <saanjhi-ui-form-field label="Name" inputId="displayName">
+        <saanjhi-ui-input formControlName="displayName" inputId="displayName" />
+        <saanjhi-ui-form-error [control]="form.get('displayName')" />
+    </saanjhi-ui-form-field>
+
+    <saanjhi-ui-form-field label="Email" inputId="email">
+        <saanjhi-ui-input formControlName="email" inputId="email" />
+        <saanjhi-ui-form-error [control]="form.get('email')" />
+    </saanjhi-ui-form-field>
+
+    <saanjhi-ui-form-field label="Phone Number" inputId="phoneNumber">
+        <saanjhi-ui-input formControlName="phoneNumber" inputId="phoneNumber" />
+    </saanjhi-ui-form-field>
+
+    <saanjhi-ui-form-field label="Photo URL" inputId="photoUrl">
+        <saanjhi-ui-input formControlName="photoUrl" inputId="photoUrl" />
+    </saanjhi-ui-form-field>
+
+    <saanjhi-ui-form-field label="Active" inputId="isActive">
+        <saanjhi-ui-checkbox label="Is Active" inputId="isActive" formControlName="isActive" />
+    </saanjhi-ui-form-field>
+
+    <saanjhi-ui-form-field label="Email Verified" inputId="emailVerified">
+        <saanjhi-ui-checkbox label="Email Verified" inputId="emailVerified" formControlName="emailVerified" />
+    </saanjhi-ui-form-field>
+
+    <div class="flex justify-content-end gap-2 mt-4">
+        <saanjhi-ui-button label="Save" icon="pi pi-save" type="submit" [disabled]="form.invalid" />
+    </div>
+</form>

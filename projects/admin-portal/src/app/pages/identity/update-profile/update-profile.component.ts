@@ -1,6 +1,6 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { FormBuilder, Validators, FormGroup, ReactiveFormsModule } from '@angular/forms';
-import { UserServiceClient, UserContextService, UserModel, ToastService, Role, RoleServiceClient, MediaServiceClient, MediaType } from '@saanjhi-creation-ui/shared-common';
+import { UserServiceClient, UserContextService, ToastService, Role, RoleServiceClient, MediaServiceClient, MediaType, UserDto } from '@saanjhi-creation-ui/shared-common';
 import { UiFileuploadComponent, UiButtonComponent, UiFormErrorComponent, UiFormFieldComponent, UiInputComponent, UiMultiselectComponent } from '@saanjhi-creation-ui/shared-ui';
 
 @Component({
@@ -41,7 +41,7 @@ export class UpdateProfileComponent implements OnInit {
     async ngOnInit() {
         const userId = this.currentUserService.userId;
         try {
-            const user = await this.userService.getUserById(userId!);
+            const user = await this.userService.getUser(userId!);
             this.profileForm.patchValue(user!);
             this.roles = await this.roleService.getAllRoles();
         } catch (error) {
@@ -63,14 +63,14 @@ export class UpdateProfileComponent implements OnInit {
             return;
         }
 
-        const updatedUser: UserModel = {
+        const updatedUser: UserDto = {
             ...this.profileForm.getRawValue(),
             firebaseUserId: this.currentUserService.firebaseUserId,
             email: this.currentUserService.email,
             id: this.currentUserService.userId!,
         };
 
-        await this.userService.updateProfile(updatedUser);
+        await this.userService.updateUser(updatedUser);
         this.toastService.success('Profile updated successfully');
     }
 }

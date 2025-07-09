@@ -1,34 +1,36 @@
-import { Injectable, inject } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { lastValueFrom } from 'rxjs';
-import { CategoryDto } from '../models';
-import { APP_CONFIG, AppConfig } from '../core/app-config.token';
+import { CategoryDto, CreateCategoryCommand, UpdateCategoryCommand } from '../models';
+import { APP_CONFIG, AppConfig } from '@saanjhi-creation-ui/shared-common';
 
-@Injectable({
-    providedIn: 'root',
-})
+@Injectable({ providedIn: 'root' })
 export class CategoryServiceClient {
-    private config = inject(APP_CONFIG) as AppConfig;
-    private baseUrl = `${this.config.categoryServiceBaseUrl}`;
-    private http = inject(HttpClient);
+  private config = inject(APP_CONFIG) as AppConfig;
+  private baseUrl = `${this.config.categoryServiceBaseUrl}/category`;
+  private http = inject(HttpClient);
 
-    getAll(): Promise<CategoryDto[]> {
-        return lastValueFrom(this.http.get<CategoryDto[]>(`${this.baseUrl}`));
-    }
+  async getAll(): Promise<CategoryDto[]> {
+    return await lastValueFrom(this.http.get<CategoryDto[]>(this.baseUrl));
+  }
 
-    getById(id: string): Promise<CategoryDto> {
-        return lastValueFrom(this.http.get<CategoryDto>(`${this.baseUrl}/${id}`));
-    }
+  async getById(id: string): Promise<CategoryDto> {
+    return await lastValueFrom(this.http.get<CategoryDto>(`${this.baseUrl}/${id}`));
+  }
 
-    create(dto: CategoryDto): Promise<void> {
-        return lastValueFrom(this.http.post<void>(`${this.baseUrl}`, dto));
-    }
+  async create(command: CreateCategoryCommand): Promise<string> {
+    return await lastValueFrom(this.http.post<string>(this.baseUrl, command));
+  }
 
-    update(dto: CategoryDto): Promise<void> {
-        return lastValueFrom(this.http.put<void>(`${this.baseUrl}`, dto));
-    }
+  async update(id: string, command: UpdateCategoryCommand): Promise<void> {
+    return await lastValueFrom(this.http.put<void>(`${this.baseUrl}/${id}`, command));
+  }
 
-    delete(id: string): Promise<void> {
-        return lastValueFrom(this.http.delete<void>(`${this.baseUrl}/${id}`));
-    }
+  async delete(id: string): Promise<void> {
+    return await lastValueFrom(this.http.delete<void>(`${this.baseUrl}/${id}`));
+  }
+
+  async getByIds(ids: string[]): Promise<CategoryDto[]> {
+    return await lastValueFrom(this.http.post<CategoryDto[]>(`${this.baseUrl}/by-ids`, ids));
+  }
 }

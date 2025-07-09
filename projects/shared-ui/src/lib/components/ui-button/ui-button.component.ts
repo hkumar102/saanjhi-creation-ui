@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { ButtonModule } from 'primeng/button';
+import { ButtonModule, ButtonSeverity } from 'primeng/button';
 import { BaseFormControl } from '../base-form-control';
 
 /**
@@ -11,19 +11,21 @@ import { BaseFormControl } from '../base-form-control';
   standalone: true,
   imports: [ButtonModule],
   template: `
-  <div class="saanjhi-component">
-    <button
-      pButton
+  <p-button
       [type]="type"
       [label]="label"
       [icon]="icon"
       [loading]="loading"
       [disabled]="disabled || loading"
-      [class]="styleClass"
+      [styleClass]="styleClass"
       (click)="handleClick($event)"
       [attr.id]="id" class="w-full"
-      ></button>
-  </div>
+      [severity]="severity"
+      [rounded]="rounded"
+      [raised]="raised"
+      >
+      <ng-content></ng-content>
+    </p-button>
   `,
   host: {
     class: 'saanjhi-component'
@@ -47,6 +49,11 @@ export class UiButtonComponent extends BaseFormControl {
 
   /** Whether the button is in a loading state */
   @Input() loading = false;
+
+  @Input() rounded = false;
+  @Input() raised = false;
+
+  @Input() severity: ButtonSeverity = 'primary';
 
   /** Emits click event */
   @Output() onClick = new EventEmitter<Event>();

@@ -1,4 +1,4 @@
-import { ApplicationConfig, provideBrowserGlobalErrorListeners, provideZoneChangeDetection } from '@angular/core';
+import { ApplicationConfig, provideZoneChangeDetection, provideBrowserGlobalErrorListeners } from '@angular/core';
 import { provideRouter } from '@angular/router';
 import { provideAuth, getAuth } from '@angular/fire/auth';
 import { routes } from './app.routes';
@@ -9,7 +9,7 @@ import { provideAnimationsAsync } from '@angular/platform-browser/animations/asy
 import { providePrimeNG } from 'primeng/config';
 import Aura from '@primeng/themes/aura';
 import { MessageService } from 'primeng/api';
-import { APP_CONFIG, FirebaseAuthInterceptor, HttpErrorInterceptor, HttpLoaderInterceptor } from '@saanjhi-creation-ui/shared-common';
+import { APP_CONFIG, APP_INIT_AUTH_LISTENER, AuthService, FirebaseAuthInterceptor, HttpErrorInterceptor, HttpLoaderInterceptor } from '@saanjhi-creation-ui/shared-common';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -52,14 +52,13 @@ export const appConfig: ApplicationConfig = {
     // Custom config
     {
       provide: APP_CONFIG,
-      useValue: {
-        userServiceBaseUrl: 'https://localhost:8003/api/user',
-        mediaServiceBaseUrl: 'https://localhost:8005/api/media',
-        categoryServiceBaseUrl: 'https://localhost:8007/api/category',
-        productServiceBaseUrl: 'https://localhost:8010/api/product',
-      }
+      useValue: environment.services
     },
-
+    {
+      provide: APP_INIT_AUTH_LISTENER,
+      useFactory: (authService: AuthService) => authService.initAuthListener(),
+      deps: [AuthService]
+    },
     MessageService
   ]
 };

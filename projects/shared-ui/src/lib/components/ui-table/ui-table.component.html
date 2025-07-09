@@ -1,4 +1,4 @@
-<p-table [value]="value" [paginator]="paginator" [rows]="rows" responsiveLayout="scroll" [attr.id]="id">
-  <ng-content select="[header]"></ng-content>
-  <ng-content select="[body]"></ng-content>
+<p-table [value]="value" [attr.id]="id">
+  <ng-content select="[pTemplate=header]"></ng-content>
+  <ng-content select="[pTemplate=body]"></ng-content>
 </p-table>

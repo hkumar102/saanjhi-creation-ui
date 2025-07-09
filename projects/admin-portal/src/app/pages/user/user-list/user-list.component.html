@@ -1,0 +1,51 @@
+<div class="grid mb-3">
+    <div class="col-12">
+        <form class="flex flex-wrap gap-4" [formGroup]="filterForm" (ngSubmit)="onSearch()">
+            <div>
+                <saanjhi-ui-input inputId="name" formControlName="name" label="Name" placeholder="Search by name" />
+            </div>
+            <div>
+                <saanjhi-ui-input inputId="email" formControlName="email" label="Email" placeholder="Search by email" />
+            </div>
+            <div>
+                <saanjhi-ui-input inputId="phone" formControlName="phone" label="Phone" placeholder="Search by phone" />
+            </div>
+            <div class="flex-1">
+                <saanjhi-ui-button type="submit" icon="pi pi-plus" label="Search" />
+            </div>
+        </form>
+    </div>
+    <div class="col-12 md:text-right">
+        <saanjhi-ui-button icon="pi pi-plus" label="Create User" (click)="onCreate()" />
+    </div>
+</div>
+
+<p-table [value]="users" [lazy]="true" [paginator]="true" [rows]="pageSize" [totalRecords]="totalRecords"
+    [loading]="loading" [first]="(page - 1) * pageSize" [sortField]="sortField" [sortOrder]="sortOrder"
+    (onLazyLoad)="onLazyLoad($event)" dataKey="id">
+    <ng-template pTemplate="header">
+        <tr>
+            <th pSortableColumn="displayName">Name <p-sortIcon field="displayName"></p-sortIcon></th>
+            <th pSortableColumn="email">Email <p-sortIcon field="email"></p-sortIcon></th>
+            <th pSortableColumn="phoneNumber">Phone <p-sortIcon field="phoneNumber"></p-sortIcon></th>
+            <th>Status</th>
+            <th>Actions</th>
+        </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-user>
+        <tr>
+            <td>{{ user.displayName }}</td>
+            <td>{{ user.email }}</td>
+            <td>{{ user.phoneNumber }}</td>
+            <td>
+                <span [class]="user.isActive ? 'text-green-500' : 'text-red-500'">
+                    {{ user.isActive ? 'Active' : 'Inactive' }}
+                </span>
+            </td>
+            <td>
+                <saanjhi-ui-button icon="pi pi-pencil" class="p-button-text" (click)="onEdit(user)" severity="secondary"
+                    [disabled]="true" />
+            </td>
+        </tr>
+    </ng-template>
+</p-table>

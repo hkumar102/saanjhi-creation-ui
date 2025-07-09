@@ -1,0 +1,71 @@
+<form [formGroup]="form" (ngSubmit)="save()" class="grid gap-3">
+    <div class="col-12 md:col-6">
+        <!-- Product Dropdown -->
+        <saanjhi-ui-form-field label="Product" for="productId">
+            <p-autoComplete inputId="productId" formControlName="product" [suggestions]="filteredProducts"
+                (completeMethod)="searchProducts($event)" field="name" optionLabel="name" [dropdown]="true" [forceSelection]="true"
+                optionValue="id" [virtualScroll]="true" [lazy]="true" [minLength]="1" [showClear]="true" />
+        </saanjhi-ui-form-field>
+    </div>
+
+    <div class="col-12 md:col-6">
+        <saanjhi-ui-form-field label="Customer ID" for="customerId">
+            <!-- Customer Dropdown -->
+            <p-autoComplete inputId="customerId" formControlName="customer" [suggestions]="filteredCustomers"
+                (completeMethod)="searchCustomers($event)" field="name" optionLabel="name" [dropdown]="true" [forceSelection]="true"
+                optionValue="id" [virtualScroll]="true" [lazy]="true" [minLength]="1" [showClear]="true"
+                (onSelect)="onCustomerChange($event.value)" />
+        </saanjhi-ui-form-field>
+    </div>
+
+    <div class="col-12 md:col-6">
+
+        <saanjhi-ui-form-field label="Customer Address" for="shippingAddressId">
+            <!-- Customer Dropdown -->
+            <saanjhi-ui-dropdown inputId="shippingAddressId" formControlName="shippingAddressId"
+                [options]="shippingAddresses" optionLabel="line1" optionValue="id" placeholder="Select Address" />
+        </saanjhi-ui-form-field>
+    </div>
+
+    <div class="col-12 md:col-6">
+        <saanjhi-ui-form-field label="Start Date" for="startDate">
+            <p-datepicker formControlName="startDate" inputId="startDate" dateFormat="yy-mm-dd" />
+        </saanjhi-ui-form-field>
+    </div>
+
+    <div class="col-12 md:col-6">
+        <saanjhi-ui-form-field label="End Date" for="endDate">
+            <p-datepicker formControlName="endDate" inputId="endDate" dateFormat="yy-mm-dd" />
+        </saanjhi-ui-form-field>
+    </div>
+
+    <div class="col-12 md:col-6">
+        <saanjhi-ui-form-field label="Rental Price" for="rentalPrice">
+            <saanjhi-ui-input formControlName="rentalPrice" inputId="rentalPrice" type="number" />
+        </saanjhi-ui-form-field>
+    </div>
+
+    <div class="col-12 md:col-6">
+        <saanjhi-ui-form-field label="Security Deposit" for="securityDeposit">
+            <saanjhi-ui-input formControlName="securityDeposit" inputId="securityDeposit" type="number" />
+        </saanjhi-ui-form-field>
+    </div>
+
+    <!-- <div class="col-12 md:col-6"
+        *ngFor="let field of ['height', 'chest', 'waist', 'hip', 'shoulder', 'sleeveLength', 'inseam']">
+        <saanjhi-ui-form-field [label]="field" [for]="field">
+            <saanjhi-ui-input [formControlName]="field" [inputId]="field" />
+        </saanjhi-ui-form-field>
+    </div> -->
+
+    <div class="col-12">
+        <saanjhi-ui-form-field label="Notes" for="notes">
+            <saanjhi-ui-input formControlName="notes" inputId="notes" />
+        </saanjhi-ui-form-field>
+    </div>
+
+    <div class="flex justify-content-end gap-2 mt-4">
+        <saanjhi-ui-button type="button" severity="secondary" label="Cancel" (click)="cancel()" />
+        <saanjhi-ui-button type="submit" label="Save" />
+    </div>
+</form>

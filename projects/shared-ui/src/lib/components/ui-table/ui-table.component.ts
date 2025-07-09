@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, ContentChild, Input, TemplateRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TableModule } from 'primeng/table';
 import { BaseFormControl } from '../base-form-control';
@@ -22,19 +22,4 @@ export class UiTableComponent<T = any> extends BaseFormControl {
    * Array of records to display in the table.
    */
   @Input() value: T[] = [];
-
-  /**
-   * Optional: Define columns using custom templates from parent.
-   */
-  @Input() columns: any[] = [];
-
-  /**
-   * Optional: Show paginator or not.
-   */
-  @Input() paginator: boolean = false;
-
-  /**
-   * Optional: Number of rows per page.
-   */
-  @Input() rows: number = 10;
 }

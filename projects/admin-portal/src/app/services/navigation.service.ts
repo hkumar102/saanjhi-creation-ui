@@ -1,5 +1,5 @@
 import { inject, Injectable } from '@angular/core';
-import { Auth, onAuthStateChanged } from '@angular/fire/auth';
+import { Auth } from '@angular/fire/auth';
 import { Router } from '@angular/router';
 import { UserContextService, UserServiceClient } from '@saanjhi-creation-ui/shared-common';
 
@@ -7,22 +7,9 @@ import { UserContextService, UserServiceClient } from '@saanjhi-creation-ui/shar
     providedIn: 'root'
 })
 export class NavigationService {
-    private auth = inject(Auth);
-    private userServiceClient = inject(UserServiceClient);
-    private userContextService = inject(UserContextService);
 
 
     constructor(private router: Router) {
-
-        onAuthStateChanged(this.auth, (user) => {
-            if (user) {
-                this.userServiceClient.getUserByFirebaseId(user.uid)
-                    .then((userModel) => {
-                        this.userContextService.setUser(userModel);
-                        this.goToProducts();
-                    });
-            }
-        });
     }
 
     goToProfile() {
@@ -60,6 +47,41 @@ export class NavigationService {
         this.router.navigate(['/products/details', id]);
     }
     goToCategories() {
-        this.router.navigate(['/categories']);
+        this.router.navigate(['/category']);
+    }
+    goToCategoryCreate() {
+        this.router.navigate(['/category/create']);
+    }
+    goToCategoryEdit(id: string) {
+        this.router.navigate(['/category/edit', id]);
+    }
+    goToCustomers() {
+        this.router.navigate(['/customer']);
+    }
+    goToCustomerCreate() {
+        this.router.navigate(['/customer/create']);
+    }
+    goToCustomerEdit(id: string) {
+        this.router.navigate(['/customer/edit', id]);
+    }
+
+    goToUsers() {
+        this.router.navigate(['/users']);
+    }
+    goToUserCreate() {
+        this.router.navigate(['/users/create']);
+    }
+    goToUserEdit(id: string) {
+        this.router.navigate(['/users/edit', id]);
+    }
+
+    goToRentals() {
+        this.router.navigate(['/rental']);
+    }
+    goToRentalCreate() {
+        this.router.navigate(['/rental/create']);
+    }
+    goToRentalEdit(id: string) {
+        this.router.navigate(['/rental/edit', id]);
     }
 }

@@ -1,7 +1,10 @@
 <p-multiSelect
   [options]="options"
   [optionLabel]="labelKey"
+  [optionValue]="valueKey"
   [placeholder]="placeholder"
   [disabled]="disabled"
-  (onChange)="onModelChange($event.value)">
+  (onChange)="onModelChange($event.value)"
+  [ngModel]="value"
+  [inputId]="inputId">
 </p-multiSelect>

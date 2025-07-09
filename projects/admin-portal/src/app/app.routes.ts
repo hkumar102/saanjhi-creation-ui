@@ -1,39 +1,59 @@
 import { Routes } from '@angular/router';
 import { AuthGuard } from '@saanjhi-creation-ui/shared-common';
-import { LayoutComponent } from '@saanjhi-creation-ui/shared-ui';
-export const routes: Routes = [{
-    path: '',
-    component: LayoutComponent,
-    children: [
-        {
-            path: 'login',
-            loadComponent: () =>
-                import('./pages/auth/login/login.component').then(m => m.LoginComponent)
-        },
-        {
-            path: 'register',
-            loadComponent: () =>
-                import('./pages/auth/register/register.component').then(m => m.RegisterComponent)
-        },
-        {
-            path: 'identity',
-            canActivate: [AuthGuard],
-            loadChildren: () => [
-                {
-                    path: 'update-user',
-                    loadComponent: () =>
-                        import('./pages/identity/update-profile/update-profile.component').then(m => m.UpdateProfileComponent),
+import { CATEGORY_ROUTES } from './pages/category/category.routes';
+import { CUSTOMER_ROUTES } from './pages/customer/customer.routes';
+import { USER_ROUTES } from './pages/user/user.routes';
+import { RENTAL_ROUTES } from './pages/rental/rental-list/rental.routes';
+export const routes: Routes = [
+    {
+        path: 'login',
+        loadComponent: () =>
+            import('./pages/auth/login/login.component').then(m => m.LoginComponent)
+    },
+    {
+        path: 'register',
+        loadComponent: () =>
+            import('./pages/auth/register/register.component').then(m => m.RegisterComponent)
+    },
+    {
+        path: 'identity',
+        canActivate: [AuthGuard],
+        loadChildren: () => [
+            {
+                path: 'update-user',
+                loadComponent: () =>
+                    import('./pages/identity/update-profile/update-profile.component').then(m => m.UpdateProfileComponent),
 
-                }]
-        },
-        {
-            path: 'products',
-            loadChildren: () => import('./pages/product/product.routes').then(m => m.productRoutes)
-        },
-        {
-            path: '',
-            redirectTo: 'login',
-            pathMatch: 'full'
-        }
-    ]
-}];
+            }]
+    },
+    {
+        path: 'products',
+        loadChildren: () => import('./pages/product/product.routes').then(m => m.productRoutes),
+        canActivate: [AuthGuard]
+    },
+    {
+        path: 'category',
+        children: CATEGORY_ROUTES,
+        canActivate: [AuthGuard]
+    },
+    {
+        path: 'customer',
+        children: CUSTOMER_ROUTES,
+        canActivate: [AuthGuard]
+    },
+    {
+        path: 'users',
+        children: USER_ROUTES,
+        canActivate: [AuthGuard]
+    },
+    {
+        path: 'rental',
+        children: RENTAL_ROUTES,
+        canActivate: [AuthGuard]
+    },
+    {
+        path: '',
+        pathMatch: 'full',
+        redirectTo: '/products'
+    }
+];
