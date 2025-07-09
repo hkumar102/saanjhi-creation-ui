@@ -137,7 +137,7 @@
               },
               {
                 "glob": "_redirects",
-                "input": "",
+                "input": "projects/admin-portal/public",
                 "output": "/"
               }
             ],
