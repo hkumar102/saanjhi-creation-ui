@@ -3,13 +3,14 @@
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
-    "admin": "ng serve admin-portal --port 4201",
-    "build:admin": "ng build admin-portal --configuration=production",
-    "build:admin:dev": "ng build admin-portal --configuration=development",
-    "build": "ng build",
-    "watch": "ng build --watch --configuration development",
-    "test": "ng test",
-    "start": "node server.js"
+    "admin": "npx ng serve admin-portal --port 4201",
+    "build:admin": "npx ng build admin-portal --configuration=production",
+    "build:admin:dev": "npx ng build admin-portal --configuration=development",
+    "build": "npx ng build",
+    "watch": "npx ng build --watch --configuration development",
+    "test": "npx ng test",
+    "start": "node server.js",
+    "render-build": "npm install --include=dev && npx ng build admin-portal --configuration=production"
   },
   "private": true,
   "dependencies": {
