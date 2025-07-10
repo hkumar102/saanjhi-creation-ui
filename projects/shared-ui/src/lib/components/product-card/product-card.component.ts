@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { ProductDto } from '@saanjhi-creation-ui/shared-common';
 import { ButtonModule } from 'primeng/button';
 import { CarouselModule } from 'primeng/carousel'
+import { TooltipModule } from 'primeng/tooltip';
 
 
 @Component({
@@ -11,11 +12,12 @@ import { CarouselModule } from 'primeng/carousel'
   templateUrl: './product-card.component.html',
   styleUrls: ['./product-card.component.scss'],
   standalone: true,
-  imports: [CarouselModule, FormsModule, CommonModule, ButtonModule]
+  imports: [CarouselModule, FormsModule, CommonModule, ButtonModule, TooltipModule]
 })
 export class ProductCardComponent implements OnInit {
   @Input() product!: ProductDto;
-  @Output() edit = new EventEmitter<ProductDto>();
+  @Output() editClicked = new EventEmitter<ProductDto>();
+  @Output() previewClicked = new EventEmitter<ProductDto>();
 
   showCarousel = false;
   selectedImage: string | null = null;
@@ -34,7 +36,11 @@ export class ProductCardComponent implements OnInit {
   }
 
   onEditClicked() {
-    this.edit.emit(this.product);
+    this.editClicked.emit(this.product);
+  }
+
+  onPreviewClicked() {
+    this.previewClicked.emit(this.product);
   }
 
   changeImage() {

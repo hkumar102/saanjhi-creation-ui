@@ -1,0 +1,151 @@
+.product-details-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 1rem;
+}
+
+.product-details-card {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+
+    @media (max-width: 768px) {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+}
+
+.image-gallery {
+
+    .gallery-item,
+    .default-image {
+        width: 100%;
+        height: 600px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        @media (max-width: 768px) {
+            height: 400px;
+        }
+    }
+
+    .gallery-image {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        border-radius: 8px;
+    }
+
+    .gallery-thumbnail {
+        width: 80px;
+        height: 80px;
+        margin: 0 4px;
+
+        .thumbnail-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: opacity 0.3s ease;
+
+            &:hover {
+                opacity: 0.8;
+            }
+        }
+    }
+}
+
+.product-info {
+    padding: 1rem;
+
+    .product-title {
+        color: #1a1a1a;
+        line-height: 1.3;
+    }
+
+    .mode-selection {
+        .mode-btn {
+            border: 2px solid #e5e5e5;
+            background: white;
+            color: #666;
+            cursor: pointer;
+
+            &:hover {
+                border-color: #007bff;
+            }
+
+            &.active {
+                border-color: #007bff;
+                background: #007bff;
+                color: white;
+            }
+        }
+    }
+
+    .rental-options {
+        .rental-pricing {
+            border-left: 4px solid var(--primary-color);
+        }
+    }
+
+    .action-buttons {
+        .p-button {
+            height: 48px;
+        }
+    }
+
+    .delivery-info {
+        background: #f8f9fa;
+        padding: 1rem;
+        border-radius: 8px;
+
+        .pi {
+            font-size: 14px;
+        }
+    }
+
+    .info-grid {
+        .info-row {
+            &:last-child {
+                border-bottom: none;
+            }
+        }
+    }
+}
+
+// PrimeNG Gallery Customization
+::ng-deep {
+    .p-galleria {
+        .p-galleria-item-wrapper {
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .p-galleria-thumbnail-wrapper {
+            padding: 1rem 0;
+        }
+
+        .p-galleria-thumbnail-item {
+            border-radius: 4px;
+            overflow: hidden;
+            opacity: 0.6;
+            transition: opacity 0.3s ease;
+
+            &.p-galleria-thumbnail-item-current {
+                opacity: 1;
+                border: 2px solid #007bff;
+            }
+        }
+    }
+
+    .p-inputnumber {
+        .p-inputnumber-input {
+            text-align: center;
+            width: 80px;
+        }
+    }
+}

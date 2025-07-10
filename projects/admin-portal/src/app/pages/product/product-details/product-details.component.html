@@ -1,0 +1,10 @@
+<div *ngIf="product" class="flex flex-column gap-4">
+    <div class="flex justify-content-between gap-4">
+        <saanjhi-ui-button type="button" label="Edit {{product.name}}" class="text-center" icon="pi pi-pencil"
+            severity="warn" (click)="onEditProduct()" />
+        <saanjhi-ui-button type="button" label="Product List" class="text-center" icon="pi pi-list" severity="warn"
+            (click)="onBackToList()" />
+    </div>
+    <saanjhi-product-details [product]="product" [loading]="false">
+    </saanjhi-product-details>
+</div>

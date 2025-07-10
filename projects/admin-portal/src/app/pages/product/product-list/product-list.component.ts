@@ -79,7 +79,7 @@ export class ProductListComponent extends AdminBaseComponent implements OnInit {
         this.navigation.goToProductCreate();
     }
 
-    onEditClicked(product: ProductViewModel) {
+    onEditClicked(product: ProductDto) {
         this.navigation.goToProductEdit(product.id);
     }
 
@@ -116,5 +116,9 @@ export class ProductListComponent extends AdminBaseComponent implements OnInit {
         });
 
         this.loadProducts();
+    }
+
+    onPreviewProduct(product: ProductDto) {
+        this.navigation.goToProductDetails(product.id);
     }
 }

@@ -1,0 +1,182 @@
+<div class="product-details-container" *ngIf="product">
+    <div class="grid">
+        <!-- Image Gallery Section -->
+        <div class="col-12 md:col-6 lg:col-7">
+            <div class="image-gallery">
+                <p-galleria *ngIf="hasImages" [value]="productImages" [responsiveOptions]="galleryResponsiveOptions"
+                    [containerStyle]="{'max-width': '100%'}" [showThumbnails]="productImages.length > 1"
+                    [showIndicators]="false" [showIndicatorsOnItem]="false"
+                    [showItemNavigators]="productImages.length > 1" [circular]="true" [autoPlay]="false">
+
+                    <ng-template pTemplate="item" let-item>
+                        <div class="gallery-item">
+                            <img [src]="item" [alt]="product.name" class="gallery-image" />
+                        </div>
+                    </ng-template>
+
+                    <ng-template pTemplate="thumbnail" let-item>
+                        <div class="gallery-thumbnail">
+                            <img [src]="item" [alt]="product.name" class="thumbnail-image" />
+                        </div>
+                    </ng-template>
+                </p-galleria>
+
+                <!-- Default image when no media -->
+                <div *ngIf="!hasImages" class="default-image">
+                    <img src="assets/images/default-clothing.svg" [alt]="product.name" class="gallery-image" />
+                </div>
+            </div>
+        </div>
+
+        <!-- Product Info Section -->
+        <div class="col-12 md:col-6 lg:col-5">
+            <div class="product-info">
+                <!-- Product Title -->
+                <div class="product-header mb-4">
+                    <h1 class="product-title text-3xl font-bold text-900 mb-2">{{ product.name }}</h1>
+                    <div
+                        class="category-badge bg-primary-100 text-primary-800 px-2 py-1 border-round text-sm font-semibold inline-block mb-3">
+                        {{ product.categoryName }}
+                    </div>
+                </div>
+
+                <!-- Mode Selection -->
+                <div class="mode-selection mb-4" *ngIf="canRent">
+                    <div class="flex gap-2">
+                        <button type="button"
+                            class="mode-btn flex-1 p-3 border-round text-center font-semibold transition-all"
+                            [class.active]="!isRentalMode" (click)="onToggleMode(false)">
+                            <div class="text-lg">Buy</div>
+                            <div class="text-2xl font-bold">₹{{ product.price | number:'1.0-0' }}</div>
+                        </button>
+                        <button type="button"
+                            class="mode-btn flex-1 p-3 border-round text-center font-semibold transition-all"
+                            [class.active]="isRentalMode" (click)="onToggleMode(true)">
+                            <div class="text-lg">Rent</div>
+                            <div class="text-2xl font-bold">₹{{ product.rentalPrice | number:'1.0-0' }}/day</div>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Pricing -->
+                <div class="pricing mb-4" *ngIf="!canRent">
+                    <div class="flex align-items-center gap-3">
+                        <span class="current-price text-3xl font-bold text-900">
+                            ₹{{ product.price | number:'1.0-0' }}
+                        </span>
+                    </div>
+                </div>
+
+                <!-- Rental Options -->
+                <div class="rental-options mb-4" *ngIf="isRentalMode && canRent">
+                    <div class="mb-3">
+                        <label class="text-900 font-semibold mb-2 block">RENTAL DAYS</label>
+                        <p-inputNumber [(ngModel)]="rentalDays" [min]="1" [max]="maxRentalDays" [showButtons]="true"
+                            buttonLayout="horizontal" inputId="rentalDays" decrementButtonClass="p-button-secondary"
+                            incrementButtonClass="p-button-secondary">
+                        </p-inputNumber>
+                        <small class="text-600 block mt-1">Maximum {{ maxRentalDays }} days</small>
+                    </div>
+
+                    <div class="rental-pricing bg-primary-50 p-3 border-round">
+                        <div class="flex justify-content-between align-items-center mb-2">
+                            <span>Rental ({{ rentalDays }} days)</span>
+                            <span class="font-bold">₹{{ totalRentalPrice | number:'1.0-0' }}</span>
+                        </div>
+                        <div class="flex justify-content-between align-items-center" *ngIf="product.securityDeposit">
+                            <span>Security Deposit</span>
+                            <span class="font-bold">₹{{ product.securityDeposit | number:'1.0-0' }}</span>
+                        </div>
+                        <hr class="my-2">
+                        <div class="flex justify-content-between align-items-center">
+                            <span class="font-bold">Total</span>
+                            <span class="font-bold text-primary text-xl">
+                                ₹{{ (totalRentalPrice + (product.securityDeposit || 0)) | number:'1.0-0' }}
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quantity -->
+                <div class="quantity-selection mb-4" *ngIf="!isRentalMode">
+                    <label class="text-900 font-semibold mb-2 block">QUANTITY</label>
+                    <p-inputNumber [(ngModel)]="quantity" [min]="1" [max]="product.quantity" [showButtons]="true"
+                        buttonLayout="horizontal" inputId="quantity" decrementButtonClass="p-button-secondary"
+                        incrementButtonClass="p-button-secondary">
+                    </p-inputNumber>
+                    <small class="text-600 block mt-1">{{ product.quantity }} available</small>
+                </div>
+
+                <!-- Stock Status -->
+                <div class="stock-status mb-4">
+                    <div *ngIf="isInStock" class="flex align-items-center gap-2 text-green-600">
+                        <i class="pi pi-check-circle"></i>
+                        <span class="font-semibold">In Stock ({{ product.quantity }} available)</span>
+                    </div>
+                    <div *ngIf="!isInStock" class="flex align-items-center gap-2 text-red-600">
+                        <i class="pi pi-times-circle"></i>
+                        <span class="font-semibold">Out of Stock</span>
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="action-buttons mb-4">
+                    <div class="flex gap-2">
+                        <button pButton [label]="isRentalMode ? 'RENT NOW' : 'ADD TO CART'"
+                            [icon]="isRentalMode ? 'pi pi-calendar' : 'pi pi-shopping-cart'" class="flex-1"
+                            [disabled]="isAddToCartDisabled()" [loading]="loading" (click)="onAddToCart()">
+                        </button>
+                        <button pButton icon="pi pi-heart" [outlined]="true" severity="secondary"
+                            (click)="onAddToWishlist()" [title]="'Add to Wishlist'">
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Product Description -->
+                <div class="product-description mb-4" *ngIf="product.description">
+                    <h3 class="text-900 font-semibold mb-2">PRODUCT DETAILS</h3>
+                    <p class="text-600 line-height-3">{{ product.description }}</p>
+                </div>
+
+                <!-- Rental Information -->
+                <div class="rental-info mb-4" *ngIf="canRent">
+                    <h3 class="text-900 font-semibold mb-2">RENTAL INFORMATION</h3>
+                    <div class="info-grid">
+                        <div class="info-row flex justify-content-between py-2 border-bottom-1 border-200">
+                            <span class="text-600">Daily Rate</span>
+                            <span class="text-900 font-semibold">₹{{ product.rentalPrice | number:'1.0-0' }}</span>
+                        </div>
+                        <div class="info-row flex justify-content-between py-2 border-bottom-1 border-200"
+                            *ngIf="product.securityDeposit">
+                            <span class="text-600">Security Deposit</span>
+                            <span class="text-900 font-semibold">₹{{ product.securityDeposit | number:'1.0-0' }}</span>
+                        </div>
+                        <div class="info-row flex justify-content-between py-2">
+                            <span class="text-600">Max Rental Period</span>
+                            <span class="text-900 font-semibold">{{ maxRentalDays }} days</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Delivery Options -->
+                <div class="delivery-options">
+                    <h3 class="text-900 font-semibold mb-2">DELIVERY & RETURNS</h3>
+                    <div class="delivery-info">
+                        <div class="flex align-items-center gap-2 mb-2">
+                            <i class="pi pi-truck text-primary"></i>
+                            <span class="text-sm">Free delivery on orders above ₹999</span>
+                        </div>
+                        <div class="flex align-items-center gap-2 mb-2">
+                            <i class="pi pi-refresh text-primary"></i>
+                            <span class="text-sm">Easy 30 day return policy</span>
+                        </div>
+                        <div class="flex align-items-center gap-2">
+                            <i class="pi pi-shield text-primary"></i>
+                            <span class="text-sm">100% Original Products</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,4 +1,4 @@
-<form *ngIf="form" [formGroup]="form" (ngSubmit)="onSubmit()" class="grid">
+<form *ngIf="form" [formGroup]="form" class="grid">
 
   <div class="col-12 md:col-6">
     <saanjhi-ui-form-field label="Name" for="name">
@@ -82,25 +82,23 @@
     <div class="flex flex-wrap gap-2">
       <ng-container *ngIf="model.media?.length! > 0">
         <ng-container *ngFor="let file of model.media; let i = index">
-          <div class="relative">
-            <img [src]="file.url" alt="Preview" class="w-6rem h-6rem border-round shadow-2 object-cover" />
-            <button type="button"
-              class="absolute top-0 right-0 bg-white border-none p-1 rounded-full shadow cursor-pointer"
-              (click)="removeExistingImage(i)">
-              <i class="pi pi-times text-xs"></i>
-            </button>
+          <div class="relative image-preview">
+            <img [src]="file.url" alt="Preview" class="preview-image" />
+            <saanjhi-ui-button pButton icon="pi pi-times" [outlined]="true" severity="secondary" [rounded]="true"
+              size="small" severity="secondary" styleClass="bg-white text-red-500" class="remove-btn" type="button"
+              (click)="removeExistingImage(i)" tabindex="0" aria-label="Edit product">
+            </saanjhi-ui-button>
           </div>
         </ng-container>
       </ng-container>
 
       <ng-container *ngFor="let file of selectedImages; let i = index">
-        <div class="relative">
-          <img [src]="getImagePreview(file)" alt="Preview" class="w-6rem h-6rem border-round shadow-2 object-cover" />
-          <button type="button"
-            class="absolute top-0 right-0 bg-white border-none p-1 rounded-full shadow cursor-pointer"
-            (click)="removeImage(i)">
-            <i class="pi pi-times text-xs"></i>
-          </button>
+        <div class="relative image-preview">
+          <img [src]="getImagePreview(file)" alt="Preview" class="preview-image" />
+          <saanjhi-ui-button pButton icon="pi pi-times" [outlined]="true" severity="secondary" [rounded]="true"
+            size="small" severity="secondary" styleClass="bg-white text-red-500" class="remove-btn" type="button"
+            (click)="removeExistingImage(i)" tabindex="0" aria-label="Edit product">
+          </saanjhi-ui-button>
         </div>
       </ng-container>
     </div>
@@ -113,8 +111,11 @@
     </saanjhi-ui-form-field>
   </div>
 
-  <div class="col-12 flex justify-end">
-    <saanjhi-ui-button type="submit" label="Save" icon="pi pi-save" />
+  <div class="col-12 flex justify-end gap-3">
+    <saanjhi-ui-button type="button" label="Save" icon="pi pi-save" (click)="onSave()" />
+    <saanjhi-ui-button type="button" label="Cancel" severity="warn" icon="pi pi-times" (click)="gotoProducts()" />
+    <saanjhi-ui-button type="button" label="Save and Preview" severity="info" icon="pi pi-eye"
+      (click)="onSaveAndPreview()" *ngIf="isEditMode" />
   </div>
 
 </form>

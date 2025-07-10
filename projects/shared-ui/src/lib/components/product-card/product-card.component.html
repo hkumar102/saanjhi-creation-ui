@@ -1,6 +1,6 @@
 <div class="flex flex-column shadow-2 hover:shadow-4 border-round clothing-card">
     <!-- Image Section -->
-    <div class="relative flex-1">
+    <div class="image-container flex-1">
         <!-- Category -->
         <div
             class="absolute left-0 top-0 ml-2 mt-2 bg-black-alpha-70 text-white text-xs font-semibold px-2 py-1 border-round z-5 flex align-items-center gap-1">
@@ -8,9 +8,15 @@
         </div>
 
         <!-- Edit Icon -->
-        <div class="absolute right-0 top-0 mr-2 mt-2 z-5">
+        <div class="absolute right-0 top-0 mr-2 mt-2 z-5 flex flex-column gap-2">
+            <!-- Edit Button -->
             <button pButton icon="pi pi-pencil" [outlined]="true" severity="secondary" [rounded]="true"
-                class="edit-icon-btn" type="button" (click)="onEditClicked()" tabindex="0" aria-label="Edit product">
+                class="action-btn" type="button" (click)="onEditClicked()" tabindex="0" aria-label="Edit product">
+            </button>
+
+            <!-- Preview Button -->
+            <button pButton icon="pi pi-eye" [outlined]="true" severity="info" [rounded]="true" class="action-btn"
+                type="button" (click)="onPreviewClicked()" tabindex="0" aria-label="Preview product">
             </button>
         </div>
 
@@ -25,19 +31,20 @@
         </div>
 
         <!-- Product Image -->
-        <div class="w-full h-full" tabindex="0" (click)="changeImage()">
-            <img [src]="selectedImage || 'assets/images/default-clothing.png'" alt="Product image"
-                class="w-full h-full object-cover border-round-top" />
+        <div tabindex="0" (click)="changeImage()">
+            <img [src]="selectedImage || 'assets/images/default-product.svg'" alt="Product image"
+                class="object-cover border-round-top" />
         </div>
     </div>
 
     <!-- Content Section -->
-    <div class="p-3 flex flex-column gap-2">
+    <div class="p-3 flex flex-column gap-2 details-container ">
         <!-- Product Name -->
-        <div class="font-bold text-lg text-900 line-height-3">{{ product.name }}</div>
+        <div class="font-bold text-lg text-900 line-height-3 text-overflow-ellipsis" pTooltip="{{ product.name }}"
+            tooltipPosition="top">{{ product.name }}</div>
 
         <!-- Product Description -->
-        <div class="text-600 line-height-3">{{ product.description }}</div>
+        <div class="text-600 line-height-3 text-overflow-ellipsis">{{ product.description }}</div>
 
         <!-- Price Section -->
         <div class="flex align-items-center gap-2">

@@ -1,0 +1,20 @@
+<!-- 300x400 portrait ratio -->
+<svg width="300" height="400" viewBox="0 0 300 400" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <rect width="300" height="400" fill="#f8f9fa"/>
+  
+  <!-- Hanger -->
+  <path d="M120 40 Q150 35 180 40" stroke="#6c757d" stroke-width="2" fill="none"/>
+  <circle cx="150" cy="40" r="2" fill="#6c757d"/>
+  
+  <!-- Full-length clothing item -->
+  <path d="M70 90 L70 80 C70 75 75 70 80 70 L90 70 C95 65 105 60 150 60 C195 60 205 65 210 70 L220 70 C225 70 230 75 230 80 L230 90 L250 110 L250 140 L230 135 L230 320 C230 325 225 330 220 330 L80 330 C75 330 70 325 70 320 L70 135 L50 140 L50 110 L70 90 Z" stroke="#6c757d" stroke-width="2" fill="#e9ecef"/>
+  
+  <!-- Clothing details -->
+  <circle cx="150" cy="160" r="4" fill="#adb5bd"/>
+  <line x1="120" y1="200" x2="180" y2="200" stroke="#adb5bd" stroke-width="2"/>
+  <line x1="120" y1="240" x2="180" y2="240" stroke="#adb5bd" stroke-width="2"/>
+  
+  <!-- Text -->
+  <text x="150" y="370" text-anchor="middle" fill="#6c757d" font-family="Arial, sans-serif" font-size="12" font-weight="500">No Image Available</text>
+</svg>
