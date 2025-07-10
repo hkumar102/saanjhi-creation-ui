@@ -53,11 +53,17 @@ export const routes: Routes = [
     },
     {
         path: 'reports',
-        loadComponent: () => import('./pages/rental/rental-reports/rental-reports.component').then(m => m.RentalReportsComponent)
+        loadComponent: () => import('./pages/rental/rental-reports/rental-reports.component').then(m => m.RentalReportsComponent),
+        canActivate: [AuthGuard]
     },
     {
         path: '',
         pathMatch: 'full',
-        redirectTo: '/products'
+        redirectTo: '/dashboard'
+    },
+    {
+        path: 'dashboard',
+        loadChildren: () => import('./pages/dashboard/dashboard.routes').then(r => r.dashboardRoutes),
+        canActivate: [AuthGuard]
     }
 ];

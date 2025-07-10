@@ -12,12 +12,12 @@ export interface CurrencySettings {
 })
 export class CurrencyConfigService {
   private localeId = inject(LOCALE_ID);
-  
+
   private defaultSettings: CurrencySettings = {
     currencyCode: 'INR',
     display: 'symbol',
     digitsInfo: '1.0-0', // 1 minimum digit, 0 decimal places
-    locale: this.localeId || 'en-IN'
+    locale: 'en-IN'
   };
 
   private currencyMappings: Record<string, CurrencySettings> = {
@@ -47,7 +47,7 @@ export class CurrencyConfigService {
 
   formatCurrency(value: number, customSettings?: Partial<CurrencySettings>): string {
     const settings = { ...this.getCurrencySettings(), ...customSettings };
-    
+
     // This would be used in a custom pipe or service method
     return new Intl.NumberFormat(settings.locale, {
       style: 'currency',

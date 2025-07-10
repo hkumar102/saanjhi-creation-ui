@@ -33,7 +33,6 @@ import { Card } from "primeng/card";
     templateUrl: './rental-list.component.html',
     changeDetection: ChangeDetectionStrategy.OnPush,
     standalone: true,
-    providers: [CurrencyPipe],
     imports: [
         FormsModule,
         UiFormFieldComponent,

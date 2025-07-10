@@ -1,13 +1,11 @@
 import { ChangeDetectionStrategy, Component, inject, OnInit, signal } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
-import { CommonModule, CurrencyPipe } from '@angular/common';
+import { CommonModule } from '@angular/common';
 import {
     UiButtonComponent,
-    UiCardComponent,
     UiDropdownComponent,
     UiFormFieldComponent,
     UiInputComponent,
-    UiMultiselectComponent,
     ProductCardComponent,
     CategorySelectComponent
 } from '@saanjhi-creation-ui/shared-ui';
@@ -16,16 +14,13 @@ import {
     CategoryServiceClient,
     ProductDto,
     ProductFilter,
-    ProductServiceClient,
-    GetAllCategoriesQuery
-} from '@saanjhi-creation-ui/shared-common';
+    ProductServiceClient} from '@saanjhi-creation-ui/shared-common';
 import { AdminBaseComponent } from '../../../common/components/base/admin-base.component';
 import { Card } from "primeng/card";
 
 @Component({
     selector: 'app-product-list',
     standalone: true,
-    providers: [CurrencyPipe],
     imports: [
         CommonModule,
         ReactiveFormsModule,

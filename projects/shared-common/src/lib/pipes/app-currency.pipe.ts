@@ -1,5 +1,5 @@
-import { Pipe, PipeTransform, inject } from '@angular/core';
-import { CurrencyPipe } from '@angular/common';
+import { Pipe, PipeTransform, inject, LOCALE_ID } from '@angular/core';
+import { formatCurrency } from '@angular/common';
 import { CurrencyConfigService } from '../services/currency-config.service';
 
 @Pipe({
@@ -7,8 +7,8 @@ import { CurrencyConfigService } from '../services/currency-config.service';
   standalone: true
 })
 export class AppCurrencyPipe implements PipeTransform {
-  private currencyPipe = inject(CurrencyPipe);
   private currencyConfig = inject(CurrencyConfigService);
+  private locale = inject(LOCALE_ID);
 
   transform(
     value: number | string | null | undefined,
@@ -21,14 +21,28 @@ export class AppCurrencyPipe implements PipeTransform {
       return null;
     }
 
+    // Convert string to number if needed
+    const numValue = typeof value === 'string' ? parseFloat(value) : value;
+    if (isNaN(numValue)) {
+      return null;
+    }
+
     const settings = this.currencyConfig.getCurrencySettings();
-    
-    return this.currencyPipe.transform(
-      value,
-      currencyCode || settings.currencyCode,
-      display || settings.display,
-      digitsInfo || settings.digitsInfo,
-      locale || settings.locale
-    );
+
+    try {
+      const formatted = formatCurrency(
+        numValue,
+        locale || this.locale || settings.locale || 'en-IN',
+        currencyCode || settings.currencyCode || 'INR',
+        display || settings.display || 'symbol',
+        digitsInfo || settings.digitsInfo || '1.0-0'
+      );
+
+      // ✅ Fix: Replace 'INR' text with ₹ symbol if it appears
+      return formatted.replace(/INR\s?/g, '₹');
+    } catch (error) {
+      console.error('Currency formatting error:', error);
+      return numValue.toString();
+    }
   }
 }

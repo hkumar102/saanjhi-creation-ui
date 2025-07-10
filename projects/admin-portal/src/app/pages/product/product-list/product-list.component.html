@@ -47,15 +47,13 @@
                     </saanjhi-ui-dropdown>
                 </saanjhi-ui-form-field>
             </div>
+        </div>
+        <!-- Action Buttons -->
+        <div class="flex gap-2">
 
-            <!-- Action Buttons -->
-            <div class="col-12 lg:col-2">
-                <div class="flex gap-2">
-                    <saanjhi-ui-button type="button" label="Clear" icon="pi pi-times" severity="secondary"
-                        (click)="onClearFilters()" />
-                    <saanjhi-ui-button type="submit" label="Apply" icon="pi pi-filter" severity="primary" />
-                </div>
-            </div>
+            <saanjhi-ui-button type="submit" label="Apply" severity="warn" icon="pi pi-filter" />
+            <saanjhi-ui-button type="button" label="Clear" icon="pi pi-times" severity="secondary"
+                (click)="onClearFilters()" />
         </div>
     </form>
 </p-card>
@@ -63,15 +61,15 @@
 <!-- Responsive Product Table -->
 <p-card>
 
-<!-- Product Cards -->
-<div class="flex flex-wrap justify-content-start gap-2">
-    <saanjhi-product-card *ngFor="let product of products()" [product]="product" (editClicked)="onEditClicked($event)"
-        (previewClicked)="onPreviewProduct($event)">
-    </saanjhi-product-card>
-</div>
+    <!-- Product Cards -->
+    <div class="flex flex-wrap justify-content-start gap-2">
+        <saanjhi-product-card *ngFor="let product of products()" [product]="product"
+            (editClicked)="onEditClicked($event)" (previewClicked)="onPreviewProduct($event)">
+        </saanjhi-product-card>
+    </div>
 
-<!-- Load More Button -->
-<div class="flex justify-content-center mt-4">
-    <saanjhi-ui-button label="Load More" icon="pi pi-angle-down" (click)="onLoadMore()" severity="secondary"
-        [loading]="loading()" severity="warn" />
-</div>
+    <!-- Load More Button -->
+    <div class="flex justify-content-center mt-4">
+        <saanjhi-ui-button label="Load More" icon="pi pi-angle-down" (click)="onLoadMore()" severity="secondary"
+            [loading]="loading()" severity="warn" />
+    </div>
