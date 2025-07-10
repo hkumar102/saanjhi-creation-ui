@@ -4,49 +4,64 @@ import {
     inject,
     signal,
     ViewChild,
-    WritableSignal
+    WritableSignal,
+    OnInit
 } from '@angular/core';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { RentalServiceClient, RentalDto, PaginatedResult } from '@saanjhi-creation-ui/shared-common';
+import {
+    RentalServiceClient,
+    RentalDto,
+    PaginatedResult,
+    AppCurrencyPipe,
+    GetRentalsQuery
+} from '@saanjhi-creation-ui/shared-common';
 import { AdminBaseComponent } from '../../../common/components/base/admin-base.component';
-import { UiFormFieldComponent, UiInputComponent, UiButtonComponent, UiConfirmDialogComponent } from "@saanjhi-creation-ui/shared-ui";
+import {
+    UiFormFieldComponent,
+    UiButtonComponent,
+    UiConfirmDialogComponent,
+    CustomerSelectComponent,
+    ProductSelectComponent,
+} from "@saanjhi-creation-ui/shared-ui";
 import { CommonModule, CurrencyPipe } from '@angular/common';
 import { TableLazyLoadEvent, TableModule } from 'primeng/table';
 import { DatePickerModule } from "primeng/datepicker";
-import { AppCurrencyPipe } from '@saanjhi-creation-ui/shared-common';
+import { Card } from "primeng/card";
 
 @Component({
     selector: 'app-rental-list',
     templateUrl: './rental-list.component.html',
     changeDetection: ChangeDetectionStrategy.OnPush,
     standalone: true,
-    providers: [CurrencyPipe], // Provide custom pipe
+    providers: [CurrencyPipe],
     imports: [
         FormsModule,
         UiFormFieldComponent,
-        UiInputComponent,
         CommonModule,
         ReactiveFormsModule,
         UiButtonComponent,
         TableModule,
         UiConfirmDialogComponent,
         DatePickerModule,
-        AppCurrencyPipe
+        AppCurrencyPipe,
+        CustomerSelectComponent,
+        ProductSelectComponent,
+        Card
     ],
 })
-export class RentalListComponent extends AdminBaseComponent {
+export class RentalListComponent extends AdminBaseComponent implements OnInit {
     private rentalClient = inject(RentalServiceClient);
     private fb = inject(FormBuilder);
 
     @ViewChild('confirmDialog') confirmDialog!: UiConfirmDialogComponent;
 
     filtersForm: FormGroup = this.fb.group({
-        customerId: [null],
-        productId: [null],
-        fromDate: [null],
-        toDate: [null]
+        customerIds: [null],
+        productIds: [null],
+        dateRange: [null as Date[] | null]
     });
 
+    // Data signals
     rentals: WritableSignal<RentalDto[]> = signal([]);
     totalRecords = signal(0);
     loading = signal(false);
@@ -55,6 +70,10 @@ export class RentalListComponent extends AdminBaseComponent {
     pageSize = 10;
     sortField = 'startDate';
     sortOrder: 1 | -1 = -1;
+
+    async ngOnInit() {
+        await this.loadRentals();
+    }
 
     async loadRentals(event?: TableLazyLoadEvent) {
         this.loading.set(true);
@@ -69,16 +88,30 @@ export class RentalListComponent extends AdminBaseComponent {
         const filters = this.filtersForm.value;
 
         try {
-            const result: PaginatedResult<RentalDto> = await this.rentalClient.getRentals({
+            const formValue = this.filtersForm.value;
+            // ✅ Extract date range
+            let fromDate: string | undefined;
+            let toDate: string | undefined;
+
+            if (formValue.dateRange && Array.isArray(formValue.dateRange)) {
+                const [start, end] = formValue.dateRange;
+                fromDate = start.toISOString() || undefined;
+                toDate = end.toISOString() || undefined;
+            }
+
+            const filter: GetRentalsQuery = {
                 page: this.page,
                 pageSize: this.pageSize,
                 sortBy: this.sortField,
                 descending: this.sortOrder === -1,
-                customerId: filters.customerId ?? undefined,
-                productId: filters.productId ?? undefined,
-                fromDate: filters.fromDate ?? undefined,
-                toDate: filters.toDate ?? undefined,
-            })
+                fromDate,
+                toDate,
+                customerIds: formValue.customerIds?.length ? formValue.customerIds : undefined,
+                productIds: formValue.productIds?.length ? formValue.productIds : undefined
+            };
+
+            const result: PaginatedResult<RentalDto> = await this.rentalClient.getRentals(filter);
+
             this.rentals.set(result.items ?? []);
             this.totalRecords.set(result.totalCount ?? 0);
         } finally {
@@ -107,7 +140,6 @@ export class RentalListComponent extends AdminBaseComponent {
                 }
             }
         });
-
     }
 
     onResetFilters() {

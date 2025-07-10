@@ -6,5 +6,5 @@ export * from './pagination.model';
 export * from './role.model';
 export * from './media.model';
 export * from './customer.model';
-export * from './rental.models';
+export * from './rental.model';
 

@@ -2,40 +2,56 @@
     <div class="col-12 md:col-6">
         <!-- Product Dropdown -->
         <saanjhi-ui-form-field label="Product" for="productId">
-            <p-autoComplete inputId="productId" formControlName="product" [suggestions]="filteredProducts"
-                (completeMethod)="searchProducts($event)" field="name" optionLabel="name" [dropdown]="true" [forceSelection]="true"
-                optionValue="id" [virtualScroll]="true" [lazy]="true" [minLength]="1" [showClear]="true" />
+            <saanjhi-ui-product-select 
+                inputId="productId" 
+                formControlName="productId" 
+                [multiple]="false"
+                placeholder="Select product..."
+                [showClear]="true"
+                [filter]="true"
+                [pageSize]="25"
+                (productSelected)="onProductChange($event)">
+            </saanjhi-ui-product-select>
         </saanjhi-ui-form-field>
     </div>
 
     <div class="col-12 md:col-6">
-        <saanjhi-ui-form-field label="Customer ID" for="customerId">
-            <!-- Customer Dropdown -->
-            <p-autoComplete inputId="customerId" formControlName="customer" [suggestions]="filteredCustomers"
-                (completeMethod)="searchCustomers($event)" field="name" optionLabel="name" [dropdown]="true" [forceSelection]="true"
-                optionValue="id" [virtualScroll]="true" [lazy]="true" [minLength]="1" [showClear]="true"
-                (onSelect)="onCustomerChange($event.value)" />
+        <!-- Customer Dropdown -->
+        <saanjhi-ui-form-field label="Customer" for="customerId">
+            <saanjhi-ui-customer-select 
+                inputId="customerId" 
+                formControlName="customerId" 
+                [multiple]="false"
+                placeholder="Select customer..."
+                [showClear]="true"
+                [filter]="true"
+                [pageSize]="25"
+                (customerSelected)="onCustomerChange($event)">
+            </saanjhi-ui-customer-select>
         </saanjhi-ui-form-field>
     </div>
 
     <div class="col-12 md:col-6">
-
         <saanjhi-ui-form-field label="Customer Address" for="shippingAddressId">
-            <!-- Customer Dropdown -->
-            <saanjhi-ui-dropdown inputId="shippingAddressId" formControlName="shippingAddressId"
-                [options]="shippingAddresses" optionLabel="line1" optionValue="id" placeholder="Select Address" />
+            <saanjhi-ui-dropdown 
+                inputId="shippingAddressId" 
+                formControlName="shippingAddressId"
+                [options]="shippingAddresses" 
+                optionLabel="line1" 
+                optionValue="id" 
+                placeholder="Select Address" />
         </saanjhi-ui-form-field>
     </div>
 
     <div class="col-12 md:col-6">
         <saanjhi-ui-form-field label="Start Date" for="startDate">
-            <p-datepicker formControlName="startDate" inputId="startDate" dateFormat="yy-mm-dd" />
+            <p-datePicker formControlName="startDate" inputId="startDate" dateFormat="yy-mm-dd" />
         </saanjhi-ui-form-field>
     </div>
 
     <div class="col-12 md:col-6">
         <saanjhi-ui-form-field label="End Date" for="endDate">
-            <p-datepicker formControlName="endDate" inputId="endDate" dateFormat="yy-mm-dd" />
+            <p-datePicker formControlName="endDate" inputId="endDate" dateFormat="yy-mm-dd" />
         </saanjhi-ui-form-field>
     </div>
 
@@ -50,13 +66,6 @@
             <saanjhi-ui-input formControlName="securityDeposit" inputId="securityDeposit" type="number" />
         </saanjhi-ui-form-field>
     </div>
-
-    <!-- <div class="col-12 md:col-6"
-        *ngFor="let field of ['height', 'chest', 'waist', 'hip', 'shoulder', 'sleeveLength', 'inseam']">
-        <saanjhi-ui-form-field [label]="field" [for]="field">
-            <saanjhi-ui-input [formControlName]="field" [inputId]="field" />
-        </saanjhi-ui-form-field>
-    </div> -->
 
     <div class="col-12">
         <saanjhi-ui-form-field label="Notes" for="notes">

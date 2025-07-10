@@ -1,5 +1,12 @@
 import { ChangeDetectionStrategy, Component, inject, OnInit, ViewChild } from '@angular/core';
-import { AppMessages, CustomerServiceClient, MessageFormatterService, ToastService } from '@saanjhi-creation-ui/shared-common';
+import {
+    AppMessages,
+    CustomerServiceClient,
+    MessageFormatterService,
+    ToastService,
+    PaginatedResult,
+    GetCustomersQuery
+} from '@saanjhi-creation-ui/shared-common';
 import { CustomerDto } from '@saanjhi-creation-ui/shared-common';
 import { NavigationService } from '../../../services/navigation.service';
 import { TableLazyLoadEvent, TableModule } from 'primeng/table';
@@ -15,7 +22,8 @@ import { AdminBaseComponent } from '../../../common/components/base/admin-base.c
     templateUrl: './customer-list.component.html',
     styleUrls: ['./customer-list.component.scss'],
     changeDetection: ChangeDetectionStrategy.OnPush,
-    imports: [TableModule,
+    imports: [
+        TableModule,
         UiButtonComponent,
         UiInputComponent,
         CommonModule,
@@ -32,9 +40,13 @@ export class CustomerListComponent extends AdminBaseComponent implements OnInit 
 
     @ViewChild('confirmDialog') confirmDialog!: UiConfirmDialogComponent;
 
+    // Access to customer-specific messages
+    protected readonly CustomerMessages = this.ConfirmationMessages;
+
     form: FormGroup = this.fb.group({
         search: ['']
     });
+
     customers: CustomerDto[] = [];
     loading = false;
     totalRecords = 0;
@@ -42,7 +54,6 @@ export class CustomerListComponent extends AdminBaseComponent implements OnInit 
     pageSize = 10;
     sortField = 'name';
     sortOrder = 1; // 1 = asc, -1 = desc
-
 
     ngOnInit(): void {
         this.loadCustomers();
@@ -54,24 +65,47 @@ export class CustomerListComponent extends AdminBaseComponent implements OnInit 
         }
 
         const search = this.form.get('search')?.value;
-        const query = {
-            name: search,
-            email: search,
-            phoneNumber: search,
+
+        // Build query object with proper typing
+        const query: GetCustomersQuery = {
             page: this.page,
             pageSize: this.pageSize,
             sortBy: this.sortField,
             sortDesc: this.sortOrder === -1
         };
 
+        // Only add search filters if search term exists
+        if (search && search.trim()) {
+            const searchTerm = search.trim();
+            // Check if search term looks like an email
+            if (searchTerm.includes('@')) {
+                query.email = searchTerm;
+            }
+            // Check if search term looks like a phone number
+            else if (/^\d+$/.test(searchTerm)) {
+                query.phoneNumber = searchTerm;
+            }
+            // Otherwise search by name
+            else {
+                query.name = searchTerm;
+            }
+        }
+
         this.loading = true;
         this.customerService.getCustomers(query)
-            .then(data => {
-                this.customers = data;
-                this.totalRecords = data.length < this.pageSize ? ((this.page - 1) * this.pageSize) + data.length : this.page * this.pageSize + 1;
+            .then((result: PaginatedResult<CustomerDto>) => {
+                this.customers = result.items || [];
+                this.totalRecords = result.totalCount || 0;
                 this.cdr.markForCheck();
             })
-            .finally(() => this.loading = false);
+            .catch(error => {
+                this.customers = [];
+                this.totalRecords = 0;
+                this.cdr.markForCheck();
+            })
+            .finally(() => {
+                this.loading = false;
+            });
     }
 
     clearFilters(): void {
@@ -101,7 +135,7 @@ export class CustomerListComponent extends AdminBaseComponent implements OnInit 
         this.router.goToCustomerEdit(id);
     }
 
-    onDelete(customer: CustomerDto) {
+    onDelete(customer: CustomerDto): void {
         this.confirmDialog.open({
             message: this.formatter.format(this.ConfirmationMessages.deleteConfirmation, customer.name),
             accept: async () => {
@@ -109,10 +143,23 @@ export class CustomerListComponent extends AdminBaseComponent implements OnInit 
                     await this.customerService.deleteCustomer(customer.id);
                     this.toast.success(this.formatter.format(this.ConfirmationMessages.deleteSuccess, customer.name));
                     await this.loadCustomers();
-                } catch {
+                } catch (error) {
                     this.toast.error(this.formatter.format(this.ConfirmationMessages.deleteFailed, customer.name));
                 }
             }
         });
+    }
+
+    // Helper method to get customer display name
+    getCustomerDisplayName(customer: CustomerDto): string {
+        return customer.name || customer.email || customer.phoneNumber || 'Unknown Customer';
+    }
+
+    // Helper method to get customer contact info
+    getCustomerContactInfo(customer: CustomerDto): string {
+        const parts = [];
+        if (customer.email) parts.push(customer.email);
+        if (customer.phoneNumber) parts.push(customer.phoneNumber);
+        return parts.join(' • ');
     }
 }

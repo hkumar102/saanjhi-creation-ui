@@ -34,6 +34,17 @@ export const AppMessages = {
         email: 'Please enter a valid email address.',
         pattern: 'The format of {0} is invalid.'
       },
+    },
+    reports: {
+      dateRangeRequired: 'Please select valid date range',
+      loadReportError: 'Failed to load report data',
+      noDataToExport: 'No data available to export',
+      exportSuccess: 'Report exported successfully',
+      exportError: 'Failed to export report',
+      startDateAfterEndDate: 'Start date cannot be after end date',
+      generatingReport: 'Generating report...',
+      selectDateRange: 'Select a date range to generate report',
+      exportComingSoon: 'Export functionality coming soon'
     }
   }
 };

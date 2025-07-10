@@ -9,6 +9,13 @@ import { AuthService } from '@saanjhi-creation-ui/shared-common';
 registerLocaleData(localeEn);
 registerLocaleData(localeEnIN);
 
+// ✅ Add ResizeObserver error suppression
+window.addEventListener('error', e => {
+  if (e.message === 'ResizeObserver loop completed with undelivered notifications.') {
+    e.stopImmediatePropagation();
+  }
+});
+
 bootstrapApplication(App, appConfig).then(appRef => {
   const injector = appRef.injector;
   const authService = injector.get(AuthService);

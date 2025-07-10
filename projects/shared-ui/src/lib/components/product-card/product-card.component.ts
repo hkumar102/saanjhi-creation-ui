@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { ProductDto } from '@saanjhi-creation-ui/shared-common';
+import { AppCurrencyPipe, ProductDto } from '@saanjhi-creation-ui/shared-common';
 import { ButtonModule } from 'primeng/button';
 import { CarouselModule } from 'primeng/carousel'
 import { TooltipModule } from 'primeng/tooltip';
@@ -12,7 +12,7 @@ import { TooltipModule } from 'primeng/tooltip';
   templateUrl: './product-card.component.html',
   styleUrls: ['./product-card.component.scss'],
   standalone: true,
-  imports: [CarouselModule, FormsModule, CommonModule, ButtonModule, TooltipModule]
+  imports: [CarouselModule, FormsModule, CommonModule, ButtonModule, TooltipModule, AppCurrencyPipe]
 })
 export class ProductCardComponent implements OnInit {
   @Input() product!: ProductDto;

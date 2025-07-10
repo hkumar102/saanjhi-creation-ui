@@ -1,63 +1,77 @@
 <!-- Header with Add Button -->
 <div class="flex justify-content-between mb-4">
     <h2 class="text-xl font-bold">Product List</h2>
-    <saanjhi-ui-button label="Add Product" icon="pi pi-plus" (click)="onAddProduct()" />
+    <saanjhi-ui-button label="Add Product" icon="pi pi-plus" (click)="onAddProduct()" severity="info" />
 </div>
 
-<saanjhi-ui-card>
-    <form [formGroup]="form" (ngSubmit)="onFilterChange()" class="flex flex-wrap gap-2">
-        <saanjhi-ui-form-field label="Search" for="search">
-            <saanjhi-ui-input inputId="search" formControlName="search" />
-        </saanjhi-ui-form-field>
+<p-card styleClass="mb-4">
+    <form [formGroup]="form" (ngSubmit)="onFilterChange()" class="flex flex-column gap-3">
+        <div class="grid">
+            <!-- Search Field -->
+            <div class="col-12 md:col-6 lg:col-3">
+                <saanjhi-ui-form-field label="Search" for="search">
+                    <saanjhi-ui-input inputId="search" formControlName="search" placeholder="Search products..." />
+                </saanjhi-ui-form-field>
+            </div>
 
-        <saanjhi-ui-form-field label="Category" for="categoryId">
-            <saanjhi-ui-multiselect valueKey="id" inputId="categoryId" formControlName="categoryId"
-                [options]="categories" labelKey="name">
-            </saanjhi-ui-multiselect>
-        </saanjhi-ui-form-field>
+            <!-- Category Multi-Select -->
+            <div class="col-12 md:col-6 lg:col-3">
+                <saanjhi-ui-form-field label="Category" for="categoryIds">
+                    <saanjhi-ui-category-select formControlName="categoryIds" placeholder="Select categories..."
+                        [maxSelectedLabels]="2" selectedItemsLabel="{0} categories selected" [pageSize]="25"
+                        [multiple]="true">
+                    </saanjhi-ui-category-select>
+                </saanjhi-ui-form-field>
+            </div>
 
-        <!-- <saanjhi-ui-form-field label="Price Range">
-        <div class="flex gap-2">
-            <saanjhi-ui-input type="number" formControlName="minPrice" />
-            <span>to</span>
-            <saanjhi-ui-input type="number" formControlName="maxPrice" />
-        </div>
-    </saanjhi-ui-form-field> -->
+            <!-- Rentable Status -->
+            <div class="col-12 md:col-6 lg:col-2">
+                <saanjhi-ui-form-field label="Rentable" for="isRentable">
+                    <saanjhi-ui-dropdown inputId="isRentable" formControlName="isRentable" [options]="[
+                        { label: 'All', value: null },
+                        { label: 'Rentable', value: true },
+                        { label: 'Not Rentable', value: false }
+                    ]" placeholder="Select Status" optionLabel="label" optionValue="value">
+                    </saanjhi-ui-dropdown>
+                </saanjhi-ui-form-field>
+            </div>
 
-        <saanjhi-ui-form-field label="Rentable" for="isRentable">
-            <saanjhi-ui-dropdown inputId="isRentable" formControlName="isRentable" [options]="[
-            { label: 'All', value: null },
-            { label: 'Rentable', value: true },
-            { label: 'Not Rentable', value: false }
-        ]" placeholder="Select Rentable Status" optionValue="value"></saanjhi-ui-dropdown>
-        </saanjhi-ui-form-field>
+            <!-- Active Status -->
+            <div class="col-12 md:col-6 lg:col-2">
+                <saanjhi-ui-form-field label="Availability" for="isActive">
+                    <saanjhi-ui-dropdown inputId="isActive" formControlName="isActive" [options]="[
+                        { label: 'All', value: null },
+                        { label: 'Active', value: true },
+                        { label: 'Inactive', value: false }
+                    ]" placeholder="Select Status" optionLabel="label" optionValue="value">
+                    </saanjhi-ui-dropdown>
+                </saanjhi-ui-form-field>
+            </div>
 
-        <saanjhi-ui-form-field label="Availability" for="isActive">
-            <saanjhi-ui-dropdown inputId="isActive" formControlName="isActive" [options]="[
-      { label: 'All', value: null },
-      { label: 'Active', value: true },
-      { label: 'Inactive', value: false }
-    ]" placeholder="Select Status" optionValue="value"></saanjhi-ui-dropdown>
-        </saanjhi-ui-form-field>
-
-        <div
-            class="flex lg:flex-1 align-items-end gap-2 w-full md:w-auto justify-content-between md:justify-content-end">
-            <saanjhi-ui-button type="button" label="Clear" icon="pi pi-times" severity="secondary"
-                (click)="onClearFilters()" />
-
-            <saanjhi-ui-button type="submit" label="Apply" icon="pi pi-save" />
+            <!-- Action Buttons -->
+            <div class="col-12 lg:col-2">
+                <div class="flex gap-2">
+                    <saanjhi-ui-button type="button" label="Clear" icon="pi pi-times" severity="secondary"
+                        (click)="onClearFilters()" />
+                    <saanjhi-ui-button type="submit" label="Apply" icon="pi pi-filter" severity="primary" />
+                </div>
+            </div>
         </div>
     </form>
-</saanjhi-ui-card>
-<hr class="my-4" />
+</p-card>
+
+<!-- Responsive Product Table -->
+<p-card>
 
 <!-- Product Cards -->
 <div class="flex flex-wrap justify-content-start gap-2">
-    <saanjhi-product-card *ngFor="let product of products" [product]="product" (editClicked)="onEditClicked($event)"
-        (previewClicked)="onPreviewProduct($event)"></saanjhi-product-card>
-
+    <saanjhi-product-card *ngFor="let product of products()" [product]="product" (editClicked)="onEditClicked($event)"
+        (previewClicked)="onPreviewProduct($event)">
+    </saanjhi-product-card>
 </div>
+
 <!-- Load More Button -->
 <div class="flex justify-content-center mt-4">
-    <saanjhi-ui-button label="Load More" icon="pi pi-angle-down" (onClick)="onLoadMore()" />
+    <saanjhi-ui-button label="Load More" icon="pi pi-angle-down" (click)="onLoadMore()" severity="secondary"
+        [loading]="loading()" severity="warn" />
 </div>

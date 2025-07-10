@@ -8,7 +8,7 @@ import {
 } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { RentalServiceClient, RentalDto } from '@saanjhi-creation-ui/shared-common';
+import { RentalServiceClient, RentalDto, AppMessages } from '@saanjhi-creation-ui/shared-common';
 import { AdminBaseComponent } from '../../../common/components/base/admin-base.component';
 import {
     UiFormFieldComponent,
@@ -50,6 +50,8 @@ export class RentalReportsComponent extends AdminBaseComponent implements OnInit
     private rentalClient = inject(RentalServiceClient);
     private fb = inject(FormBuilder);
 
+    protected readonly ReportMessages = this.Messages.reports;
+
     // Form for date range selection
     reportForm: FormGroup = this.fb.group({
         startDate: [this.getDefaultStartDate(), Validators.required],
@@ -86,7 +88,7 @@ export class RentalReportsComponent extends AdminBaseComponent implements OnInit
 
     async loadReportData() {
         if (this.reportForm.invalid) {
-            this.toast.error('Please select valid date range');
+            this.toast.error(this.ReportMessages.dateRangeRequired);
             return;
         }
 
@@ -104,8 +106,7 @@ export class RentalReportsComponent extends AdminBaseComponent implements OnInit
             this.reportData.set(reportData);
 
         } catch (error) {
-            console.error('Error loading report data:', error);
-            this.toast.error('Failed to load report data');
+            this.toast.error(this.ReportMessages.loadReportError);
         } finally {
             this.loading.set(false);
         }
@@ -140,7 +141,6 @@ export class RentalReportsComponent extends AdminBaseComponent implements OnInit
 
             return allRentals;
         } catch (error) {
-            console.error('Error fetching rentals:', error);
             return [];
         }
     }
@@ -188,11 +188,11 @@ export class RentalReportsComponent extends AdminBaseComponent implements OnInit
 
         // Process product analytics
         const productMap = new Map<string, { totalRental: number; rentalCount: number }>();
-        
+
         rentals.forEach(rental => {
             const productName = rental.product?.name || 'Unknown Product';
             const current = productMap.get(productName) || { totalRental: 0, rentalCount: 0 };
-            
+
             productMap.set(productName, {
                 totalRental: current.totalRental + rental.rentalPrice,
                 rentalCount: current.rentalCount + 1
@@ -306,10 +306,10 @@ export class RentalReportsComponent extends AdminBaseComponent implements OnInit
         if (!data || !data.productAnalytics.length) return null;
 
         const products = data.productAnalytics;
-        const values = type === 'sum' 
+        const values = type === 'sum'
             ? products.map(p => p.totalRental)
             : products.map(p => p.rentalCount);
-        
+
         const label = type === 'sum' ? 'Total Rental Amount' : 'Rental Count';
         const color = type === 'sum' ? '#FF6B6B' : '#4ECDC4';
 
@@ -360,16 +360,16 @@ export class RentalReportsComponent extends AdminBaseComponent implements OnInit
     getPerformanceScore(product: { productName: string; totalRental: number; rentalCount: number }): number {
         const data = this.reportData();
         if (!data) return 0;
-        
+
         const maxRevenue = Math.max(...data.productAnalytics.map(p => p.totalRental));
         const maxCount = Math.max(...data.productAnalytics.map(p => p.rentalCount));
-        
+
         if (maxRevenue === 0 && maxCount === 0) return 0;
-        
+
         // Weighted score: 70% revenue, 30% frequency
         const revenueScore = maxRevenue > 0 ? (product.totalRental / maxRevenue) * 70 : 0;
         const countScore = maxCount > 0 ? (product.rentalCount / maxCount) * 30 : 0;
-        
+
         return Math.round(revenueScore + countScore);
     }
 
@@ -378,41 +378,40 @@ export class RentalReportsComponent extends AdminBaseComponent implements OnInit
     exportReport() {
         const data = this.reportData();
         if (!data) {
-            this.toast.warn('No data available to export');
+            this.toast.warn(this.ReportMessages.noDataToExport);
             return;
         }
 
         try {
             // Create CSV content
             const csvContent = this.generateCSVReport(data);
-            
+
             // Create and download file
             const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
             const link = document.createElement('a');
             const url = URL.createObjectURL(blob);
-            
+
             link.setAttribute('href', url);
             link.setAttribute('download', `rental-report-${this.formatDateForFile(new Date())}.csv`);
             link.style.visibility = 'hidden';
-            
+
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
-            
-            this.toast.success('Report exported successfully');
+
+            this.toast.success(this.ReportMessages.exportSuccess);
         } catch (error) {
-            console.error('Export error:', error);
-            this.toast.error('Failed to export report');
+            this.toast.error(this.ReportMessages.exportError);
         }
     }
 
     private generateCSVReport(data: ReportData): string {
         const { startDate, endDate } = this.reportForm.value;
-        
+
         let csv = `Rental Report\n`;
         csv += `Date Range: ${startDate?.toLocaleDateString()} - ${endDate?.toLocaleDateString()}\n`;
         csv += `Generated: ${new Date().toLocaleString()}\n\n`;
-        
+
         // Summary section
         csv += `SUMMARY\n`;
         csv += `Total Rental Earnings,${data.totalRentalEarnings}\n`;
@@ -420,7 +419,7 @@ export class RentalReportsComponent extends AdminBaseComponent implements OnInit
         csv += `Total Rentals,${data.totalRentals}\n`;
         csv += `Average Rental Price,${data.averageRentalPrice}\n`;
         csv += `Average Security Deposit,${data.averageSecurityDeposit}\n\n`;
-        
+
         // Daily earnings section
         csv += `DAILY EARNINGS\n`;
         csv += `Date,Rental Earnings,Security Deposits\n`;
@@ -428,7 +427,7 @@ export class RentalReportsComponent extends AdminBaseComponent implements OnInit
             const securityAmount = data.dailySecurityEarnings[index]?.amount || 0;
             csv += `${item.date},${item.amount},${securityAmount}\n`;
         });
-        
+
         // Product analytics section
         if (data.productAnalytics?.length) {
             csv += `\nPRODUCT ANALYTICS\n`;
@@ -437,7 +436,7 @@ export class RentalReportsComponent extends AdminBaseComponent implements OnInit
                 csv += `"${product.productName}",${product.totalRental},${product.rentalCount},${(product.totalRental / product.rentalCount).toFixed(2)}\n`;
             });
         }
-        
+
         return csv;
     }
 
@@ -450,13 +449,13 @@ export class RentalReportsComponent extends AdminBaseComponent implements OnInit
         if (form.valid) {
             const startDate = form.get('startDate')?.value;
             const endDate = form.get('endDate')?.value;
-            
+
             // Validate date range
             if (startDate && endDate && startDate > endDate) {
                 this.toast.warn('Start date cannot be after end date');
                 return;
             }
-            
+
             // Auto-generate report if both dates are selected
             if (startDate && endDate) {
                 this.loadReportData();
@@ -469,10 +468,10 @@ export class RentalReportsComponent extends AdminBaseComponent implements OnInit
             startDate: this.getDefaultStartDate(),
             endDate: this.getDefaultEndDate()
         });
-        
+
         // Clear current report data
         this.reportData.set(null);
-        
+
         // Auto-load with default range
         this.loadReportData();
     }
@@ -482,10 +481,10 @@ export class RentalReportsComponent extends AdminBaseComponent implements OnInit
         if (!data) return null;
 
         return {
-            labels: data.dailyRentalEarnings.map(item => 
-                new Date(item.date).toLocaleDateString('en-IN', { 
-                    month: 'short', 
-                    day: 'numeric' 
+            labels: data.dailyRentalEarnings.map(item =>
+                new Date(item.date).toLocaleDateString('en-IN', {
+                    month: 'short',
+                    day: 'numeric'
                 })
             ),
             datasets: [
@@ -545,7 +544,7 @@ export class RentalReportsComponent extends AdminBaseComponent implements OnInit
                     },
                     ticks: {
                         callback: (value: any) => {
-                            return typeof value === 'number' && value > 999 
+                            return typeof value === 'number' && value > 999
                                 ? '₹' + value.toLocaleString()
                                 : value;
                         }

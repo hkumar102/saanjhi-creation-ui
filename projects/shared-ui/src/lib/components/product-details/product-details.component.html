@@ -81,17 +81,17 @@
                     <div class="rental-pricing bg-primary-50 p-3 border-round">
                         <div class="flex justify-content-between align-items-center mb-2">
                             <span>Rental ({{ rentalDays }} days)</span>
-                            <span class="font-bold">₹{{ totalRentalPrice | number:'1.0-0' }}</span>
+                            <span class="font-bold">{{ totalRentalPrice | appCurrency }}</span>
                         </div>
                         <div class="flex justify-content-between align-items-center" *ngIf="product.securityDeposit">
                             <span>Security Deposit</span>
-                            <span class="font-bold">₹{{ product.securityDeposit | number:'1.0-0' }}</span>
+                            <span class="font-bold">{{ product.securityDeposit | appCurrency }}</span>
                         </div>
                         <hr class="my-2">
                         <div class="flex justify-content-between align-items-center">
                             <span class="font-bold">Total</span>
                             <span class="font-bold text-primary text-xl">
-                                ₹{{ (totalRentalPrice + (product.securityDeposit || 0)) | number:'1.0-0' }}
+                                {{ (totalRentalPrice + (product.securityDeposit || 0)) | appCurrency }}
                             </span>
                         </div>
                     </div>
@@ -144,12 +144,12 @@
                     <div class="info-grid">
                         <div class="info-row flex justify-content-between py-2 border-bottom-1 border-200">
                             <span class="text-600">Daily Rate</span>
-                            <span class="text-900 font-semibold">₹{{ product.rentalPrice | number:'1.0-0' }}</span>
+                            <span class="text-900 font-semibold">{{ product.rentalPrice | appCurrency }}</span>
                         </div>
                         <div class="info-row flex justify-content-between py-2 border-bottom-1 border-200"
                             *ngIf="product.securityDeposit">
                             <span class="text-600">Security Deposit</span>
-                            <span class="text-900 font-semibold">₹{{ product.securityDeposit | number:'1.0-0' }}</span>
+                            <span class="text-900 font-semibold">{{ product.securityDeposit | appCurrency }}</span>
                         </div>
                         <div class="info-row flex justify-content-between py-2">
                             <span class="text-600">Max Rental Period</span>

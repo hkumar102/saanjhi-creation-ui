@@ -2,7 +2,7 @@ import { Component, inject, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { AdminBaseComponent } from '../../../common/components/base/admin-base.component';
-import { UiFormFieldComponent, UiInputComponent, UiButtonComponent, UiDropdownComponent } from "@saanjhi-creation-ui/shared-ui";
+import { UiFormFieldComponent, UiInputComponent, UiButtonComponent, UiDropdownComponent, CustomerSelectComponent, ProductSelectComponent } from "@saanjhi-creation-ui/shared-ui";
 import { CommonModule } from '@angular/common';
 import { AddressDto, CreateRentalCommand, CustomerDto, CustomerServiceClient, ProductDto, ProductServiceClient, RentalServiceClient, UpdateRentalCommand } from '@saanjhi-creation-ui/shared-common';
 import { DatePickerModule } from 'primeng/datepicker';
@@ -20,7 +20,9 @@ import { AutoCompleteModule } from 'primeng/autocomplete';
         UiButtonComponent,
         DatePickerModule,
         AutoCompleteModule,
-        UiDropdownComponent
+        UiDropdownComponent,
+        ProductSelectComponent,
+        CustomerSelectComponent,
     ],
 })
 export class RentalFormComponent extends AdminBaseComponent implements OnInit {
@@ -44,8 +46,8 @@ export class RentalFormComponent extends AdminBaseComponent implements OnInit {
 
         this.form = this.fb.group({
             id: [null],
-            product: [null, Validators.required],
-            customer: [null, Validators.required],
+            productId: [null, Validators.required],
+            customerId: [null, Validators.required],
             shippingAddressId: [null, Validators.required],
             startDate: [null, Validators.required],
             endDate: [null, Validators.required],
@@ -96,16 +98,17 @@ export class RentalFormComponent extends AdminBaseComponent implements OnInit {
         }
 
         const value = this.form.value;
+
         if (this.isEditMode) {
             const command: UpdateRentalCommand = value as UpdateRentalCommand;
-            command.productId = value.product.id;
-            command.customerId = value.customer.id;
+            command.startDate = value.startDate ? value.startDate.toISOString() : null;
+            command.endDate = value.endDate ? value.endDate.toISOString() : null;
             await this.rentalService.updateRental(value.id!, command);
             this.toast.success('Rental updated successfully');
         } else {
             const command: CreateRentalCommand = value as CreateRentalCommand;
-            command.productId = value.product.id;
-            command.customerId = value.customer.id;
+            command.startDate = value.startDate ? value.startDate.toISOString() : null;
+            command.endDate = value.endDate ? value.endDate.toISOString() : null;
             await this.rentalService.createRental(command);
             this.toast.success('Rental created successfully');
         }
@@ -126,11 +129,22 @@ export class RentalFormComponent extends AdminBaseComponent implements OnInit {
     searchCustomers(event: { query: string }) {
         const query = event.query.toLowerCase();
         this.customerService.getCustomers({ name: query, pageSize: 10 }).then(response => {
-            this.filteredCustomers = response || [];
+            this.filteredCustomers = response.items || [];
         });
     }
 
-    async onCustomerChange(customer: CustomerDto) {
-        this.shippingAddresses = customer.addresses || [];
+    async onCustomerChange(customer: CustomerDto | CustomerDto[] | null) {
+        if (customer && !Array.isArray(customer)) {
+            this.shippingAddresses = customer.addresses || [];
+        }
+    }
+
+    onProductChange(product: ProductDto | ProductDto[] | null) {
+        if (product && !Array.isArray(product)) {
+            this.form.patchValue({
+                rentalPrice: product.rentalPrice,
+                securityDeposit: product.securityDeposit,
+            });
+        }
     }
 }

@@ -5,7 +5,8 @@ import {
   CreateRentalCommand,
   RentalDto,
   PaginatedResult,
-  UpdateRentalCommand
+  UpdateRentalCommand,
+  GetRentalsQuery
 } from '../models';
 import { APP_CONFIG, AppConfig } from '@saanjhi-creation-ui/shared-common';
 
@@ -13,45 +14,32 @@ import { APP_CONFIG, AppConfig } from '@saanjhi-creation-ui/shared-common';
 export class RentalServiceClient {
   private readonly config = inject(APP_CONFIG) as AppConfig;
   private readonly http = inject(HttpClient);
-  private readonly baseUrl = `${this.config.rentalServiceBaseUrl}/Rental`;
+  private readonly baseUrl = `${this.config.rentalServiceBaseUrl}`;
 
-  getRentals(query?: {
-    customerId?: string;
-    productId?: string;
-    fromDate?: string;
-    toDate?: string;
-    sortBy?: string;
-    descending?: boolean;
-    page?: number;
-    pageSize?: number;
-  }): Promise<PaginatedResult<RentalDto>> {
-    const params = new URLSearchParams();
-    if (query) {
-      Object.entries(query).forEach(([key, value]) => {
-        if (value !== null && value !== undefined) {
-          params.append(key, value.toString());
-        }
-      });
-    }
-
+  /**
+   * Get rentals with search filters (POST method)
+   */
+  getRentals(query?: GetRentalsQuery): Promise<PaginatedResult<RentalDto>> {
+    // Use POST method to send query object in request body
+    const payload = query || {};
     return lastValueFrom(
-      this.http.get<PaginatedResult<RentalDto>>(`${this.baseUrl}?${params.toString()}`)
+      this.http.post<PaginatedResult<RentalDto>>(`${this.baseUrl}/rental/search`, payload)
     );
   }
 
   getRental(id: string): Promise<RentalDto> {
-    return lastValueFrom(this.http.get<RentalDto>(`${this.baseUrl}/${id}`));
+    return lastValueFrom(this.http.get<RentalDto>(`${this.baseUrl}/rental/${id}`));
   }
 
   createRental(payload: CreateRentalCommand): Promise<string> {
-    return lastValueFrom(this.http.post<string>(this.baseUrl, payload));
+    return lastValueFrom(this.http.post<string>(`${this.baseUrl}/rental`, payload));
   }
 
   updateRental(id: string, payload: UpdateRentalCommand): Promise<void> {
-    return lastValueFrom(this.http.put<void>(`${this.baseUrl}/${id}`, payload));
+    return lastValueFrom(this.http.put<void>(`${this.baseUrl}/rental/${id}`, payload));
   }
 
   deleteRental(id: string): Promise<void> {
-    return lastValueFrom(this.http.delete<void>(`${this.baseUrl}/${id}`));
+    return lastValueFrom(this.http.delete<void>(`${this.baseUrl}/rental/${id}`));
   }
 }

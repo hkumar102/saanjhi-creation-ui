@@ -5,7 +5,7 @@ import { GalleriaModule } from 'primeng/galleria';
 import { RatingModule } from 'primeng/rating';
 import { InputNumberModule } from 'primeng/inputnumber';
 import { FormsModule } from '@angular/forms';
-import { ProductDto } from '@saanjhi-creation-ui/shared-common';
+import { AppCurrencyPipe, ProductDto } from '@saanjhi-creation-ui/shared-common';
 
 export interface AddToCartData {
     productId: string;
@@ -23,7 +23,8 @@ export interface AddToCartData {
         GalleriaModule,
         RatingModule,
         InputNumberModule,
-        FormsModule
+        FormsModule,
+        AppCurrencyPipe
     ],
     templateUrl: './product-details.component.html',
     styleUrls: ['./product-details.component.scss']

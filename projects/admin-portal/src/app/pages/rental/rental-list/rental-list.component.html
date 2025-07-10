@@ -1,69 +1,133 @@
 <saanjhi-ui-confirm-dialog #confirmDialog />
-
-<div class="flex flex-column gap-3 mb-4">
-    <form [formGroup]="filtersForm" (ngSubmit)="loadRentals()">
-        <div class="grid gap-3">
-            <div class="col-12 md:col-6 lg:col-3">
-                <saanjhi-ui-form-field label="Customer ID" inputId="customerId">
-                    <saanjhi-ui-input formControlName="customerId" inputId="customerId" />
-                </saanjhi-ui-form-field>
-            </div>
-            <div class="col-12 md:col-6 lg:col-3">
-                <saanjhi-ui-form-field label="Product ID" inputId="productId">
-                    <saanjhi-ui-input formControlName="productId" inputId="productId" />
-                </saanjhi-ui-form-field>
-            </div>
-            <div class="col-12 md:col-6 lg:col-3">
-                <saanjhi-ui-form-field label="From Date" inputId="fromDate">
-                    <p-datePicker formControlName="fromDate" inputId="fromDate" dateFormat="yy-mm-dd" />
-                </saanjhi-ui-form-field>
-            </div>
-            <div class="col-12 md:col-6 lg:col-3">
-                <saanjhi-ui-form-field label="To Date" inputId="toDate">
-                    <p-datePicker formControlName="toDate" inputId="toDate" dateFormat="yy-mm-dd" />
-                </saanjhi-ui-form-field>
-            </div>
-        </div>
-
-        <div class="flex flex-wrap justify-content-between mt-2 gap-2">
-            <saanjhi-ui-button type="submit" label="Search" icon="pi pi-search" />
-            <saanjhi-ui-button type="button" label="Reset" icon="pi pi-refresh" severity="secondary"
-                (click)="onResetFilters()" />
-            <saanjhi-ui-button type="button" label="Add Rental" icon="pi pi-plus" severity="success"
-                (click)="onCreate()" />
-        </div>
-    </form>
+<div class="flex justify-content-between mb-4">
+    <h2 class="text-xl font-bold">Rental List</h2>
+    <saanjhi-ui-button type="button" label="Add Rental" icon="pi pi-plus" severity="info" (click)="onCreate()" />
 </div>
 
-<p-table [value]="rentals()" [lazy]="true" [paginator]="true" [totalRecords]="totalRecords()" [loading]="loading()"
-    [rows]="pageSize" [rowsPerPageOptions]="[10, 20, 50]" (onLazyLoad)="loadRentals($event)" [sortField]="sortField"
-    [sortOrder]="sortOrder" dataKey="id" responsiveLayout="scroll" class="shadow-1">
-    
-    <ng-template pTemplate="header">
-        <tr>
-            <th pSortableColumn="startDate">Start Date <p-sortIcon field="startDate" /></th>
-            <th pSortableColumn="endDate">End Date <p-sortIcon field="endDate" /></th>
-            <th>Customer</th>
-            <th>Product</th>
-            <th>Rent</th>
-            <th>Security</th>
-            <th>Actions</th>
-        </tr>
-    </ng-template>
+<p-card styleClass="mb-4">
+    <form [formGroup]="filtersForm" (ngSubmit)="loadRentals()" class="flex flex-column gap-3">
+        <div class="grid">
+            <!-- Date Range Filter -->
+            <div class="col-12 md:col-6 lg:col-4">
+                <saanjhi-ui-form-field label="Date Range" inputId="dateRange">
+                    <p-datePicker formControlName="dateRange" inputId="dateRange" [selectionMode]="'range'"
+                        dateFormat="yy-mm-dd" [showIcon]="true" [readonlyInput]="true"
+                        placeholder="Select date range..." styleClass="w-full" [showClear]="true" />
+                </saanjhi-ui-form-field>
+            </div>
 
-    <ng-template pTemplate="body" let-rental>
-        <tr>
-            <td>{{ rental.startDate | date: 'shortDate' }}</td>
-            <td>{{ rental.endDate | date: 'shortDate' }}</td>
-            <td>{{ rental.customer?.name }}</td>
-            <td>{{ rental.product?.name }}</td>
-            <!-- Using simplified app currency pipe -->
-            <td>{{ rental.rentalPrice | appCurrency }}</td>
-            <td>{{ rental.securityDeposit | appCurrency }}</td>
-            <td class="flex gap-2">
-                <saanjhi-ui-button icon="pi pi-pencil" size="small" (click)="onEdit(rental)" />
-                <saanjhi-ui-button icon="pi pi-trash" severity="danger" size="small" (click)="onDelete(rental)" />
-            </td>
-        </tr>
-    </ng-template>
-</p-table>
+            <!-- Customer Multi-Select -->
+            <div class="col-12 md:col-6 lg:col-3">
+                <saanjhi-ui-form-field label="Customers" inputId="customerIds">
+                    <saanjhi-ui-customer-select formControlName="customerIds" placeholder="Select customers..."
+                        [maxSelectedLabels]="2" selectedItemsLabel="{0} customers selected" [pageSize]="25"
+                        [multiple]="true">
+                    </saanjhi-ui-customer-select>
+                </saanjhi-ui-form-field>
+            </div>
+
+            <!-- Product Multi-Select -->
+            <div class="col-12 md:col-6 lg:col-3">
+                <saanjhi-ui-form-field label="Products" inputId="productIds">
+                    <saanjhi-ui-product-select formControlName="productIds" placeholder="Select products..."
+                        [maxSelectedLabels]="2" selectedItemsLabel="{0} products selected" [pageSize]="25"
+                        [multiple]="true">
+                    </saanjhi-ui-product-select>
+                </saanjhi-ui-form-field>
+            </div>
+        </div>
+        <!-- Action Buttons -->
+        <div class="flex gap-2">
+            <saanjhi-ui-button type="submit" label="Search" severity="primary" icon="pi pi-search" />
+            <saanjhi-ui-button type="button" label="Reset" icon="pi pi-refresh" severity="secondary"
+                (click)="onResetFilters()" />
+        </div>
+    </form>
+</p-card>
+
+<!-- Responsive Rental Table -->
+<p-card>
+    <p-table [value]="rentals()" [lazy]="true" [paginator]="true" [totalRecords]="totalRecords()" [loading]="loading()"
+        [rows]="pageSize" [rowsPerPageOptions]="[10, 20, 50]" (onLazyLoad)="loadRentals($event)" [sortField]="sortField"
+        [sortOrder]="sortOrder" dataKey="id" responsiveLayout="stack" [breakpoint]="'820px'" class="shadow-1">
+
+        <ng-template pTemplate="header">
+            <tr>
+                <th pSortableColumn="startDate">Start Date <p-sortIcon field="startDate" /></th>
+                <th pSortableColumn="endDate">End Date <p-sortIcon field="endDate" /></th>
+                <th>Customer</th>
+                <th>Product</th>
+                <th pSortableColumn="rentalPrice">Rent <p-sortIcon field="rentalPrice" /></th>
+                <th pSortableColumn="securityDeposit">Security <p-sortIcon field="securityDeposit" /></th>
+                <th style="width: 150px;">Actions</th>
+            </tr>
+        </ng-template>
+
+        <ng-template pTemplate="body" let-rental>
+            <tr>
+                <td data-label="Start Date">
+                    <span class="p-column-title">Start Date</span>
+                    <span>{{ rental.startDate | date: 'shortDate' }}</span>
+                </td>
+                <td data-label="End Date">
+                    <span class="p-column-title">End Date</span>
+                    <span>{{ rental.endDate | date: 'shortDate' }}</span>
+                </td>
+                <td data-label="Customer">
+                    <span class="p-column-title">Customer</span>
+                    <div class="flex flex-column">
+                        <span class="font-semibold">{{ rental.customer?.name }}</span>
+                        <small class="text-600">{{ rental.customer?.email }}</small>
+                    </div>
+                </td>
+                <td data-label="Product">
+                    <span class="p-column-title">Product</span>
+                    <div class="flex flex-column">
+                        <span class="font-semibold">{{ rental.product?.name }}</span>
+                        <small class="text-600">{{ rental.product?.category }}</small>
+                    </div>
+                </td>
+                <td data-label="Rent">
+                    <span class="p-column-title">Rent</span>
+                    <span>{{ rental.rentalPrice | appCurrency }}</span>
+                </td>
+                <td data-label="Security">
+                    <span class="p-column-title">Security</span>
+                    <span>{{ rental.securityDeposit | appCurrency }}</span>
+                </td>
+                <td data-label="Actions">
+                    <span class="p-column-title">Actions</span>
+                    <div class="flex gap-2">
+                        <saanjhi-ui-button icon="pi pi-pencil" size="small" severity="info" pTooltip="Edit Rental"
+                            (click)="onEdit(rental)" />
+                        <saanjhi-ui-button icon="pi pi-trash" size="small" severity="danger" pTooltip="Delete Rental"
+                            (click)="onDelete(rental)" />
+                    </div>
+                </td>
+            </tr>
+        </ng-template>
+
+        <ng-template pTemplate="emptymessage">
+            <tr>
+                <td colspan="7" class="text-center py-4">
+                    <div class="flex flex-column align-items-center gap-3">
+                        <i class="pi pi-calendar text-4xl text-400"></i>
+                        <span class="text-600">No rentals found</span>
+                        <saanjhi-ui-button label="Add First Rental" icon="pi pi-plus" (click)="onCreate()" />
+                    </div>
+                </td>
+            </tr>
+        </ng-template>
+
+        <ng-template pTemplate="loadingbody">
+            <tr>
+                <td colspan="7" class="text-center py-4">
+                    <div class="flex align-items-center justify-content-center gap-2">
+                        <i class="pi pi-spin pi-spinner text-2xl"></i>
+                        <span>Loading rentals...</span>
+                    </div>
+                </td>
+            </tr>
+        </ng-template>
+    </p-table>
+</p-card>

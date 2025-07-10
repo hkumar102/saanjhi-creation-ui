@@ -1,80 +1,131 @@
-import { CommonModule } from '@angular/common';
-import { Component, inject, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, OnInit, signal } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
-import { CategoryDto, CategoryServiceClient, ProductDto, ProductFilter, ProductServiceClient } from '@saanjhi-creation-ui/shared-common';
-import { ProductCardComponent, UiButtonComponent, UiDropdownComponent, UiFormFieldComponent, UiInputComponent, UiMultiselectComponent, UiCardComponent } from '@saanjhi-creation-ui/shared-ui';
+import { CommonModule, CurrencyPipe } from '@angular/common';
+import {
+    UiButtonComponent,
+    UiCardComponent,
+    UiDropdownComponent,
+    UiFormFieldComponent,
+    UiInputComponent,
+    UiMultiselectComponent,
+    ProductCardComponent,
+    CategorySelectComponent
+} from '@saanjhi-creation-ui/shared-ui';
+import {
+    CategoryDto,
+    CategoryServiceClient,
+    ProductDto,
+    ProductFilter,
+    ProductServiceClient,
+    GetAllCategoriesQuery
+} from '@saanjhi-creation-ui/shared-common';
 import { AdminBaseComponent } from '../../../common/components/base/admin-base.component';
-
-type ProductViewModel = ProductDto & { selectedImage?: string };
+import { Card } from "primeng/card";
 
 @Component({
-    standalone: true,
     selector: 'app-product-list',
+    standalone: true,
+    providers: [CurrencyPipe],
     imports: [
-    CommonModule,
-    UiInputComponent,
-    UiButtonComponent,
-    UiFormFieldComponent,
-    UiMultiselectComponent,
-    ReactiveFormsModule,
-    ProductCardComponent,
-    UiDropdownComponent,
-    UiCardComponent,
-    UiCardComponent
-],
+        CommonModule,
+        ReactiveFormsModule,
+        UiButtonComponent,
+        UiDropdownComponent,
+        UiFormFieldComponent,
+        UiInputComponent,
+        ProductCardComponent,
+        CategorySelectComponent,
+        Card
+    ],
     templateUrl: './product-list.component.html',
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ProductListComponent extends AdminBaseComponent implements OnInit {
     private readonly productClient = inject(ProductServiceClient);
+    private readonly categoryClient = inject(CategoryServiceClient);
     private readonly fb = inject(FormBuilder);
-    private categoryService = inject(CategoryServiceClient);
+
+    products = signal<ProductDto[]>([]);
+    categories = signal<CategoryDto[]>([]);
+    loading = signal(false);
 
     form: FormGroup = this.fb.group({
-        search: [''],
-        categoryId: [''],
-        isRentable: [null],
-        isActive: [null],
-        minPrice: [null],
-        maxPrice: [null],
-        minRentalPrice: [null],
-        maxRentalPrice: [null],
-        page: [1],
-        pageSize: [20]
+        search: [{ value: '', disabled: false }],
+        categoryIds: [{ value: null, disabled: false }],
+        customerIds: [{ value: null, disabled: false }],
+        isRentable: [{ value: null, disabled: false }],
+        isActive: [{ value: null, disabled: false }],
     });
-    products: ProductViewModel[] = [];
-    totalCount = 0;
-    categories: CategoryDto[] = [];
+
+    private currentPage = 1;
+    private pageSize = 20;
+    private hasMoreProducts = true;
 
     async ngOnInit() {
         await this.loadProducts();
-        await this.loadCategories();
     }
 
-    async loadCategories() {
-        const res = await this.categoryService.getAll();
-        this.categories = res;
-    }
-
-    async loadProducts() {
-        const query: ProductFilter = this.form.value;
-        const result = await this.productClient.getAll(query);
-
-        if (this.form.value.page > 1) {
-            this.products = [...this.products, ...(result.items ?? [])];
-        } else {
-            this.products = result.items ?? [];
+    async loadProducts(reset: boolean = false) {
+        if (reset) {
+            this.currentPage = 1;
+            this.products.set([]);
+            this.hasMoreProducts = true;
         }
-        this.totalCount = result.totalCount;
+
+        if (!this.hasMoreProducts) {
+            return;
+        }
+
+        this.loading.set(true);
+
+        try {
+            const formValue = this.form.value;
+            const filter: ProductFilter = {
+                page: this.currentPage,
+                pageSize: this.pageSize,
+                search: formValue.search || undefined,
+                categoryIds: formValue.categoryIds?.length ? formValue.categoryIds : undefined,
+                isRentable: formValue.isRentable !== null ? formValue.isRentable : undefined,
+                isActive: formValue.isActive !== null ? formValue.isActive : undefined,
+            };
+
+            const result = await this.productClient.getAll(filter);
+            const newProducts = result.items || [];
+
+            if (reset) {
+                this.products.set(newProducts);
+            } else {
+                this.products.set([...this.products(), ...newProducts]);
+            }
+
+            this.hasMoreProducts = newProducts.length === this.pageSize;
+            this.currentPage++;
+        } catch (error) {
+            this.toast.error('Failed to load products');
+        } finally {
+            this.loading.set(false);
+        }
     }
 
     onFilterChange() {
-        this.form.patchValue({ page: 1 });
-        this.loadProducts();
+        this.loadProducts(true);
     }
 
-    onPageChange(page: number) {
-        this.form.patchValue({ page });
-        this.loadProducts();
+    onClearFilters() {
+        this.form.reset({
+            search: '',
+            categoryIds: null,
+            customerIds: null,
+            isRentable: null,
+            isActive: null,
+        });
+        this.loadProducts(true);
+    }
+
+    onLoadMore() {
+        if (!this.loading() && this.hasMoreProducts) {
+            this.loadProducts();
+        }
     }
 
     onAddProduct() {
@@ -83,41 +134,6 @@ export class ProductListComponent extends AdminBaseComponent implements OnInit {
 
     onEditClicked(product: ProductDto) {
         this.navigation.goToProductEdit(product.id);
-    }
-
-    onScroll(event: Event) {
-        const el = event.target as HTMLElement;
-        const threshold = 200;
-
-        if (el.scrollTop + el.clientHeight + threshold >= el.scrollHeight) {
-            const nextPage = this.form.value.page + 1;
-            this.form.patchValue({ page: nextPage });
-            this.loadProducts();
-        }
-    }
-
-    onLoadMore() {
-        const currentPage = this.form.value.page ?? 1;
-        const nextPage = currentPage + 1;
-        this.form.patchValue({ page: nextPage });
-        this.loadProducts();
-    }
-
-    onClearFilters(): void {
-        this.form.reset({
-            search: '',
-            categoryId: null,
-            minPrice: null,
-            maxPrice: null,
-            isRentable: null,
-            isActive: null,
-            minRentalPrice: null,
-            maxRentalPrice: null,
-            page: 1,
-            pageSize: 20
-        });
-
-        this.loadProducts();
     }
 
     onPreviewProduct(product: ProductDto) {
