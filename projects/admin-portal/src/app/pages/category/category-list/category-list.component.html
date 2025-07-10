@@ -1,17 +1,19 @@
 <saanjhi-ui-confirm-dialog #confirmDialog />
-<div class="flex justify-content-between align-items-end gap-3">
-  <div class="flex-1">
-    <saanjhi-ui-form-field label="Search" for="search">
-      <saanjhi-ui-input inputId="search" placeholder="Search categories" [(ngModel)]="searchTerm"
-        (ngModelChange)="applyFilter()" />
-    </saanjhi-ui-form-field>
+<saanjhi-ui-card>
+  <div class="flex justify-content-between align-items-end gap-3">
+    <div class="flex-1">
+      <saanjhi-ui-form-field label="Search" for="search">
+        <saanjhi-ui-input inputId="search" placeholder="Search categories" [(ngModel)]="searchTerm"
+          (ngModelChange)="applyFilter()" />
+      </saanjhi-ui-form-field>
+    </div>
+    <div>
+      <saanjhi-ui-button type="submit" label="Add Category" (click)="onCreate()"></saanjhi-ui-button>
+    </div>
   </div>
-  <div>
-    <saanjhi-ui-button type="submit" label="Add Category" (click)="onCreate()"></saanjhi-ui-button>
-  </div>
-</div>
+</saanjhi-ui-card>
 
-<p-table [value]="filtered.slice(page * rows, (page + 1) * rows)">
+<p-table [value]="filtered.slice(page * rows, (page + 1) * rows)" styleClass="mt-4">
   <ng-template pTemplate="header">
     <tr>
       <th>Name</th>

@@ -10,15 +10,17 @@ import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule } from '@angul
 import { RentalServiceClient, RentalDto, PaginatedResult } from '@saanjhi-creation-ui/shared-common';
 import { AdminBaseComponent } from '../../../common/components/base/admin-base.component';
 import { UiFormFieldComponent, UiInputComponent, UiButtonComponent, UiConfirmDialogComponent } from "@saanjhi-creation-ui/shared-ui";
-import { CommonModule } from '@angular/common';
+import { CommonModule, CurrencyPipe } from '@angular/common';
 import { TableLazyLoadEvent, TableModule } from 'primeng/table';
 import { DatePickerModule } from "primeng/datepicker";
+import { AppCurrencyPipe } from '@saanjhi-creation-ui/shared-common';
 
 @Component({
     selector: 'app-rental-list',
     templateUrl: './rental-list.component.html',
     changeDetection: ChangeDetectionStrategy.OnPush,
     standalone: true,
+    providers: [CurrencyPipe], // Provide custom pipe
     imports: [
         FormsModule,
         UiFormFieldComponent,
@@ -28,7 +30,8 @@ import { DatePickerModule } from "primeng/datepicker";
         UiButtonComponent,
         TableModule,
         UiConfirmDialogComponent,
-        DatePickerModule
+        DatePickerModule,
+        AppCurrencyPipe
     ],
 })
 export class RentalListComponent extends AdminBaseComponent {

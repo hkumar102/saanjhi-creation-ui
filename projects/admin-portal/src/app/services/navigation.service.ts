@@ -47,22 +47,22 @@ export class NavigationService {
         this.router.navigate(['/products/details', id]);
     }
     goToCategories() {
-        this.router.navigate(['/category']);
+        this.router.navigate(['/categories']);
     }
     goToCategoryCreate() {
-        this.router.navigate(['/category/create']);
+        this.router.navigate(['/categories/create']);
     }
     goToCategoryEdit(id: string) {
-        this.router.navigate(['/category/edit', id]);
+        this.router.navigate(['/categories/edit', id]);
     }
     goToCustomers() {
-        this.router.navigate(['/customer']);
+        this.router.navigate(['/customers']);
     }
     goToCustomerCreate() {
-        this.router.navigate(['/customer/create']);
+        this.router.navigate(['/customers/create']);
     }
     goToCustomerEdit(id: string) {
-        this.router.navigate(['/customer/edit', id]);
+        this.router.navigate(['/customers/edit', id]);
     }
 
     goToUsers() {
@@ -76,12 +76,12 @@ export class NavigationService {
     }
 
     goToRentals() {
-        this.router.navigate(['/rental']);
+        this.router.navigate(['/rentals']);
     }
     goToRentalCreate() {
-        this.router.navigate(['/rental/create']);
+        this.router.navigate(['/rentals/create']);
     }
     goToRentalEdit(id: string) {
-        this.router.navigate(['/rental/edit', id]);
+        this.router.navigate(['/rentals/edit', id]);
     }
 }

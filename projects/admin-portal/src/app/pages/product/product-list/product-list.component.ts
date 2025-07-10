@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, inject, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { CategoryDto, CategoryServiceClient, ProductDto, ProductFilter, ProductServiceClient } from '@saanjhi-creation-ui/shared-common';
-import { ProductCardComponent, UiButtonComponent, UiDropdownComponent, UiFormFieldComponent, UiInputComponent, UiMultiselectComponent } from '@saanjhi-creation-ui/shared-ui';
+import { ProductCardComponent, UiButtonComponent, UiDropdownComponent, UiFormFieldComponent, UiInputComponent, UiMultiselectComponent, UiCardComponent } from '@saanjhi-creation-ui/shared-ui';
 import { AdminBaseComponent } from '../../../common/components/base/admin-base.component';
 
 type ProductViewModel = ProductDto & { selectedImage?: string };
@@ -11,15 +11,17 @@ type ProductViewModel = ProductDto & { selectedImage?: string };
     standalone: true,
     selector: 'app-product-list',
     imports: [
-        CommonModule,
-        UiInputComponent,
-        UiButtonComponent,
-        UiFormFieldComponent,
-        UiMultiselectComponent,
-        ReactiveFormsModule,
-        ProductCardComponent,
-        UiDropdownComponent
-    ],
+    CommonModule,
+    UiInputComponent,
+    UiButtonComponent,
+    UiFormFieldComponent,
+    UiMultiselectComponent,
+    ReactiveFormsModule,
+    ProductCardComponent,
+    UiDropdownComponent,
+    UiCardComponent,
+    UiCardComponent
+],
     templateUrl: './product-list.component.html',
 })
 export class ProductListComponent extends AdminBaseComponent implements OnInit {

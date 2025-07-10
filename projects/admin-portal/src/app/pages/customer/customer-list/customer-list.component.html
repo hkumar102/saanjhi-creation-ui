@@ -1,28 +1,30 @@
 <saanjhi-ui-confirm-dialog #confirmDialog />
-<div class="grid" [formGroup]="form">
-    <div class="col-12 md:col-8 lg:col-6">
-        <div class="flex flex-wrap gap-4">
-            <div class="flex-1">
-                <saanjhi-ui-input inputId="search" label="Search" formControlName="search"
-                    placeholder="Search by name, email, or phone">
-                </saanjhi-ui-input>
-            </div>
+<saanjhi-ui-card>
+    <div class="grid" [formGroup]="form">
+        <div class="col-12 md:col-8 lg:col-6">
+            <div class="flex flex-wrap gap-4">
+                <div class="flex-1">
+                    <saanjhi-ui-input inputId="search" label="Search" formControlName="search"
+                        placeholder="Search by name, email, or phone">
+                    </saanjhi-ui-input>
+                </div>
 
-            <div class="flex gap-2">
-                <saanjhi-ui-button label="Search" icon="pi pi-search" type="button" (click)="loadCustomers(true)" />
-                <saanjhi-ui-button label="Clear" type="button" severity="secondary" (click)="clearFilters()" />
+                <div class="flex gap-2">
+                    <saanjhi-ui-button label="Search" icon="pi pi-search" type="button" (click)="loadCustomers(true)" />
+                    <saanjhi-ui-button label="Clear" type="button" severity="secondary" (click)="clearFilters()" />
+                </div>
             </div>
         </div>
-    </div>
 
-    <div class="col-12 md:col-4 lg:col-6 text-right">
-        <saanjhi-ui-button label="Add Customer" icon="pi pi-plus" type="button" (click)="navigateToCreate()" />
+        <div class="col-12 md:col-4 lg:col-6 text-right">
+            <saanjhi-ui-button label="Add Customer" icon="pi pi-plus" type="button" (click)="navigateToCreate()" />
+        </div>
     </div>
-</div>
+</saanjhi-ui-card>
 
 <p-table [value]="customers" [loading]="loading" [lazy]="true" [paginator]="false" [totalRecords]="totalRecords"
     [rows]="pageSize" [first]="(page - 1) * pageSize" (onLazyLoad)="onLazyLoad($event)" [sortField]="sortField"
-    [sortOrder]="sortOrder" class="w-full">
+    [sortOrder]="sortOrder" class="w-full" styleClass="mt-4">
     <ng-template pTemplate="header">
         <tr>
             <th pSortableColumn="name">Name <p-sortIcon field="name" /></th>

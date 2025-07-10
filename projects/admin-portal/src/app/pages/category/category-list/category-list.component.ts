@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { CategoryDto, CategoryServiceClient, ToastService } from '@saanjhi-creation-ui/shared-common';
-import { UiButtonComponent, UiConfirmDialogComponent, UiFormFieldComponent, UiInputComponent, UiPaginatorComponent, UiTableComponent } from '@saanjhi-creation-ui/shared-ui';
+import { UiButtonComponent, UiConfirmDialogComponent, UiFormFieldComponent, UiInputComponent, UiPaginatorComponent, UiTableComponent, UiCardComponent } from '@saanjhi-creation-ui/shared-ui';
 import { TableModule } from 'primeng/table';
 import { AdminBaseComponent } from '../../../common/components/base/admin-base.component';
 
@@ -11,16 +11,18 @@ import { AdminBaseComponent } from '../../../common/components/base/admin-base.c
     selector: 'app-category-list',
     standalone: true,
     imports: [
-        CommonModule,
-        RouterModule,
-        FormsModule,
-        UiConfirmDialogComponent,
-        UiFormFieldComponent,
-        UiPaginatorComponent,
-        UiInputComponent,
-        UiButtonComponent,
-        TableModule
-    ],
+    CommonModule,
+    RouterModule,
+    FormsModule,
+    UiConfirmDialogComponent,
+    UiPaginatorComponent,
+    UiInputComponent,
+    UiButtonComponent,
+    TableModule,
+    UiCardComponent,
+    UiCardComponent,
+    UiFormFieldComponent
+],
     templateUrl: './category-list.component.html'
 })
 export class CategoryListComponent extends AdminBaseComponent {

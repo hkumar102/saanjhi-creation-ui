@@ -1,4 +1,4 @@
-import { ApplicationConfig, provideZoneChangeDetection, provideBrowserGlobalErrorListeners } from '@angular/core';
+import { ApplicationConfig, provideZoneChangeDetection, provideBrowserGlobalErrorListeners, LOCALE_ID } from '@angular/core';
 import { provideRouter } from '@angular/router';
 import { provideAuth, getAuth } from '@angular/fire/auth';
 import { routes } from './app.routes';
@@ -59,6 +59,8 @@ export const appConfig: ApplicationConfig = {
       useFactory: (authService: AuthService) => authService.initAuthListener(),
       deps: [AuthService]
     },
-    MessageService
+    MessageService,
+    // Set default locale to Indian English
+    { provide: LOCALE_ID, useValue: 'en-IN' },
   ]
 };

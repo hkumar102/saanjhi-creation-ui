@@ -3,7 +3,7 @@ import { AppMessages, CustomerServiceClient, MessageFormatterService, ToastServi
 import { CustomerDto } from '@saanjhi-creation-ui/shared-common';
 import { NavigationService } from '../../../services/navigation.service';
 import { TableLazyLoadEvent, TableModule } from 'primeng/table';
-import { UiButtonComponent, UiConfirmDialogComponent, UiInputComponent } from '@saanjhi-creation-ui/shared-ui';
+import { UiButtonComponent, UiConfirmDialogComponent, UiInputComponent, UiCardComponent } from '@saanjhi-creation-ui/shared-ui';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { PaginatorModule } from 'primeng/paginator';
@@ -21,8 +21,9 @@ import { AdminBaseComponent } from '../../../common/components/base/admin-base.c
         CommonModule,
         ReactiveFormsModule,
         PaginatorModule,
-        UiConfirmDialogComponent
-    ]
+        UiConfirmDialogComponent,
+        UiCardComponent,
+    ],
 })
 export class CustomerListComponent extends AdminBaseComponent implements OnInit {
     private readonly router = inject(NavigationService);

@@ -3,7 +3,7 @@ import { AuthGuard } from '@saanjhi-creation-ui/shared-common';
 import { CATEGORY_ROUTES } from './pages/category/category.routes';
 import { CUSTOMER_ROUTES } from './pages/customer/customer.routes';
 import { USER_ROUTES } from './pages/user/user.routes';
-import { RENTAL_ROUTES } from './pages/rental/rental-list/rental.routes';
+import { RENTAL_ROUTES } from './pages/rental/rental.routes';
 export const routes: Routes = [
     {
         path: 'login',
@@ -32,12 +32,12 @@ export const routes: Routes = [
         canActivate: [AuthGuard]
     },
     {
-        path: 'category',
+        path: 'categories',
         children: CATEGORY_ROUTES,
         canActivate: [AuthGuard]
     },
     {
-        path: 'customer',
+        path: 'customers',
         children: CUSTOMER_ROUTES,
         canActivate: [AuthGuard]
     },
@@ -47,9 +47,13 @@ export const routes: Routes = [
         canActivate: [AuthGuard]
     },
     {
-        path: 'rental',
+        path: 'rentals',
         children: RENTAL_ROUTES,
         canActivate: [AuthGuard]
+    },
+    {
+        path: 'reports',
+        loadComponent: () => import('./pages/rental/rental-reports/rental-reports.component').then(m => m.RentalReportsComponent)
     },
     {
         path: '',

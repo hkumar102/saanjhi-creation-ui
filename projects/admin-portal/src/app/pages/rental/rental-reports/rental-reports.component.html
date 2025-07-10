@@ -1,0 +1,404 @@
+<div class="rental-reports-container">
+    <!-- Page Header -->
+    <div class="flex justify-content-between align-items-center mb-4">
+        <h1 class="text-2xl font-bold text-900 mb-0">Rental Reports</h1>
+        <saanjhi-ui-button label="Export Report" icon="pi pi-download" severity="secondary" [outlined]="true"
+            (click)="exportReport()" [disabled]="!reportData()">
+        </saanjhi-ui-button>
+    </div>
+
+    <!-- Date Range Filter -->
+    <p-card styleClass="mb-4">
+        <ng-template pTemplate="content">
+            <form [formGroup]="reportForm" class="grid">
+                <div class="col-12 md:col-4">
+                    <saanjhi-ui-form-field label="Start Date" inputId="startDate">
+                        <p-datePicker formControlName="startDate" inputId="startDate" dateFormat="yy-mm-dd"
+                            [showIcon]="true" (onSelect)="onDateRangeChange()" styleClass="w-full">
+                        </p-datePicker>
+                    </saanjhi-ui-form-field>
+                </div>
+
+                <div class="col-12 md:col-4">
+                    <saanjhi-ui-form-field label="End Date" inputId="endDate">
+                        <p-datePicker formControlName="endDate" inputId="endDate" dateFormat="yy-mm-dd"
+                            [showIcon]="true" (onSelect)="onDateRangeChange()" styleClass="w-full">
+                        </p-datePicker>
+                    </saanjhi-ui-form-field>
+                </div>
+
+                <div class="col-12 md:col-4 flex align-items-end">
+                    <div class="flex gap-2">
+                        <saanjhi-ui-button type="button" label="Reset" icon="pi pi-refresh" severity="secondary"
+                            [outlined]="true" (click)="onResetDateRange()">
+                        </saanjhi-ui-button>
+
+                        <saanjhi-ui-button type="button" label="Generate Report" icon="pi pi-chart-bar"
+                            (click)="loadReportData()" [loading]="loading()">
+                        </saanjhi-ui-button>
+                    </div>
+                </div>
+            </form>
+        </ng-template>
+    </p-card>
+
+    <!-- Loading State -->
+    <div *ngIf="loading()" class="flex justify-content-center align-items-center" style="height: 200px;">
+        <div class="text-center">
+            <i class="pi pi-spin pi-spinner text-4xl text-primary mb-3"></i>
+            <p class="text-lg text-600">Generating report...</p>
+        </div>
+    </div>
+
+    <!-- Report Content -->
+    <div *ngIf="!loading() && reportData()" class="report-content">
+        <!-- Summary Cards -->
+        <div class="grid mb-4">
+            <div class="col-12 md:col-6 lg:col-3">
+                <p-card class="summary-card">
+                    <ng-template pTemplate="content">
+                        <div class="text-center">
+                            <i class="pi pi-money-bill text-4xl text-green-500 mb-2"></i>
+                            <div class="text-2xl font-bold text-900">
+                                {{ reportData()!.totalRentalEarnings | currency: 'INR' : 'symbol' : '1.0-0' }}
+                            </div>
+                            <div class="text-sm text-600">Total Rental Earnings</div>
+                        </div>
+                    </ng-template>
+                </p-card>
+            </div>
+
+            <div class="col-12 md:col-6 lg:col-3">
+                <p-card class="summary-card">
+                    <ng-template pTemplate="content">
+                        <div class="text-center">
+                            <i class="pi pi-shield text-4xl text-blue-500 mb-2"></i>
+                            <div class="text-2xl font-bold text-900">
+                                {{ reportData()!.totalSecurityEarnings | currency: 'INR' : 'symbol' : '1.0-0' }}
+                            </div>
+                            <div class="text-sm text-600">Total Security Deposits</div>
+                        </div>
+                    </ng-template>
+                </p-card>
+            </div>
+
+            <div class="col-12 md:col-6 lg:col-3">
+                <p-card class="summary-card">
+                    <ng-template pTemplate="content">
+                        <div class="text-center">
+                            <i class="pi pi-calendar text-4xl text-orange-500 mb-2"></i>
+                            <div class="text-2xl font-bold text-900">{{ reportData()!.totalRentals }}</div>
+                            <div class="text-sm text-600">Total Rentals</div>
+                        </div>
+                    </ng-template>
+                </p-card>
+            </div>
+
+            <div class="col-12 md:col-6 lg:col-3">
+                <p-card class="summary-card">
+                    <ng-template pTemplate="content">
+                        <div class="text-center">
+                            <i class="pi pi-chart-line text-4xl text-purple-500 mb-2"></i>
+                            <div class="text-2xl font-bold text-900">
+                                {{ reportData()!.averageRentalPrice | currency: 'INR' : 'symbol' : '1.0-0' }}
+                            </div>
+                            <div class="text-sm text-600">Average Rental Price</div>
+                        </div>
+                    </ng-template>
+                </p-card>
+            </div>
+        </div>
+
+        <!-- Charts -->
+        <div class="grid">
+            <!-- Rental Earnings Chart -->
+            <div class="col-12 lg:col-6">
+                <p-card>
+                    <ng-template pTemplate="header">
+                        <div class="font-bold text-lg p-3">Daily Rental Earnings</div>
+                    </ng-template>
+                    <ng-template pTemplate="content">
+                        <div class="chart-container" style="height: 400px;">
+                            <p-chart type="line" [data]="rentalChartData()" [options]="chartOptions()"
+                                [height]="'400px'">
+                            </p-chart>
+                        </div>
+                    </ng-template>
+                </p-card>
+            </div>
+
+            <!-- Security Deposit Chart -->
+            <div class="col-12 lg:col-6">
+                <p-card>
+                    <ng-template pTemplate="header">
+                        <div class="font-bold text-lg p-3">Daily Security Deposits</div>
+                    </ng-template>
+                    <ng-template pTemplate="content">
+                        <div class="chart-container" style="height: 400px;">
+                            <p-chart type="line" [data]="securityChartData()" [options]="chartOptions()"
+                                [height]="'400px'">
+                            </p-chart>
+                        </div>
+                    </ng-template>
+                </p-card>
+            </div>
+        </div>
+
+        <!-- Combined Chart -->
+        <div class="grid mt-4">
+            <div class="col-12">
+                <p-card>
+                    <ng-template pTemplate="header">
+                        <div class="font-bold text-lg p-3">Combined Earnings Overview</div>
+                    </ng-template>
+                    <ng-template pTemplate="content">
+                        <div class="chart-container" style="height: 500px;">
+                            <p-chart type="line" [data]="getCombinedChartData()" [options]="chartOptions()"
+                                [height]="'500px'">
+                            </p-chart>
+                        </div>
+                    </ng-template>
+                </p-card>
+            </div>
+        </div>
+
+        <!-- Product Analytics Section -->
+        <div class="grid mt-4" *ngIf="reportData()?.productAnalytics?.length">
+            <div class="col-12">
+                <h2 class="text-xl font-bold text-900 mb-3">Product Performance Analysis</h2>
+            </div>
+        </div>
+
+        <!-- Product Charts -->
+        <div class="grid" *ngIf="reportData()?.productAnalytics?.length">
+            <!-- Product Rental Sum Chart -->
+            <div class="col-12 lg:col-6">
+                <p-card>
+                    <ng-template pTemplate="header">
+                        <div class="font-bold text-lg p-3 flex justify-content-between align-items-center">
+                            <span>Product Rental Revenue</span>
+                            <small class="text-sm text-600 font-normal">Top 10 Products by Revenue</small>
+                        </div>
+                    </ng-template>
+                    <ng-template pTemplate="content">
+                        <div class="chart-container" style="height: 400px;">
+                            <p-chart type="bar" [data]="productRentalSumData()" [options]="getProductChartOptions()"
+                                [height]="'400px'">
+                            </p-chart>
+                        </div>
+                    </ng-template>
+                </p-card>
+            </div>
+
+            <!-- Product Rental Count Chart -->
+            <div class="col-12 lg:col-6">
+                <p-card>
+                    <ng-template pTemplate="header">
+                        <div class="font-bold text-lg p-3 flex justify-content-between align-items-center">
+                            <span>Product Rental Frequency</span>
+                            <small class="text-sm text-600 font-normal">Top 10 Products by Count</small>
+                        </div>
+                    </ng-template>
+                    <ng-template pTemplate="content">
+                        <div class="chart-container" style="height: 400px;">
+                            <p-chart type="bar" [data]="productRentalCountData()" [options]="getProductChartOptions()"
+                                [height]="'400px'">
+                            </p-chart>
+                        </div>
+                    </ng-template>
+                </p-card>
+            </div>
+        </div>
+
+        <!-- Product Combined Analysis -->
+        <div class="grid mt-4" *ngIf="reportData()?.productAnalytics?.length">
+            <div class="col-12">
+                <p-card>
+                    <ng-template pTemplate="header">
+                        <div class="font-bold text-lg p-3">Product Revenue vs Frequency Analysis</div>
+                    </ng-template>
+                    <ng-template pTemplate="content">
+                        <div class="chart-container" style="height: 500px;">
+                            <p-chart type="bar" [data]="productCombinedData()"
+                                [options]="getProductCombinedChartOptions()" [height]="'500px'">
+                            </p-chart>
+                        </div>
+                    </ng-template>
+                </p-card>
+            </div>
+        </div>
+
+        <!-- Product Analytics Table -->
+        <div class="grid mt-4" *ngIf="reportData()?.productAnalytics?.length">
+            <div class="col-12">
+                <p-card>
+                    <ng-template pTemplate="header">
+                        <div class="font-bold text-lg p-3">Product Performance Details</div>
+                    </ng-template>
+                    <ng-template pTemplate="content">
+                        <div class="overflow-x-auto">
+                            <table class="w-full">
+                                <thead>
+                                    <tr class="border-bottom-1 border-200">
+                                        <th class="text-left p-3 font-semibold">Product Name</th>
+                                        <th class="text-right p-3 font-semibold">Total Revenue</th>
+                                        <th class="text-right p-3 font-semibold">Rental Count</th>
+                                        <th class="text-right p-3 font-semibold">Average per Rental</th>
+                                        <th class="text-right p-3 font-semibold">Performance Score</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr *ngFor="let product of reportData()!.productAnalytics; let i = index"
+                                        class="border-bottom-1 border-100" [class.bg-green-50]="i === 0"
+                                        [class.bg-blue-50]="i === 1" [class.bg-orange-50]="i === 2">
+                                        <td class="p-3">
+                                            <div class="flex align-items-center">
+                                                <span *ngIf="i < 3"
+                                                    class="inline-flex align-items-center justify-content-center w-2rem h-2rem border-circle mr-2"
+                                                    [class.bg-yellow-500]="i === 0" [class.bg-gray-400]="i === 1"
+                                                    [class.bg-orange-500]="i === 2" [class.text-white]="true">
+                                                    {{ i + 1 }}
+                                                </span>
+                                                <span class="font-medium">{{ product.productName }}</span>
+                                            </div>
+                                        </td>
+                                        <td class="text-right p-3 font-semibold text-green-600">
+                                            {{ product.totalRental | currency: 'INR' : 'symbol' : '1.0-0' }}
+                                        </td>
+                                        <td class="text-right p-3">{{ product.rentalCount }}</td>
+                                        <td class="text-right p-3">
+                                            {{ (product.totalRental / product.rentalCount) | currency: 'INR' : 'symbol'
+                                            : '1.0-0' }}
+                                        </td>
+                                        <td class="text-right p-3">
+                                            <div class="flex align-items-center justify-content-end">
+                                                <div class="w-6rem h-0.5rem bg-gray-200 border-round mr-2">
+                                                    <div class="h-full bg-primary border-round"
+                                                        [style.width.%]="getPerformanceScore(product)"></div>
+                                                </div>
+                                                <span class="text-sm">{{ getPerformanceScore(product) }}%</span>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </ng-template>
+                </p-card>
+            </div>
+        </div>
+    </div>
+
+    <!-- No Data State -->
+    <div *ngIf="!loading() && !reportData()" class="flex justify-content-center align-items-center"
+        style="height: 300px;">
+        <div class="text-center">
+            <i class="pi pi-chart-bar text-4xl text-400 mb-3"></i>
+            <p class="text-lg text-600">Select a date range to generate report</p>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Add this method to your RentalReportsComponent class
+    export class RentalReportsComponent {
+        // ... existing code ...
+
+        // Method to handle date range changes
+        onDateRangeChange() {
+            const startDate = this.reportForm.get('startDate')?.value;
+            const endDate = this.reportForm.get('endDate')?.value;
+
+            // Perform any additional logic needed on date range change
+            console.log('Date range changed:', startDate, endDate);
+        }
+
+        // Method to reset the date range
+        onResetDateRange() {
+            this.reportForm.patchValue({
+                startDate: null,
+                endDate: null
+            });
+
+            // Optionally, reload the report data with the reset date range
+            this.loadReportData();
+        }
+
+        // Method to load report data
+        loadReportData() {
+            this.loading(true);
+
+            // Simulate an API call to fetch report data
+            setTimeout(() => {
+                this.loading(false);
+
+                // Mock report data
+                this._reportData = {
+                    totalRentalEarnings: 50000,
+                    totalSecurityEarnings: 15000,
+                    totalRentals: 120,
+                    averageRentalPrice: 416.67
+                };
+
+                // Update the chart data
+                this.updateChartData();
+            }, 2000);
+        }
+
+        // Method to update chart data
+        updateChartData() {
+            // Generate mock chart data
+            const labels = ['2023-10-01', '2023-10-02', '2023-10-03', '2023-10-04', '2023-10-05'];
+            const rentalEarnings = [10000, 12000, 9000, 15000, 13000];
+            const securityDeposits = [3000, 3500, 2500, 4000, 4500];
+
+            this._rentalChartData = {
+                labels: labels,
+                datasets: [
+                    {
+                        label: 'Rental Earnings',
+                        data: rentalEarnings,
+                        borderColor: '#4caf50',
+                        backgroundColor: 'rgba(76, 175, 80, 0.2)',
+                        fill: true
+                    }
+                ]
+            };
+
+            this._securityChartData = {
+                labels: labels,
+                datasets: [
+                    {
+                        label: 'Security Deposits',
+                        data: securityDeposits,
+                        borderColor: '#2196f3',
+                        backgroundColor: 'rgba(33, 150, 243, 0.2)',
+                        fill: true
+                    }
+                ]
+            };
+
+            this._combinedChartData = {
+                labels: labels,
+                datasets: [
+                    {
+                        label: 'Rental Earnings',
+                        data: rentalEarnings,
+                        borderColor: '#4caf50',
+                        backgroundColor: 'rgba(76, 175, 80, 0.2)',
+                        fill: true
+                    },
+                    {
+                        label: 'Security Deposits',
+                        data: securityDeposits,
+                        borderColor: '#2196f3',
+                        backgroundColor: 'rgba(33, 150, 243, 0.2)',
+                        fill: true
+                    }
+                ]
+            };
+        }
+
+        // ... existing code ...
+    }
+</script>

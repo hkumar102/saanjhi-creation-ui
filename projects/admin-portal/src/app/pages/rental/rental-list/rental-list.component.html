@@ -1,4 +1,5 @@
 <saanjhi-ui-confirm-dialog #confirmDialog />
+
 <div class="flex flex-column gap-3 mb-4">
     <form [formGroup]="filtersForm" (ngSubmit)="loadRentals()">
         <div class="grid gap-3">
@@ -37,13 +38,15 @@
 <p-table [value]="rentals()" [lazy]="true" [paginator]="true" [totalRecords]="totalRecords()" [loading]="loading()"
     [rows]="pageSize" [rowsPerPageOptions]="[10, 20, 50]" (onLazyLoad)="loadRentals($event)" [sortField]="sortField"
     [sortOrder]="sortOrder" dataKey="id" responsiveLayout="scroll" class="shadow-1">
+    
     <ng-template pTemplate="header">
         <tr>
             <th pSortableColumn="startDate">Start Date <p-sortIcon field="startDate" /></th>
             <th pSortableColumn="endDate">End Date <p-sortIcon field="endDate" /></th>
             <th>Customer</th>
             <th>Product</th>
-            <th>Status</th>
+            <th>Rent</th>
+            <th>Security</th>
             <th>Actions</th>
         </tr>
     </ng-template>
@@ -54,7 +57,9 @@
             <td>{{ rental.endDate | date: 'shortDate' }}</td>
             <td>{{ rental.customer?.name }}</td>
             <td>{{ rental.product?.name }}</td>
-            <td>{{ rental.status }}</td>
+            <!-- Using simplified app currency pipe -->
+            <td>{{ rental.rentalPrice | appCurrency }}</td>
+            <td>{{ rental.securityDeposit | appCurrency }}</td>
             <td class="flex gap-2">
                 <saanjhi-ui-button icon="pi pi-pencil" size="small" (click)="onEdit(rental)" />
                 <saanjhi-ui-button icon="pi pi-trash" severity="danger" size="small" (click)="onDelete(rental)" />

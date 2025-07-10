@@ -183,12 +183,15 @@ export class ProductFormComponent extends AdminBaseComponent implements OnInit, 
     }
   }
 
-  async onSubmit() {
+  async onSubmit(): Promise<boolean> {
+
     if (this.form.invalid) {
       this.form.markAllAsTouched();
       this.toast.error('Please fix form errors before submitting');
-      return;
+      return false;
     }
+
+    let isValid = false;
 
     try {
       this.loading = true;
@@ -219,12 +222,17 @@ export class ProductFormComponent extends AdminBaseComponent implements OnInit, 
           this.toast.error('Failed to create product');
         }
       }
+
+      isValid = true;
     } catch (error) {
       console.error('Error submitting form:', error);
       this.toast.error(this.isEditMode ? 'Failed to update product' : 'Failed to create product');
+      isValid = false;
     } finally {
       this.loading = false;
     }
+
+    return isValid;
   }
 
   async uploadAllMedia() {
@@ -285,13 +293,15 @@ export class ProductFormComponent extends AdminBaseComponent implements OnInit, 
   }
 
   async onSaveAndPreview() {
-    await this.onSubmit();
-    this.gotoProductDetails();
+    if (await this.onSubmit()) {
+      this.gotoProductDetails();
+    }
   }
 
   async onSave() {
-    await this.onSubmit();
-    this.gotoProducts();
+    if (await this.onSubmit()) {
+      this.gotoProducts();
+    }
   }
 
   gotoProducts() {
