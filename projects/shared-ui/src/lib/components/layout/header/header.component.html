@@ -197,7 +197,8 @@
           <div *ngIf="hasSubmenu(item)" class="mobile-nav-item-with-submenu">
             <button type="button" 
                     class="mobile-nav-button"
-                    (click)="toggleSubmenu(item.label)">
+                    (click)="toggleSubmenu(item.label, $event)"
+                    [class.active]="isSubmenuOpen(item.label)">
               <span class="mobile-nav-label">
                 <i *ngIf="item.icon" [class]="item.icon" class="mr-2"></i>
                 {{ item.label }}
