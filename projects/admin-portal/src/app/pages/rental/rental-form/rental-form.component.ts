@@ -4,7 +4,7 @@ import { ActivatedRoute } from '@angular/router';
 import { AdminBaseComponent } from '../../../common/components/base/admin-base.component';
 import { UiFormFieldComponent, UiInputComponent, UiButtonComponent, UiDropdownComponent, CustomerSelectComponent, ProductSelectComponent } from "@saanjhi-creation-ui/shared-ui";
 import { CommonModule } from '@angular/common';
-import { AddressDto, CreateRentalCommand, CustomerDto, CustomerServiceClient, ProductDto, ProductServiceClient, RentalServiceClient, UpdateRentalCommand } from '@saanjhi-creation-ui/shared-common';
+import { AddressDto, CreateRentalCommand, CustomerDto, CustomerServiceClient, ProductDto, ProductServiceClient, RentalDto, RentalServiceClient, UpdateRentalCommand } from '@saanjhi-creation-ui/shared-common';
 import { DatePickerModule } from 'primeng/datepicker';
 import { AutoCompleteModule } from 'primeng/autocomplete';
 
@@ -29,14 +29,14 @@ export class RentalFormComponent extends AdminBaseComponent implements OnInit {
     private fb = inject(FormBuilder);
     private route = inject(ActivatedRoute);
     private rentalService = inject(RentalServiceClient);
-    private productService = inject(ProductServiceClient);
-    private customerService = inject(CustomerServiceClient);
 
     form!: FormGroup;
     rentalId!: string;
     filteredProducts: ProductDto[] = [];
     filteredCustomers: CustomerDto[] = [];
     shippingAddresses: AddressDto[] = [];
+    editingRental?: RentalDto;
+    isLoading = false;
 
     get isEditMode(): boolean {
         return !!this.rentalId;
@@ -65,30 +65,25 @@ export class RentalFormComponent extends AdminBaseComponent implements OnInit {
 
         this.rentalId = this.route.snapshot.paramMap.get('id') || '';
         if (this.isEditMode) {
+            this.isLoading = true;
             await this.loadRental();
+            this.isLoading = false;
         }
     }
 
     async loadRental(): Promise<void> {
         const rental = await this.rentalService.getRental(this.rentalId);
-        if (rental.customer) {
-            this.filteredCustomers = [rental.customer as CustomerDto];
-            this.shippingAddresses = rental.customer.addresses as AddressDto[] || [];
-            this.form.patchValue({ customer: rental.customer });
-        }
-
-        if (rental.product) {
-            const product = rental.product as ProductDto;
-            this.filteredProducts = [product];
-            this.form.patchValue({ product: product });
-        }
+        this.shippingAddresses = rental.customer?.addresses as AddressDto[] || [];
         this.form.patchValue({
             ...rental,
             startDate: rental.startDate ? new Date(rental.startDate) : null,
             endDate: rental.endDate ? new Date(rental.endDate) : null,
+            productId: rental.product?.id || null,
+            customerId: rental.customer?.id || null,
         });
 
         this.form.updateValueAndValidity();
+        this.editingRental = rental;
     }
 
     async save(): Promise<void> {
@@ -117,20 +112,6 @@ export class RentalFormComponent extends AdminBaseComponent implements OnInit {
 
     cancel(): void {
         this.navigation.goToRentals();
-    }
-
-    searchProducts(event: { query: string }) {
-        const query = event.query.toLowerCase();
-        this.productService.getAll({ search: query, pageSize: 10 }).then(response => {
-            this.filteredProducts = response.items || [];
-        });
-    }
-
-    searchCustomers(event: { query: string }) {
-        const query = event.query.toLowerCase();
-        this.customerService.getCustomers({ name: query, pageSize: 10 }).then(response => {
-            this.filteredCustomers = response.items || [];
-        });
     }
 
     async onCustomerChange(customer: CustomerDto | CustomerDto[] | null) {

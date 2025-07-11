@@ -75,7 +75,7 @@ import {
             optionLabel="name"
             optionValue="id"
             [placeholder]="placeholder()"
-            [showClear]="showClear()"
+            [showClear]="showClear"
             [filter]="filter()"
             filterBy="name,description"
             [maxSelectedLabels]="maxSelectedLabels()"
@@ -131,13 +131,18 @@ export class ProductSelectComponent implements ControlValueAccessor, OnInit {
     filter = input<boolean>(true);
     pageSize = input<number>(25);
 
+    // ✅ Add auto-population input properties
+    preloadProductId = input<string | undefined>(undefined);
+    preloadProductIds = input<string[]>([]);
+    autoLoadOnInit = input<boolean>(true);
+
     // Multi-select specific properties
     maxSelectedLabels = input<number>(2);
     selectedItemsLabel = input<string>('{0} products selected');
-    virtualScroll = input<boolean>(false); // ✅ Disabled virtual scroll for consistency
+    virtualScroll = input<boolean>(false);
     virtualScrollItemSize = input<number>(43);
 
-    // ✅ Output events
+    // Output events
     productSelected = output<ProductDto | ProductDto[] | null>();
     productChanged = output<{ value: any, product: ProductDto | ProductDto[] | null }>();
 
@@ -155,7 +160,7 @@ export class ProductSelectComponent implements ControlValueAccessor, OnInit {
     private onChange = (value: any) => { };
     private onTouched = () => { };
 
-    ngOnInit() {
+    async ngOnInit() {
         // Subscribe to control value changes
         this.control.valueChanges
             .pipe(takeUntilDestroyed(this.destroyRef))
@@ -164,8 +169,28 @@ export class ProductSelectComponent implements ControlValueAccessor, OnInit {
                 this.onTouched();
             });
 
-        // Load initial data
-        this.loadProducts(true);
+        // ✅ Handle auto-population based on input properties
+        if (this.autoLoadOnInit()) {
+            await this.handleAutoLoad();
+        } else {
+            // Load initial data only if no auto-population
+            this.loadProducts(true);
+        }
+    }
+
+    // ✅ Add auto-load handler
+    private async handleAutoLoad() {
+        const singleId = this.preloadProductId();
+        const multipleIds = this.preloadProductIds();
+
+        if (singleId) {
+            await this.searchAndSelectProduct(singleId);
+        } else if (multipleIds && multipleIds.length > 0) {
+            await this.loadProductsByIds(multipleIds);
+        } else {
+            // No preload data, load initial products
+            this.loadProducts(true);
+        }
     }
 
     writeValue(value: any): void {
@@ -289,5 +314,79 @@ export class ProductSelectComponent implements ControlValueAccessor, OnInit {
         if (product.categoryName) parts.push(product.categoryName);
         if (product.rentalPrice) parts.push(`$${product.rentalPrice}`);
         return parts.join(' • ') || 'No additional info';
+    }
+
+    // ✅ Load multiple products by IDs for multi-select
+    async loadProductsByIds(productIds: string[]): Promise<void> {
+        if (!productIds?.length) return;
+
+        this.loading.set(true);
+        try {
+            const loadedProducts: ProductDto[] = [];
+            
+            for (const id of productIds) {
+                try {
+                    const product = await this.productClient.getById(id);
+                    if (product) {
+                        loadedProducts.push(product);
+                    }
+                } catch (error) {
+                    console.warn(`Failed to load product ${id}:`, error);
+                }
+            }
+
+            // Update products list
+            const existingProducts = this.products();
+            const mergedProducts = [...existingProducts];
+            
+            loadedProducts.forEach(product => {
+                const exists = mergedProducts.find(p => p.id === product.id);
+                if (!exists) {
+                    mergedProducts.push(product);
+                }
+            });
+
+            this.products.set(mergedProducts);
+
+            // Auto-select the loaded products
+            if (this.multiple()) {
+                this.writeValue(productIds);
+                this.onChange(productIds);
+            }
+
+        } catch (error) {
+            console.error('Error loading products by IDs:', error);
+        } finally {
+            this.loading.set(false);
+        }
+    }
+
+    // Load specific product by ID for edit scenarios
+    async loadProductById(productId: string): Promise<void> {
+        this.loading.set(true);
+        try {
+            const product = await this.productClient.getById(productId);
+            if (product) {
+                const existingProducts = this.products();
+                const exists = existingProducts.find(p => p.id === product.id);
+                if (!exists) {
+                    this.products.set([...existingProducts, product]);
+                }
+            }
+        } catch (error) {
+            console.error('Error loading product by ID:', error);
+        } finally {
+            this.loading.set(false);
+        }
+    }
+
+    // Search and auto-select a specific product for edit mode
+    async searchAndSelectProduct(productId: string): Promise<void> {
+        await this.loadProductById(productId);
+        
+        if (!this.multiple()) {
+            this.writeValue(productId);
+            this.onChange(productId);
+        }
     }
 }

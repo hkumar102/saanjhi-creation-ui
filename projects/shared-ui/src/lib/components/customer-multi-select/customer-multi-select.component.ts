@@ -1,16 +1,16 @@
-import { 
-    ChangeDetectionStrategy, 
-    Component, 
-    forwardRef, 
-    inject, 
-    input, 
+import {
+    ChangeDetectionStrategy,
+    Component,
+    forwardRef,
+    inject,
+    input,
     output,
     signal,
     OnInit,
     DestroyRef
 } from '@angular/core';
-import { 
-    ControlValueAccessor, 
+import {
+    ControlValueAccessor,
     NG_VALUE_ACCESSOR,
     FormControl,
     ReactiveFormsModule
@@ -19,9 +19,9 @@ import { CommonModule } from '@angular/common';
 import { DropdownModule } from 'primeng/dropdown';
 import { MultiSelectModule } from 'primeng/multiselect';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { 
-    CustomerServiceClient, 
-    CustomerDto, 
+import {
+    CustomerServiceClient,
+    CustomerDto,
     GetCustomersQuery,
     ToastService
 } from '@saanjhi-creation-ui/shared-common';
@@ -130,7 +130,12 @@ export class CustomerSelectComponent implements ControlValueAccessor, OnInit {
     showClear = input<boolean>(true);
     filter = input<boolean>(true);
     pageSize = input<number>(25);
-    
+
+    // ✅ Add auto-population input properties
+    preloadCustomerId = input<string | undefined>(undefined);
+    preloadCustomerIds = input<string[]>([]);
+    autoLoadOnInit = input<boolean>(true);
+
     // Multi-select specific properties
     maxSelectedLabels = input<number>(2);
     selectedItemsLabel = input<string>('{0} customers selected');
@@ -152,10 +157,10 @@ export class CustomerSelectComponent implements ControlValueAccessor, OnInit {
     private hasMorePages = true;
 
     // ControlValueAccessor implementation
-    private onChange = (value: any) => {};
-    private onTouched = () => {};
+    private onChange = (value: any) => { };
+    private onTouched = () => { };
 
-    ngOnInit() {
+    async ngOnInit() {
         // Subscribe to control value changes
         this.control.valueChanges
             .pipe(takeUntilDestroyed(this.destroyRef))
@@ -164,8 +169,92 @@ export class CustomerSelectComponent implements ControlValueAccessor, OnInit {
                 this.onTouched();
             });
 
-        // Load initial data
-        this.loadCustomers(true);
+        // ✅ Handle auto-population based on input properties
+        if (this.autoLoadOnInit()) {
+            await this.handleAutoLoad();
+        } else {
+            // Load initial data only if no auto-population
+            this.loadCustomers(true);
+        }
+    }
+
+    // ✅ Add auto-load handler
+    private async handleAutoLoad() {
+        const singleId = this.preloadCustomerId();
+        const multipleIds = this.preloadCustomerIds();
+
+        if (singleId) {
+            await this.searchAndSelectCustomer(singleId);
+        } else if (multipleIds && multipleIds.length > 0) {
+            await this.loadCustomersByIds(multipleIds);
+        } else {
+            // No preload data, load initial customers
+            this.loadCustomers(true);
+        }
+    }
+
+    // ✅ Load multiple customers by IDs for multi-select
+    async loadCustomersByIds(customerIds: string[]): Promise<void> {
+        if (!customerIds?.length) return;
+
+        this.loading.set(true);
+        try {
+            let loadedCustomers: CustomerDto[] = [];
+            loadedCustomers = await this.customerClient.getCustomersByIds({customerIds : customerIds});
+
+            // Update customers list
+            const existingCustomers = this.customers();
+            const mergedCustomers = [...existingCustomers];
+            
+            loadedCustomers.forEach(customer => {
+                const exists = mergedCustomers.find(c => c.id === customer.id);
+                if (!exists) {
+                    mergedCustomers.push(customer);
+                }
+            });
+
+            this.customers.set(mergedCustomers);
+
+            // Auto-select the loaded customers
+            if (this.multiple()) {
+                this.writeValue(customerIds);
+                this.onChange(customerIds);
+            }
+
+        } catch (error) {
+            console.error('Error loading customers by IDs:', error);
+        } finally {
+            this.loading.set(false);
+        }
+    }
+
+    // Load specific customer by ID for edit scenarios
+    async loadCustomerById(customerId: string): Promise<void> {
+        this.loading.set(true);
+        try {
+            const customer = await this.customerClient.getCustomer(customerId);
+            if (customer) {
+                const existingCustomers = this.customers();
+                const exists = existingCustomers.find(c => c.id === customer.id);
+                if (!exists) {
+                    this.customers.set([...existingCustomers, customer]);
+                }
+            }
+        } catch (error) {
+            console.error('Error loading customer by ID:', error);
+        } finally {
+            this.loading.set(false);
+        }
+    }
+
+    // Search and auto-select a specific customer for edit mode
+    async searchAndSelectCustomer(customerId: string): Promise<void> {
+        await this.loadCustomerById(customerId);
+        
+        if (!this.multiple()) {
+            this.writeValue(customerId);
+            this.onChange(customerId);
+        }
     }
 
     writeValue(value: any): void {
@@ -191,14 +280,14 @@ export class CustomerSelectComponent implements ControlValueAccessor, OnInit {
     // ✅ Handle selection changes and emit events
     onSelectionChange(event: any) {
         const selectedValue = event.value;
-        
+
         if (selectedValue) {
             // Find the selected customer(s) from the options
             const allCustomers = this.customers();
-            
+
             if (this.multiple()) {
                 // Multi-select: find all selected customers
-                const selectedCustomers = allCustomers.filter(customer => 
+                const selectedCustomers = allCustomers.filter(customer =>
                     Array.isArray(selectedValue) ? selectedValue.includes(customer.id) : false
                 );
                 this.customerSelected.emit(selectedCustomers);

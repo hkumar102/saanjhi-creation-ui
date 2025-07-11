@@ -117,7 +117,7 @@ export class InventoryService {
                 rentedQuantity,
                 maintenanceQuantity,
                 availabilityRate,
-                currentRentals,
+                currentRentals : productRentals,
                 upcomingRentals,
                 revenue,
                 status

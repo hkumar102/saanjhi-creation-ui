@@ -1,8 +1,10 @@
-<form [formGroup]="form" (ngSubmit)="save()" class="grid gap-3">
+<form [formGroup]="form" (ngSubmit)="save()" class="grid gap-3" *ngIf="!isLoading">
     <div class="col-12 md:col-6">
         <!-- Product Dropdown -->
         <saanjhi-ui-form-field label="Product" for="productId">
             <saanjhi-ui-product-select 
+                [preloadProductId]="editingRental?.product?.id"
+                [autoLoadOnInit]="true"
                 inputId="productId" 
                 formControlName="productId" 
                 [multiple]="false"
@@ -19,7 +21,9 @@
         <!-- Customer Dropdown -->
         <saanjhi-ui-form-field label="Customer" for="customerId">
             <saanjhi-ui-customer-select 
-                inputId="customerId" 
+                inputId="customerId"
+                [preloadCustomerId]="editingRental?.customer?.id"
+                [autoLoadOnInit]="true"
                 formControlName="customerId" 
                 [multiple]="false"
                 placeholder="Select customer..."
