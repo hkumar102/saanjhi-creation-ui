@@ -1,0 +1,249 @@
+<!-- Reports Header -->
+<div class="flex justify-content-between align-items-center mb-4">
+    <div>
+        <h1 class="text-3xl font-bold text-900 m-0">Inventory Reports</h1>
+        <p class="text-600 mt-1">Comprehensive analytics and insights for your rental inventory.</p>
+    </div>
+    <div class="flex gap-2">
+        <p-button label="Export PDF" icon="pi pi-file-pdf" severity="danger" (onClick)="exportPDF()" />
+        <p-button label="Export Excel" icon="pi pi-file-excel" severity="success" (onClick)="exportExcel()" />
+        <p-button label="Schedule Report" icon="pi pi-clock" severity="info" (onClick)="scheduleReport()" />
+    </div>
+</div>
+
+<!-- Filters -->
+<p-card styleClass="mb-4">
+    <div class="grid gap-3">
+        <div class="col-12 md:col-3">
+            <label class="font-semibold block mb-2">Report Period</label>
+            <p-calendar [(ngModel)]="filters.dateRange" selectionMode="range" [readonlyInput]="true"
+                placeholder="Select date range" styleClass="w-full" />
+        </div>
+
+        <div class="col-12 md:col-3">
+            <label class="font-semibold block mb-2">Product Category</label>
+            <p-dropdown [(ngModel)]="filters.productCategory" [options]="categoryOptions" placeholder="All categories"
+                [showClear]="true" styleClass="w-full" />
+        </div>
+
+        <div class="col-12 md:col-3">
+            <label class="font-semibold block mb-2">Report Type</label>
+            <p-dropdown [(ngModel)]="filters.reportType" [options]="reportTypeOptions" placeholder="Standard Report"
+                styleClass="w-full" />
+        </div>
+
+        <div class="col-12 md:col-3 flex align-items-end">
+            <p-button label="Generate Report" icon="pi pi-refresh" [loading]="loading()" (onClick)="generateReport()"
+                styleClass="w-full" />
+        </div>
+    </div>
+</p-card>
+
+<!-- Report Tabs -->
+<p-tabView>
+    <!-- Summary Tab -->
+    <p-tabPanel header="Executive Summary" leftIcon="pi pi-chart-bar">
+        <div class="grid">
+            <!-- Key Metrics -->
+            <div class="col-12">
+                <p-card header="Key Performance Indicators">
+                    <div class="grid">
+                        <div class="col-12 md:col-3">
+                            <div class="text-center p-3 border-round surface-100">
+                                <div class="text-2xl font-bold text-primary">{{ report()?.summary?.totalProducts || 0 }}
+                                </div>
+                                <div class="text-600">Total Products</div>
+                            </div>
+                        </div>
+                        <div class="col-12 md:col-3">
+                            <div class="text-center p-3 border-round surface-100">
+                                <div class="text-2xl font-bold text-green-600">{{ report()?.summary?.totalRevenue |
+                                    appCurrency }}</div>
+                                <div class="text-600">Total Revenue</div>
+                            </div>
+                        </div>
+                        <div class="col-12 md:col-3">
+                            <div class="text-center p-3 border-round surface-100">
+                                <div class="text-2xl font-bold text-orange-600">{{
+                                    report()?.summary?.averageUtilization?.toFixed(1) }}%</div>
+                                <div class="text-600">Avg. Utilization</div>
+                            </div>
+                        </div>
+                        <div class="col-12 md:col-3">
+                            <div class="text-center p-3 border-round surface-100">
+                                <div class="text-lg font-bold text-purple-600">{{
+                                    report()?.summary?.topPerformingProduct
+                                    }}</div>
+                                <div class="text-600">Top Performer</div>
+                            </div>
+                        </div>
+                    </div>
+                </p-card>
+            </div>
+
+            <!-- Revenue Trends -->
+            <div class="col-12 lg:col-8">
+                <saanjhi-ui-analytics-chart title="Revenue Trends" chartType="line" [data]="getRevenueTrendChart()"
+                    chartHeight="400px" />
+            </div>
+
+            <!-- Category Performance -->
+            <div class="col-12 lg:col-4">
+                <saanjhi-ui-analytics-chart title="Category Revenue" chartType="doughnut"
+                    [data]="getCategoryRevenueChart()" chartHeight="400px" />
+            </div>
+        </div>
+    </p-tabPanel>
+
+    <!-- Product Performance Tab -->
+    <p-tabPanel header="Product Performance" leftIcon="pi pi-box">
+        <p-card header="Product Performance Analysis">
+            <p-table [value]="report()?.productPerformance || []" [paginator]="true" [rows]="10"
+                [sortField]="'totalRevenue'" [sortOrder]="-1" responsiveLayout="scroll">
+
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th pSortableColumn="productName">
+                            Product <p-sortIcon field="productName"></p-sortIcon>
+                        </th>
+                        <th pSortableColumn="category">
+                            Category <p-sortIcon field="category"></p-sortIcon>
+                        </th>
+                        <th pSortableColumn="totalRentals">
+                            Rentals <p-sortIcon field="totalRentals"></p-sortIcon>
+                        </th>
+                        <th pSortableColumn="totalRevenue">
+                            Revenue <p-sortIcon field="totalRevenue"></p-sortIcon>
+                        </th>
+                        <th pSortableColumn="utilizationRate">
+                            Utilization <p-sortIcon field="utilizationRate"></p-sortIcon>
+                        </th>
+                        <th pSortableColumn="profitMargin">
+                            Profit Margin <p-sortIcon field="profitMargin"></p-sortIcon>
+                        </th>
+                        <th pSortableColumn="rating">
+                            Performance <p-sortIcon field="rating"></p-sortIcon>
+                        </th>
+                    </tr>
+                </ng-template>
+
+                <ng-template pTemplate="body" let-product>
+                    <tr>
+                        <td>
+                            <div class="font-semibold">{{ product.productName }}</div>
+                            <small class="text-600">{{ product.averageRentalDuration }} days avg</small>
+                        </td>
+                        <td>{{ product.category }}</td>
+                        <td>
+                            <span class="font-bold">{{ product.totalRentals }}</span>
+                        </td>
+                        <td>
+                            <span class="font-bold text-green-600">{{ product.totalRevenue | appCurrency }}</span>
+                        </td>
+                        <td>
+                            <div class="flex align-items-center gap-2">
+                                <p-progressBar [value]="product.utilizationRate"
+                                    [style]="{ width: '60px', height: '8px' }">
+                                </p-progressBar>
+                                <span class="text-sm">{{ product.utilizationRate.toFixed(0) }}%</span>
+                            </div>
+                        </td>
+                        <td>
+                            <span [class]="product.profitMargin > 0 ? 'text-green-600' : 'text-red-600'"
+                                class="font-semibold">
+                                {{ product.profitMargin.toFixed(1) }}%
+                            </span>
+                        </td>
+                        <td>
+                            <p-tag [value]="getPerformanceRating(product.rating)"
+                                [severity]="getPerformanceSeverity(product.rating)" />
+                        </td>
+                    </tr>
+                </ng-template>
+            </p-table>
+        </p-card>
+    </p-tabPanel>
+
+    <!-- Utilization Trends Tab -->
+    <p-tabPanel header="Utilization Trends" leftIcon="pi pi-chart-line">
+        <div class="grid">
+            <div class="col-12">
+                <saanjhi-ui-analytics-chart title="Monthly Utilization Trends" chartType="bar"
+                    [data]="getUtilizationTrendChart()" chartHeight="400px" />
+            </div>
+
+            <div class="col-12">
+                <p-card header="Utilization Summary">
+                    <p-table [value]="report()?.utilizationTrends || []" responsiveLayout="scroll">
+                        <ng-template pTemplate="header">
+                            <tr>
+                                <th>Month</th>
+                                <th>Total Products</th>
+                                <th>Rented Products</th>
+                                <th>Utilization Rate</th>
+                                <th>Revenue</th>
+                            </tr>
+                        </ng-template>
+                        <ng-template pTemplate="body" let-trend>
+                            <tr>
+                                <td class="font-semibold">{{ trend.month }}</td>
+                                <td>{{ trend.totalProducts }}</td>
+                                <td>{{ trend.rentedProducts }}</td>
+                                <td>
+                                    <div class="flex align-items-center gap-2">
+                                        <p-progressBar [value]="trend.utilizationRate"
+                                            [style]="{ width: '80px', height: '8px' }">
+                                        </p-progressBar>
+                                        <span>{{ trend.utilizationRate.toFixed(0) }}%</span>
+                                    </div>
+                                </td>
+                                <td class="font-semibold text-green-600">{{ trend.revenue | appCurrency }}</td>
+                            </tr>
+                        </ng-template>
+                    </p-table>
+                </p-card>
+            </div>
+        </div>
+    </p-tabPanel>
+
+    <!-- Maintenance Tab -->
+    <p-tabPanel header="Maintenance Report" leftIcon="pi pi-wrench">
+        <p-card header="Product Maintenance Status">
+            <p-table [value]="report()?.maintenanceReport || []" [paginator]="true" [rows]="10"
+                responsiveLayout="scroll">
+
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th>Product</th>
+                        <th>Condition</th>
+                        <th>Last Maintenance</th>
+                        <th>Next Maintenance</th>
+                        <th>Maintenance Cost</th>
+                        <th>Recommended Action</th>
+                    </tr>
+                </ng-template>
+
+                <ng-template pTemplate="body" let-maintenance>
+                    <tr>
+                        <td class="font-semibold">{{ maintenance.productName }}</td>
+                        <td>
+                            <p-tag [value]="maintenance.condition"
+                                [severity]="getConditionSeverity(maintenance.condition)" />
+                        </td>
+                        <td>{{ maintenance.lastMaintenance | date: 'shortDate' }}</td>
+                        <td>
+                            <span
+                                [class]="isMaintenanceOverdue(maintenance.nextMaintenance) ? 'text-red-600 font-bold' : ''">
+                                {{ maintenance.nextMaintenance | date: 'shortDate' }}
+                            </span>
+                        </td>
+                        <td>{{ maintenance.maintenanceCost | appCurrency }}</td>
+                        <td>
+                            <span class="text-sm">{{ maintenance.recommendedAction }}</span>
+                        </td>
+                    </tr>
+                </ng-template>
+            </p-table>
+        </p-card>
+    </p-tabPanel>
+</p-tabView>

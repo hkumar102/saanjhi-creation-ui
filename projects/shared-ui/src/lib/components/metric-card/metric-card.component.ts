@@ -45,7 +45,7 @@ import { CardModule } from 'primeng/card';
 })
 export class MetricCardComponent {
   title = input.required<string>();
-  value = input.required<string>();
+  value = input.required<string | null>();
   trend = input<string>('');
   trendPeriod = input<string>('vs last month');
   icon = input.required<string>();

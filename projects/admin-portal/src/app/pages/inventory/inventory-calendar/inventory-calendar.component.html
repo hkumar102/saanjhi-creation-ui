@@ -1,0 +1,135 @@
+<!-- Calendar Header -->
+<div class="flex justify-content-between align-items-center mb-4">
+    <div>
+        <h1 class="text-3xl font-bold text-900 m-0">Rental Calendar</h1>
+        <p class="text-600 mt-1">View and manage product rental schedules and availability.</p>
+    </div>
+    <div class="flex gap-2">
+        <p-dropdown [options]="productOptions" [(ngModel)]="selectedProductFilter" placeholder="Filter by product"
+            (onChange)="onProductFilter()" [showClear]="true" optionLabel="name" optionValue="id" />
+
+        <p-dropdown [options]="viewOptions" [(ngModel)]="selectedView" (onChange)="onViewChange()" optionLabel="label"
+            optionValue="value" />
+    </div>
+</div>
+
+<!-- Calendar Legend -->
+<p-card styleClass="mb-4">
+    <div class="flex flex-wrap gap-4 align-items-center">
+        <span class="font-semibold text-900">Legend:</span>
+        <div class="flex align-items-center gap-2">
+            <div class="border-circle" style="width: 12px; height: 12px; background: #10B981;"></div>
+            <span class="text-sm">Active Rentals</span>
+        </div>
+        <div class="flex align-items-center gap-2">
+            <div class="border-circle" style="width: 12px; height: 12px; background: #3B82F6;"></div>
+            <span class="text-sm">Upcoming Rentals</span>
+        </div>
+        <div class="flex align-items-center gap-2">
+            <div class="border-circle" style="width: 12px; height: 12px; background: #F59E0B;"></div>
+            <span class="text-sm">Maintenance</span>
+        </div>
+        <div class="flex align-items-center gap-2">
+            <div class="border-circle" style="width: 12px; height: 12px; background: #8B5CF6;"></div>
+            <span class="text-sm">Reserved</span>
+        </div>
+    </div>
+</p-card>
+
+<!-- Calendar -->
+<p-card>
+    <full-calendar [options]="calendarOptions" #calendar>
+    </full-calendar>
+</p-card>
+
+<!-- Event Details Dialog -->
+<p-dialog header="Rental Details" [(visible)]="showEventDialog" [modal]="true" [style]="{ width: '500px' }"
+    [closable]="true">
+
+    <div *ngIf="selectedEvent" class="flex flex-column gap-3">
+        <!-- Event Type Badge -->
+        <div class="flex align-items-center gap-2">
+            <p-tag [value]="getEventTypeLabel(selectedEvent.extendedProps.type)"
+                [severity]="getEventTypeSeverity(selectedEvent.extendedProps.type)"
+                [icon]="getEventTypeIcon(selectedEvent.extendedProps.type)" />
+            <p-tag [value]="selectedEvent.extendedProps.status" severity="info" />
+        </div>
+
+        <!-- Product Information -->
+        <div class="field-group">
+            <label class="font-semibold">Product:</label>
+            <span>{{ selectedEvent.extendedProps.productName }}</span>
+        </div>
+
+        <!-- Customer Information -->
+        <div class="field-group" *ngIf="selectedEvent.extendedProps.customerName">
+            <label class="font-semibold">Customer:</label>
+            <span>{{ selectedEvent.extendedProps.customerName }}</span>
+        </div>
+
+        <!-- Duration -->
+        <div class="field-group">
+            <label class="font-semibold">Duration:</label>
+            <span>{{ formatDateRange(selectedEvent.start, selectedEvent.end) }}</span>
+        </div>
+
+        <!-- Rental Price -->
+        <div class="field-group" *ngIf="selectedEvent.extendedProps.rentalPrice">
+            <label class="font-semibold">Rental Price:</label>
+            <span class="font-bold text-primary">{{ selectedEvent.extendedProps.rentalPrice | appCurrency }}</span>
+        </div>
+
+        <!-- Days Count -->
+        <div class="field-group">
+            <label class="font-semibold">Duration:</label>
+            <span>{{ calculateDays(selectedEvent.start, selectedEvent.end) }} days</span>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="flex gap-2 mt-3">
+            <p-button label="View Details" icon="pi pi-eye" severity="info" size="small"
+                (onClick)="viewFullDetails()" />
+
+            <p-button *ngIf="selectedEvent.extendedProps.type === 'rental'" label="Edit Rental" icon="pi pi-pencil"
+                severity="secondary" size="small" (onClick)="editRental()" />
+
+            <p-button *ngIf="canExtendRental()" label="Extend" icon="pi pi-plus" severity="success" size="small"
+                (onClick)="extendRental()" />
+        </div>
+    </div>
+</p-dialog>
+
+<!-- Availability Check Dialog -->
+<p-dialog header="Check Availability" [(visible)]="showAvailabilityDialog" [modal]="true" [style]="{ width: '400px' }"
+    [closable]="true">
+
+    <div class="flex flex-column gap-3">
+        <p>Check product availability for the selected date range:</p>
+
+        <div class="field-group">
+            <label>Selected Date:</label>
+            <span class="font-semibold">{{ selectedDate | date: 'fullDate' }}</span>
+        </div>
+
+        <div class="flex flex-column gap-2">
+            <span class="font-semibold">Available Products:</span>
+            <div *ngFor="let product of availableProducts"
+                class="flex align-items-center gap-2 p-2 border-round surface-50">
+                <i class="pi pi-check-circle text-green-500"></i>
+                <span>{{ product.name }}</span>
+                <p-tag [value]="product.availableQuantity + ' available'" severity="success" />
+            </div>
+
+            <div *ngIf="availableProducts.length === 0" class="text-center text-600 py-3">
+                <i class="pi pi-times-circle text-red-500 text-2xl"></i>
+                <p class="mt-2">No products available for this date</p>
+            </div>
+        </div>
+
+        <div class="flex gap-2 mt-3">
+            <p-button label="Create Rental" icon="pi pi-plus" severity="success"
+                [disabled]="availableProducts.length === 0" (onClick)="createRental()" />
+            <p-button label="Close" severity="secondary" (onClick)="showAvailabilityDialog = false" />
+        </div>
+    </div>
+</p-dialog>
