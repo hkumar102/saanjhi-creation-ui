@@ -7,4 +7,6 @@ export * from './role.model';
 export * from './media.model';
 export * from './customer.model';
 export * from './rental.model';
+export * from './inventory.models';
+export * from './reports.models';
 

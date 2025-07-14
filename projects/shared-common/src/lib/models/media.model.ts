@@ -14,3 +14,12 @@ export interface MediaTypeDto {
     label: string;
     id: MediaType;
 }
+
+// New interface for the file upload endpoint
+export interface UploadProductMediaRequest {
+    file: File;
+    isPrimary?: boolean;
+    color?: string;
+    altText?: string;
+    displayOrder?: number;
+}

@@ -1,0 +1,78 @@
+<div class="product-workflow">
+    <div class="flex justify-content-between align-items-center">
+        <h2 class="mb-4">Product Workflow</h2>
+        <button pButton type="button" label="Cancel" (click)="cancelWorkflow()" class="p-button-secondary"></button>
+    </div>
+    <p-stepper styleClass="mb-4" [value]="currentStep().id">
+        <p-card styleClass="mb-4">
+            <p-step-list>
+                <p-step *ngFor="let step of steps" [value]="step.id">
+                    <ng-template #content let-activateCallback="activateCallback" let-value="step">
+                        <div class="flex flex-column justify-content-center gap-2 align-items-center">
+                            <p-button [rounded]="true" icon="pi pi-{{ step.icon }}" [size]="'large'" [rounded]="true"
+                                [text]="true" [raised]="true"
+                                [severity]="isStepCompleted(step.step) ? 'success' : 'secondary'"
+                                [styleClass]="getStepClasses(step.step)" (onClick)="goToStep(step.step)"></p-button>
+                            <div>
+                                <i class="pi" [ngClass]="step.icon"></i>
+                                <div class="ml-2 flex flex-column text-center gap-2">
+                                    <span class="font-semibold">{{ step.label }}</span>
+                                    <small class="text-color-secondary">{{ step.description }}</small>
+                                </div>
+                            </div>
+                        </div>
+
+                    </ng-template>
+
+                </p-step>
+            </p-step-list>
+        </p-card>
+        <p-card>
+            <p-step-panels>
+                <p-step-panel *ngFor="let step of steps" [value]="step.id">
+                    <ng-template #content let-activateCallback="activateCallback">
+                        <ng-container [ngSwitch]="step.id">
+                            <app-basic-info-step *ngSwitchCase="1" [form]="basicInfoForm">
+                            </app-basic-info-step>
+                            <app-product-details-step *ngSwitchCase="2" [detailsForm]="productDetailsForm">
+                            </app-product-details-step>
+                            <app-media-upload-step *ngSwitchCase="3" [mediaForm]="mediaUploadForm">
+                            </app-media-upload-step>
+                            <app-inventory-setup-step *ngSwitchCase="4" [form]="inventorySetupForm">
+                            </app-inventory-setup-step>
+                            <app-review-publish-step *ngSwitchCase="5">
+                            </app-review-publish-step>
+                        </ng-container>
+                    </ng-template>
+                </p-step-panel>
+            </p-step-panels>
+        </p-card>
+    </p-stepper>
+
+    <!-- <div class="workflow-step-content">
+        <ng-container [ngSwitch]="workflowState().currentStep">
+            <app-basic-info-step *ngSwitchCase="WorkflowStep.BASIC_INFO" [form]="basicInfoForm">
+            </app-basic-info-step>
+            <app-product-details-step *ngSwitchCase="WorkflowStep.PRODUCT_DETAILS" [detailsForm]="productDetailsForm">
+            </app-product-details-step>
+            <app-media-upload-step *ngSwitchCase="WorkflowStep.MEDIA_UPLOAD" [mediaForm]="mediaUploadForm">
+            </app-media-upload-step>
+            <app-inventory-setup-step *ngSwitchCase="WorkflowStep.INVENTORY_SETUP" [form]="inventorySetupForm">
+            </app-inventory-setup-step>
+            <app-review-publish-step *ngSwitchCase="WorkflowStep.REVIEW">
+            </app-review-publish-step>
+        </ng-container>
+    </div> -->
+
+    <div class="workflow-actions mt-4 flex gap-2">
+        <button pButton type="button" label="Previous" (click)="goToPreviousStep()"
+            [disabled]="!navigation().canGoPrevious"></button>
+        <button pButton type="button" label="Next" (click)="goToNextStep()"
+            [disabled]="!navigation().canGoNext"></button>
+        <button pButton type="button" label="Save Draft" (click)="saveDraft()"
+            [disabled]="!navigation().canSave"></button>
+        <button pButton type="button" label="Publish" (click)="publishProduct()"
+            [disabled]="!navigation().canPublish"></button>
+
+    </div>
+</div>

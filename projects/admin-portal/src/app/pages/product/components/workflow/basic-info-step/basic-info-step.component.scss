@@ -1,0 +1,56 @@
+// Basic Info Step Component Styles
+// Using PrimeNG 19 and PrimeFlex 4
+
+.field {
+  .p-float-label {
+    margin-bottom: 0.5rem;
+  }
+  
+  .p-inputtext,
+  .p-dropdown,
+  .p-inputnumber,
+  .p-inputtextarea,
+  saanjhi-ui-category-select {
+    transition: all 0.2s ease;
+    
+    &:focus-within {
+      box-shadow: 0 0 0 0.2rem rgba(var(--primary-color-rgb), 0.2);
+    }
+  }
+}
+
+// Price input styling
+.p-inputnumber {
+  .p-inputtext {
+    text-align: right;
+  }
+}
+
+// Tags input styling
+.p-chips {
+  .p-chips-multiple-container {
+    min-height: 3rem;
+  }
+}
+
+// Responsive adjustments
+@media (max-width: 768px) {
+  .grid .col-12 {
+    padding: 0.5rem;
+  }
+  
+  .field {
+    margin-bottom: 1.5rem;
+  }
+}
+
+// Form validation states
+.ng-invalid.ng-touched,
+.ng-invalid.ng-dirty {
+  border-color: var(--red-500) !important;
+}
+
+// Success state
+.ng-valid.ng-touched:not(.ng-pristine) {
+  border-color: var(--green-500) !important;
+}

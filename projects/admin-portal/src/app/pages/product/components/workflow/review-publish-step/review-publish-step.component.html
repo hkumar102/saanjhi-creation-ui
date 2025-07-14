@@ -1,0 +1,190 @@
+<div>
+    <p-accordion>
+        <p-accordion-panel value="0">
+            <p-accordion-header>
+                <div class="flex justify-content-between align-items-center flex-1 mr-5">
+                    <div class="flex align-items-center gap-1 md:gap-5">
+                        <h3>Basic Info</h3>
+                        <p-badge [value]="isValidStep(1) ? 'Valid' : 'Invalid'"
+                            [severity]="isValidStep(1) ? 'success' : 'danger'">
+                            <i class="pi pi-exclamation-triangle"></i>
+                        </p-badge>
+                    </div>
+                    <div class="flex gap-2 align-items-center">
+                        <p-button icon="pi pi-pencil" [rounded]="true" (onClick)="editStep('details')"
+                            severity="info"></p-button>
+                    </div>
+                </div>
+            </p-accordion-header>
+            <p-accordion-content>
+                <div class="grid">
+                    <div class="col-6">
+                        <strong>Name:</strong>
+                        <span class="ml-3">{{ workflow.basicInfo?.name }}</span>
+                    </div>
+                    <div class="col-6">
+                        <strong>Description:</strong>
+                        <span class="ml-3">{{ workflow.basicInfo?.description }}</span>
+                    </div>
+                    <div class="col-6">
+                        <strong>Category:</strong>
+                        <span class="ml-3">{{ workflow.basicInfo?.categoryName }}</span>
+                    </div>
+                    <div class="col-6">
+                        <strong>Purchase Price:</strong>
+                        <span class="ml-3">{{ workflow.basicInfo?.purchasePrice | appCurrency }}</span>
+                    </div>
+                    <div class="col-6">
+                        <strong>Rental Price:</strong>
+                        <span class="ml-3">{{ workflow.basicInfo?.rentalPrice | appCurrency }}</span>
+                    </div>
+                    <div class="col-6">
+                        <strong>Tags:</strong>
+                        <ng-container *ngFor="let tag of workflow.basicInfo?.tags">
+                            <p-tag class="mr-2" value="{{ tag }}"></p-tag>
+                        </ng-container>
+                    </div>
+                </div>
+            </p-accordion-content>
+        </p-accordion-panel>
+        <p-accordion-panel value="1">
+            <p-accordion-header>
+                <div class="flex justify-content-between align-items-center flex-1 mr-5">
+                    <div class="flex align-items-center gap-1 md:gap-5">
+                        <h3>Product Details</h3>
+                        <p-badge [value]="isValidStep(2) ? 'Valid' : 'Invalid'"
+                            [severity]="isValidStep(2) ? 'success' : 'danger'">
+                            <i class="pi pi-exclamation-triangle"></i>
+                        </p-badge>
+                    </div>
+                    <div class="flex gap-2 align-items-center">
+                        <p-button icon="pi pi-pencil" [rounded]="true" (onClick)="editStep('details')"
+                            severity="info"></p-button>
+                    </div>
+                </div>
+            </p-accordion-header>
+            <p-accordion-content>
+                <div class="flex justify-content-end">
+
+                </div>
+                <div class="grid">
+                    <div class="col-6">
+                        <strong>Brand:</strong>
+                        <span class="ml-3">{{ workflow.productDetails?.brand }}</span>
+                    </div>
+                    <div class="col-6">
+                        <strong>Designer:</strong>
+                        <span class="ml-3">{{ workflow.productDetails?.designer }}</span>
+                    </div>
+                    <div class="col-6">
+                        <strong>SKU:</strong>
+                        <span class="ml-3">{{ workflow.productDetails?.sku }}</span>
+                    </div>
+                    <div class="col-6">
+                        <strong>Material:</strong>
+                        <span class="ml-3">{{ workflow.productDetails?.material }}</span>
+                    </div>
+                    <div class="col-6">
+                        <strong>Care Instructions:</strong>
+                        <span class="ml-3">{{ workflow.productDetails?.careInstructions }}</span>
+                    </div>
+                    <div class="col-6">
+                        <strong>Occasion:</strong>
+                        <span class="ml-3">{{ workflow.productDetails?.occasion }}</span>
+                    </div>
+                    <div class="col-6">
+                        <strong>Season:</strong>
+                        <span class="ml-3">{{ workflow.productDetails?.season }}</span>
+                    </div>
+                    <div class="col-6">
+                        <strong>Available Sizes:</strong>
+                        <span class="ml-3">{{ workflow.productDetails?.availableSizes?.join(', ') }}</span>
+                    </div>
+                    <div class="col-6">
+                        <strong>Available Colors:</strong>
+                        <span class="ml-3">{{ workflow.productDetails?.availableColors?.join(', ') }}</span>
+                    </div>
+                </div>
+            </p-accordion-content>
+        </p-accordion-panel>
+        <p-accordion-panel value="2">
+            <p-accordion-header>
+                <div class="flex justify-content-between align-items-center flex-1 mr-5">
+                    <div class="flex align-items-center gap-1 md:gap-5">
+                        <h3>Media</h3>
+                        <p-badge [value]="isValidStep(3) ? 'Valid' : 'Invalid'"
+                            [severity]="isValidStep(3) ? 'success' : 'danger'">
+                            <i class="pi pi-exclamation-triangle"></i>
+                        </p-badge>
+                    </div>
+                    <div class="flex gap-2 align-items-center">
+                        <p-button icon="pi pi-pencil" [rounded]="true" (onClick)="editStep('media')"
+                            severity="info"></p-button>
+                    </div>
+                </div>
+            </p-accordion-header>
+            <p-accordion-content>
+                <div class="grid">
+                    <div class="col-12 flex flex-wrap">
+                        <ng-container *ngFor="let file of workflow.mediaData?.uploadedFiles">
+                            <div class="mr-2 mb-2" style="position:relative;display:inline-block;">
+                                <img [src]="file.previewUrl" alt="Media"
+                                    style="width:64px;height:64px;object-fit:cover;border-radius:4px;border:1px solid #eee;" />
+                                <p-badge *ngIf="file.isPrimary" value="Main" severity="success"
+                                    styleClass="p-badge-success"></p-badge>
+                            </div>
+                        </ng-container>
+                    </div>
+                </div>
+            </p-accordion-content>
+        </p-accordion-panel>
+        <p-accordion-panel value="3">
+            <p-accordion-header>
+                 <div class="flex justify-content-between align-items-center flex-1 mr-5">
+                    <div class="flex align-items-center gap-1 md:gap-5">
+                        <h3>Inventory</h3>
+                        <p-badge [value]="isValidStep(4) ? 'Valid' : 'Invalid'"
+                            [severity]="isValidStep(4) ? 'success' : 'danger'">
+                            <i class="pi pi-exclamation-triangle"></i>
+                        </p-badge>
+                    </div>
+                    <div class="flex gap-2 align-items-center">
+                        <p-button icon="pi pi-pencil" [rounded]="true" (onClick)="editStep('inventory')"
+                            severity="info"></p-button>
+                    </div>
+                </div>
+            </p-accordion-header>
+            <p-accordion-content>
+                <p-table *ngIf="workflow.inventoryData?.inventoryItems"
+                    [value]="workflow.inventoryData?.inventoryItems!" responsiveLayout="scroll">
+                    <ng-template pTemplate="header">
+                        <tr>
+                            <th>Serial</th>
+                            <th>Size</th>
+                            <th>Color</th>
+                            <th>Condition</th>
+                            <th>Acquisition Date</th>
+                            <th>Acquisition Cost</th>
+                            <th>Condition Notes</th>
+                            <th>Warehouse Location</th>
+                        </tr>
+                    </ng-template>
+                    <ng-template pTemplate="body" let-item>
+                        <tr>
+                            <td>{{ item.serialNumber }}</td>
+                            <td>{{ item.size }}</td>
+                            <td>{{ item.color }}</td>
+                            <td>{{ item.condition }}</td>
+                            <td>{{ item.acquisitionDate | date }}</td>
+                            <td>{{ item.acquisitionCost | appCurrency }}</td>
+                            <td>{{ item.conditionNotes }}</td>
+                            <td>{{ item.warehouseLocation }}</td>
+                        </tr>
+                    </ng-template>
+                </p-table>
+            </p-accordion-content>
+        </p-accordion-panel>
+    </p-accordion>
+</div>
+
+<!-- Add custom styles for badges, cards, and mobile accordion in SCSS file as needed -->

@@ -1,6 +1,6 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { FormBuilder, Validators, FormGroup, ReactiveFormsModule } from '@angular/forms';
-import { UserServiceClient, UserContextService, ToastService, Role, RoleServiceClient, MediaServiceClient, MediaType, UserDto } from '@saanjhi-creation-ui/shared-common';
+import { UserServiceClient, UserContextService, ToastService, Role, MediaServiceClient, MediaType, UserDto } from '@saanjhi-creation-ui/shared-common';
 import { UiFileuploadComponent, UiButtonComponent, UiFormErrorComponent, UiFormFieldComponent, UiInputComponent, UiMultiselectComponent } from '@saanjhi-creation-ui/shared-ui';
 
 @Component({
@@ -25,7 +25,7 @@ export class UpdateProfileComponent implements OnInit {
     private userService = inject(UserServiceClient);
     private currentUserService = inject(UserContextService);
     private toastService = inject(ToastService);
-    private roleService = inject(RoleServiceClient);
+    // private roleService = inject(RoleServiceClient);
     private mediaService = inject(MediaServiceClient);
 
     roles: Role[] = [];
@@ -43,7 +43,7 @@ export class UpdateProfileComponent implements OnInit {
         try {
             const user = await this.userService.getUser(userId!);
             this.profileForm.patchValue(user!);
-            this.roles = await this.roleService.getAllRoles();
+            //this.roles = await this.roleService.getAllRoles();
         } catch (error) {
 
         }
@@ -53,8 +53,8 @@ export class UpdateProfileComponent implements OnInit {
         if (!files.length) return;
 
         const file = files[0];
-        const result = await this.mediaService.upload(file, MediaType.Image);
-        this.profileForm.patchValue({ photoUrl: result.url });
+        // const result = await this.mediaService.upload(file, MediaType.Image);
+        // this.profileForm.patchValue({ photoUrl: result.url });
     }
 
     async onSubmit() {

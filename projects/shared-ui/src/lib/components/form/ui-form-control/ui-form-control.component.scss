@@ -1,0 +1,32 @@
+// UI Form Control Component Styles
+// Using PrimeFlex for layout, minimal custom styles
+
+.field {
+  // Default field spacing
+  margin-bottom: 1rem;
+}
+
+// Responsive adjustments
+@media (max-width: 768px) {
+  .field {
+    margin-bottom: 0.75rem;
+  }
+}
+
+// Ensure proper spacing for floating labels
+p-floatlabel {
+  display: block;
+  width: 100%;
+}
+
+// Traditional label styling
+label.block {
+  font-weight: 600;
+  color: var(--text-color);
+}
+
+// Help text styling
+small.text-color-secondary {
+  font-size: 0.75rem;
+  line-height: 1.2;
+}

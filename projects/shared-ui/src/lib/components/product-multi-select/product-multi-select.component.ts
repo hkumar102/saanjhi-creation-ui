@@ -22,7 +22,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import {
     ProductServiceClient,
     ProductDto,
-    ProductFilter,
+    GetAllProductsQuery,
     ToastService
 } from '@saanjhi-creation-ui/shared-common';
 
@@ -257,11 +257,14 @@ export class ProductSelectComponent implements ControlValueAccessor, OnInit {
         this.currentSearchTerm = search;
 
         try {
-            const query: ProductFilter = {
+            const query: GetAllProductsQuery = {
                 page: this.currentPage,
                 pageSize: this.pageSize(),
                 sortBy: 'name',
-                sortDesc: false
+                sortDesc: false,
+                includeInventory: false,
+                includeMedia: false,
+                organizeMediaByColor: false,
             };
 
             // Add search filter
@@ -269,7 +272,7 @@ export class ProductSelectComponent implements ControlValueAccessor, OnInit {
                 query.search = search.trim();
             }
 
-            const result = await this.productClient.getAll(query);
+            const result = await this.productClient.search(query);
             const newItems = result.items || [];
 
             if (reset) {

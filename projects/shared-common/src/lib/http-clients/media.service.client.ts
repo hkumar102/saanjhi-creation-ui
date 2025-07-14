@@ -1,28 +1,48 @@
 // shared/services/media.service.ts
+import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { inject, Injectable } from '@angular/core';
 import { lastValueFrom, Observable, of } from 'rxjs';
-import { APP_CONFIG, AppConfig } from '../core/app-config.token';
-import { MediaType, MediaTypeDto, UploadMediaResult } from '../models';
+import { ProductMediaDto, AddProductMediaCommand } from '../models';
+import { APP_CONFIG, AppConfig } from '@saanjhi-creation-ui/shared-common';
 
 @Injectable({
-    providedIn: 'root'
+  providedIn: 'root',
 })
 export class MediaServiceClient {
-    private config = inject(APP_CONFIG) as AppConfig;
-    private baseUrl = `${this.config.mediaServiceBaseUrl}/media`;
-    private http = inject(HttpClient);
+  private config = inject(APP_CONFIG) as AppConfig;
+  private baseUrl = `${this.config.productServiceBaseUrl}/Media`;
+  private http = inject(HttpClient);
 
+  getProductMedia(productId: string, color?: string): Promise<ProductMediaDto[]> {
+    let params = new HttpParams();
+    if (color) params = params.append('color', color);
+    
+    return lastValueFrom(this.http.get<ProductMediaDto[]>(`${this.baseUrl}/product/${productId}`, { params }));
+  }
 
-    upload(file: File, mediaType: MediaType): Promise<UploadMediaResult> {
-        const formData = new FormData();
-        formData.append('file', file);
-        formData.append('mediaType', mediaType.toString());
+  getProductMediaByColor(productId: string): Promise<Record<string, ProductMediaDto[]>> {
+    return lastValueFrom(this.http.get<Record<string, ProductMediaDto[]>>(`${this.baseUrl}/product/${productId}/by-color`));
+  }
 
-        return lastValueFrom(this.http.post<UploadMediaResult>(`${this.baseUrl}/upload`, formData));
-    }
+  getMainImage(productId: string, color?: string): Promise<ProductMediaDto> {
+    let params = new HttpParams();
+    if (color) params = params.append('color', color);
+    
+    return lastValueFrom(this.http.get<ProductMediaDto>(`${this.baseUrl}/product/${productId}/main`, { params }));
+  }
 
-    getMediaTypes(): Promise<MediaTypeDto[]> {
-        return lastValueFrom(of([{ label: 'Image', id: MediaType.Image }]));
-    }
+  getGallery(productId: string, color?: string): Promise<ProductMediaDto[]> {
+    let params = new HttpParams();
+    if (color) params = params.append('color', color);
+    
+    return lastValueFrom(this.http.get<ProductMediaDto[]>(`${this.baseUrl}/product/${productId}/gallery`, { params }));
+  }
+
+  add(command: AddProductMediaCommand): Promise<string> {
+    return lastValueFrom(this.http.post<string>(this.baseUrl, command));
+  }
+
+  delete(mediaId: string): Promise<void> {
+    return lastValueFrom(this.http.delete<void>(`${this.baseUrl}/${mediaId}`));
+  }
 }

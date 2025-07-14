@@ -1,6 +1,6 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { CheckboxModule } from 'primeng/checkbox';
+import { CheckboxChangeEvent, CheckboxModule } from 'primeng/checkbox';
 import { NG_VALUE_ACCESSOR, ControlValueAccessor, FormsModule } from '@angular/forms';
 import { BaseFormControl } from '../base-form-control';
 
@@ -27,14 +27,20 @@ import { BaseFormControl } from '../base-form-control';
 export class UiCheckboxComponent extends BaseFormControl implements ControlValueAccessor {
   @Input() label = '';
   @Input() disabled = false;
+  @Input() value: any;
+  @Input() name: string = '';
+  @Input() binary: boolean = false;
 
-  value: boolean = false;
+  @Output() change = new EventEmitter<boolean>();
+  modelValue: any = this.binary ? false : [];
 
-  onChange = (val: boolean) => {};
-  onTouched = () => {};
 
-  writeValue(val: boolean): void {
-    this.value = val;
+  onChange = (val: any) => { };
+  onTouched = () => { };
+
+
+  writeValue(val: any): void {
+    this.modelValue = val;
   }
 
   registerOnChange(fn: any): void {
@@ -47,5 +53,31 @@ export class UiCheckboxComponent extends BaseFormControl implements ControlValue
 
   setDisabledState(isDisabled: boolean): void {
     this.disabled = isDisabled;
+  }
+
+
+  onCheckboxChange(event: CheckboxChangeEvent) {
+    if (this.binary) {
+      this.modelValue = event.checked;
+      this.onChange(this.modelValue);
+    } else {
+      const current = Array.isArray(this.modelValue) ? [...this.modelValue] : [];
+
+      if (event.checked) {
+        if (!current.includes(this.value)) {
+          current.push(this.value);
+        }
+      } else {
+        const index = current.indexOf(this.value);
+        if (index !== -1) {
+          current.splice(index, 1);
+        }
+      }
+
+      this.modelValue = current;
+      this.onChange(current);
+    }
+
+    this.onTouched();
   }
 }
