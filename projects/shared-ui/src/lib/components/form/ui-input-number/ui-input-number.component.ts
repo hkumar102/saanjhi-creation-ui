@@ -2,7 +2,9 @@ import {
     ChangeDetectionStrategy,
     Component,
     forwardRef,
-    input
+    input,
+    ChangeDetectorRef,
+    inject
 } from '@angular/core';
 import {
     ControlValueAccessor,
@@ -64,6 +66,7 @@ import { InputNumberModule } from 'primeng/inputnumber';
     ]
 })
 export class UiInputNumberComponent implements ControlValueAccessor {
+    private cdr = inject(ChangeDetectorRef);
     // Input properties
     inputId = input<string>('');
     styleClass = input<string>('');
@@ -98,6 +101,7 @@ export class UiInputNumberComponent implements ControlValueAccessor {
 
     writeValue(value: any): void {
         this.value = value;
+        this.cdr.markForCheck(); // Ensure change detection runs
     }
 
     registerOnChange(fn: any): void {

@@ -44,63 +44,63 @@ export class HeaderComponent implements OnInit {
 
   // ✅ Navigation Menu Structure
   navigationMenu: MenuItem[] = [
-    {
-      label: 'Dashboard',
-      routerLink: '/dashboard',
-      icon: 'pi pi-chart-bar'
-    },
+    // {
+    //   label: 'Dashboard',
+    //   routerLink: '/dashboard',
+    //   icon: 'pi pi-chart-bar'
+    // },
     {
       label: 'Products',
       routerLink: '/products',
       icon: 'pi pi-box'
     },
-    {
-      label: 'Categories',
-      routerLink: '/categories',
-      icon: 'pi pi-tags'
-    },
-    {
-      label: 'Customers',
-      routerLink: '/customers',
-      icon: 'pi pi-users'
-    },
-    {
-      label: 'Rentals',
-      routerLink: '/rentals',
-      icon: 'pi pi-calendar'
-    },
-    {
-      label: 'Reports',
-      icon: 'pi pi-chart-pie',
-      items: [
-        {
-          label: 'Analytics',
-          routerLink: '/reports',
-          icon: 'pi pi-chart-bar'
-        },
-        {
-          label: 'Inventory Management',
-          icon: 'pi pi-box',
-          items: [
-            {
-              label: 'Inventory Dashboard',
-              routerLink: '/inventory',
-              icon: 'pi pi-chart-line'
-            },
-            {
-              label: 'Rental Calendar',
-              routerLink: '/inventory/calendar',
-              icon: 'pi pi-calendar'
-            },
-            {
-              label: 'Inventory Reports',
-              routerLink: '/inventory/reports',
-              icon: 'pi pi-file-chart'
-            }
-          ]
-        }
-      ]
-    }
+    // {
+    //   label: 'Categories',
+    //   routerLink: '/categories',
+    //   icon: 'pi pi-tags'
+    // },
+    // {
+    //   label: 'Customers',
+    //   routerLink: '/customers',
+    //   icon: 'pi pi-users'
+    // },
+    // {
+    //   label: 'Rentals',
+    //   routerLink: '/rentals',
+    //   icon: 'pi pi-calendar'
+    // },
+    // {
+    //   label: 'Reports',
+    //   icon: 'pi pi-chart-pie',
+    //   items: [
+    //     {
+    //       label: 'Analytics',
+    //       routerLink: '/reports',
+    //       icon: 'pi pi-chart-bar'
+    //     },
+    //     {
+    //       label: 'Inventory Management',
+    //       icon: 'pi pi-box',
+    //       items: [
+    //         {
+    //           label: 'Inventory Dashboard',
+    //           routerLink: '/inventory',
+    //           icon: 'pi pi-chart-line'
+    //         },
+    //         {
+    //           label: 'Rental Calendar',
+    //           routerLink: '/inventory/calendar',
+    //           icon: 'pi pi-calendar'
+    //         },
+    //         {
+    //           label: 'Inventory Reports',
+    //           routerLink: '/inventory/reports',
+    //           icon: 'pi pi-file-chart'
+    //         }
+    //       ]
+    //     }
+    //   ]
+    // }
   ];
 
   ngOnInit() {

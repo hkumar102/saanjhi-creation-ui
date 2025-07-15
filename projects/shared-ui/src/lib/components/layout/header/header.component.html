@@ -90,21 +90,21 @@
     <!-- Action Buttons -->
     <div class="header-actions">
       <!-- Search (Desktop) -->
-      <button class="action-btn search-btn hidden lg:flex" type="button" (click)="toggleSearch()" aria-label="Search">
+      <!-- <button class="action-btn search-btn hidden lg:flex" type="button" (click)="toggleSearch()" aria-label="Search">
         <i class="pi pi-search"></i>
-      </button>
+      </button> -->
 
       <!-- Wishlist -->
-      <button class="action-btn wishlist-btn" type="button" aria-label="Wishlist">
+      <!-- <button class="action-btn wishlist-btn" type="button" aria-label="Wishlist">
         <i class="pi pi-heart"></i>
         <span class="badge" *ngIf="wishlistCount() > 0">{{ wishlistCount() }}</span>
-      </button>
+      </button> -->
 
       <!-- Cart -->
-      <button class="action-btn cart-btn" type="button" (click)="toggleCart()" aria-label="Shopping cart">
+      <!-- <button class="action-btn cart-btn" type="button" (click)="toggleCart()" aria-label="Shopping cart">
         <i class="pi pi-shopping-cart"></i>
         <span class="badge" *ngIf="cartCount() > 0">{{ cartCount() }}</span>
-      </button>
+      </button> -->
 
       <!-- User Account -->
       <div class="user-menu" [class.open]="isUserMenuOpen()">

@@ -7,7 +7,8 @@ import {
     output,
     signal,
     OnInit,
-    DestroyRef
+    DestroyRef,
+    ChangeDetectorRef
 } from '@angular/core';
 import {
     ControlValueAccessor,
@@ -123,6 +124,7 @@ export class ProductSelectComponent implements ControlValueAccessor, OnInit {
     private productClient = inject(ProductServiceClient);
     private toast = inject(ToastService);
     private destroyRef = inject(DestroyRef);
+    private cdr = inject(ChangeDetectorRef);
 
     // Input properties
     multiple = input<boolean>(false);
@@ -195,6 +197,7 @@ export class ProductSelectComponent implements ControlValueAccessor, OnInit {
 
     writeValue(value: any): void {
         this.control.setValue(value, { emitEvent: false });
+        this.cdr.markForCheck(); // Ensure change detection runs
     }
 
     registerOnChange(fn: any): void {

@@ -16,13 +16,7 @@ import { DividerModule } from 'primeng/divider';
 import { ChipsModule } from 'primeng/chips';
 
 // Shared UI Components
-import {
-  CategorySelectComponent,
-  UiFormControlComponent,
-  UiInputComponent,
-  UiCheckboxComponent,
-  UiInputNumberComponent,
-} from '@saanjhi-creation-ui/shared-ui';
+import { CategorySelectComponent, UiFormControlComponent, UiInputComponent, UiCheckboxComponent, UiInputNumberComponent, UiTextareaComponent } from '@saanjhi-creation-ui/shared-ui';
 import { CategoryDto } from '@saanjhi-creation-ui/shared-common';
 import { BaseProductFlowComponent } from '../../base-product-flow.component';
 
@@ -45,7 +39,8 @@ import { BaseProductFlowComponent } from '../../base-product-flow.component';
     UiCheckboxComponent,
     UiInputNumberComponent,
     TextareaModule,
-  ],
+    UiTextareaComponent
+],
   templateUrl: './basic-info-step.component.html',
   styleUrls: ['./basic-info-step.component.scss']
 })
@@ -87,28 +82,31 @@ export class BasicInfoStepComponent extends BaseProductFlowComponent implements 
         description: stepData.description || '',
         categoryId: stepData.categoryId || '',
         categoryName: stepData.categoryName || '',
-        purchasePrice: stepData.purchasePrice || 0,
-        rentalPrice: stepData.rentalPrice || 0,
+        purchasePrice: stepData.purchasePrice || null,
+        rentalPrice: stepData.rentalPrice || null,
         isActive: stepData.isActive !== undefined ? stepData.isActive : true,
         isPurchasable: stepData.isPurchasable !== undefined ? stepData.isPurchasable : true,
         isRentable: stepData.isRentable !== undefined ? stepData.isRentable : true,
-        securityDeposit: stepData.securityDeposit || 0,
-        maxRentalDays: stepData.maxRentalDays || 30,
+        securityDeposit: stepData.securityDeposit || null,
+        maxRentalDays: stepData.maxRentalDays || null,
       }, { emitEvent: false });
 
       this.workflowService.updateStepData(WorkflowStep.BASIC_INFO, { ...stepData, isValid: this.form.valid });
+      //this.form.updateValueAndValidity(); // Ensure form is valid on init
+      this.form.markAsPristine(); // Mark form as pristine to avoid initial dirty state
+      this.form.markAsUntouched(); // Mark form as untouched to avoid initial validation errors
+      setTimeout(() => {
+        Object.keys(this.form.controls).forEach(key => {
+          const control = this.form.get(key);
+          if (control && control.invalid) {
+            control.markAsTouched();
+            control.markAsDirty();
+          }
+        });
+      });
     }
 
-    this.form.updateValueAndValidity(); // Ensure form is valid on init
-    this.form.markAsPristine(); // Mark form as pristine to avoid initial dirty state
-    this.form.markAsUntouched(); // Mark form as untouched to avoid initial validation errors
-    Object.keys(this.form.controls).forEach(key => {
-      const control = this.form.get(key);
-      if (control) {
-        control.markAsUntouched();
-        control.markAsPristine();
-      }
-    });
+
   }
 
   private setupFormSubscription(): void {

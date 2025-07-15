@@ -117,15 +117,7 @@ export class UiAutocompleteComponent<T = any>
             this.value = obj;
         }
     }
-
-    ngOnChanges(changes: SimpleChanges) {
-        if (changes['suggestions']) {
-            console.log('Suggestions changed:', changes['suggestions'].currentValue);
-            console.log('Type:', typeof changes['suggestions'].currentValue);
-            console.log('IsArray:', Array.isArray(changes['suggestions'].currentValue));
-        }
-    }
-
+    
     registerOnChange(fn: any): void {
         this.onChange = fn;
     }

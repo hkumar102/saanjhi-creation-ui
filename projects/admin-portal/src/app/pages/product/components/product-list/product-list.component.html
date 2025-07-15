@@ -1,38 +1,82 @@
-<p-card styleClass="mb-3">
-    <form [formGroup]="filterForm" class="flex flex-wrap gap-2">
-        <saanjhi-ui-form-control label="Search" inputId="search">
-            <saanjhi-ui-input inputId="search" formControlName="search" placeholder="Search..."></saanjhi-ui-input>
-        </saanjhi-ui-form-control>
+<saanjhi-ui-confirm-dialog #confirmDialog />
 
-        <saanjhi-ui-form-control label="Category" inputId="categoryIds">
-            <saanjhi-ui-category-select [multiple]="true" inputId="categoryIds" formControlName="categoryIds">
-            </saanjhi-ui-category-select>
-            <!-- <saanjhi-ui-autocomplete formControlName="categoryIds" [dropdown]="true" [multiple]="true" [suggestions]="categories" optionLabel="name" optionValue="id"></saanjhi-ui-autocomplete> -->
-        </saanjhi-ui-form-control>
-    </form>
+<p-card styleClass="mb-3">
+    <div class="flex justify-content-between align-items-center">
+        <div class="flex-1">
+            <form [formGroup]="filterForm" class="grid">
+                <saanjhi-ui-form-control label="Search" inputId="search" class="col-12 md:col-6">
+                    <saanjhi-ui-input inputId="search" formControlName="search"
+                        placeholder="Search..."></saanjhi-ui-input>
+                </saanjhi-ui-form-control>
+
+                <saanjhi-ui-form-control label="Category" inputId="categoryIds" class="col-12 md:col-6">
+                    <saanjhi-ui-category-select [multiple]="true" inputId="categoryIds" formControlName="categoryIds">
+                    </saanjhi-ui-category-select>
+                </saanjhi-ui-form-control>
+            </form>
+        </div>
+    </div>
+    <div class="flex justify-content-between align-items-center gap-2">
+        <button pButton severity="warn" type="button" label="Search Products" icon="fa-solid fa-magnifying-glass"
+            (click)="loadProducts()"></button>
+        <button pButton severity="info" type="button" label="Create Product" icon="fa-solid fa-plus"
+            (click)="onCreateProduct()"></button>
+    </div>
 </p-card>
 
- <p-table [value]="products" [rows]="query.pageSize" [totalRecords]="totalCount" [lazy]="true" [loading]="isLoading"
+<p-table [value]="products" [rows]="query.pageSize" [totalRecords]="totalCount" [lazy]="true" [loading]="isLoading"
     (onLazyLoad)="onPageChange($event)" [sortField]="query.sortBy" [sortOrder]="query.sortDesc ? -1 : 1"
     (sortFunction)="onSort($event)" [responsiveLayout]="'scroll'">
 
     <ng-template pTemplate="header">
         <tr>
-            <th pSortableColumn="mainImage">Image</th>
-            <th pSortableColumn="name">Name</th>
-            <th pSortableColumn="sku">SKU</th>
-            <th pSortableColumn="purchasePrice">Purchase Price</th>
-            <th pSortableColumn="rentalPrice">Rental Price</th>
-            <th pSortableColumn="securityDeposit">Security Deposit</th>
-            <th pSortableColumn="availableSizes">Sizes</th>
-            <th pSortableColumn="availableColors">Colors</th>
-            <th pSortableColumn="isActive">Active</th>
-            <th pSortableColumn="categoryName">Category</th>
-            <th pSortableColumn="totalInventoryCount">Total Inventory</th>
-            <th pSortableColumn="availableInventoryCount">Available Inventory</th>
-            <th pSortableColumn="createdAt">Created</th>
-            <th pSortableColumn="updatedAt">Updated</th>
-            <th>Actions</th>
+            <th pSortableColumn="mainImage">
+                <div class="flex items-center gap-2">
+                    Image
+                    <p-sortIcon field="mainImage" />
+                </div>
+            </th>
+            <th pSortableColumn="name">
+                <div class="flex items-center gap-2">
+                    Name
+                    <p-sortIcon field="name" />
+                </div>
+            </th>
+            <th pSortableColumn="sku">
+                <div class="flex items-center gap-2">
+                    SKU
+                    <p-sortIcon field="sku" />
+                </div>
+            </th>
+            <th pSortableColumn="purchasePrice">
+                <div class="flex items-center gap-2">
+                    Purchase Price
+                    <p-sortIcon field="purchasePrice" />
+                </div>
+            </th>
+            <th pSortableColumn="rentalPrice">
+                <div class="flex items-center gap-2">
+                    Rental Price
+                    <p-sortIcon field="rentalPrice" />
+                </div>
+            </th>
+            <th pSortableColumn="securityDeposit">
+                <div class="flex items-center gap-2">
+                    Security Deposit
+                    <p-sortIcon field="securityDeposit" />
+                </div>
+            </th>
+            <th pSortableColumn="categoryName">
+                <div class="flex items-center gap-2">
+                    Category
+                    <p-sortIcon field="categoryName" />
+                </div>
+            </th>
+            <th>
+                <div class="flex items-center gap-2">
+                    Actions
+                </div>
+            </th>
         </tr>
     </ng-template>
 
@@ -47,17 +91,14 @@
             <td>{{ product.purchasePrice | appCurrency }}</td>
             <td>{{ product.rentalPrice | appCurrency }}</td>
             <td>{{ product.securityDeposit | appCurrency }}</td>
-            <td>{{ product.availableSizes?.join(', ') }}</td>
-            <td>{{ product.availableColors?.join(', ') }}</td>
-            <td>{{ product.isActive ? 'Yes' : 'No' }}</td>
             <td>{{ product.categoryName }}</td>
-            <td>{{ product.totalInventoryCount }}</td>
-            <td>{{ product.availableInventoryCount }}</td>
-            <td>{{ product.createdAt | date:'short' }}</td>
-            <td>{{ product.updatedAt | date:'short' }}</td>
             <td>
-                <p-button icon="pi pi-pencil" (click)="editProduct(product)" class="p-button-text"></p-button>
-                <p-button icon="pi pi-trash" (click)="deleteProduct(product)" class="p-button-text"></p-button>
+                <div class="flex gap-2">
+                    <p-button icon="pi pi-pencil" [routerLink]="['/products/edit', product.id]" class="p-button-text"
+                        severity="info"></p-button>
+                    <p-button icon="pi pi-trash" severity="danger" (click)="deleteProduct(product)"
+                        class="p-button-text"></p-button>
+                </div>
             </td>
         </tr>
     </ng-template>

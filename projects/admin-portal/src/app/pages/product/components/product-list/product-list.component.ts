@@ -1,13 +1,15 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, ViewChild, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { ProductServiceClient, ProductDto, GetAllProductsQuery, ProductDtoPaginatedResult, AppCurrencyPipe } from '@saanjhi-creation-ui/shared-common';
 import { TableModule } from 'primeng/table';
 import { ButtonModule } from 'primeng/button';
-import { CategorySelectComponent, UiAutocompleteComponent, UiFormControlComponent, UiInputComponent } from '@saanjhi-creation-ui/shared-ui';
+import { CategorySelectComponent, UiFormControlComponent, UiInputComponent, UiConfirmDialogComponent } from '@saanjhi-creation-ui/shared-ui';
 import { takeUntil } from 'rxjs';
 import { AdminBaseComponent } from '../../../../common/components/base/admin-base.component';
 import { Card } from "primeng/card";
+import { RouterModule } from '@angular/router';
+import { ProductWorkflowService } from '../../services/product-workflow.service';
 
 @Component({
   selector: 'app-product-list',
@@ -22,15 +24,19 @@ import { Card } from "primeng/card";
     UiInputComponent,
     AppCurrencyPipe,
     Card,
-    UiAutocompleteComponent
+    RouterModule,
+    UiConfirmDialogComponent,
+    RouterModule
   ],
   templateUrl: './product-list.component.html',
   styleUrls: ['./product-list.component.scss']
 })
 export class ProductListComponent extends AdminBaseComponent implements OnInit {
   private productService = inject(ProductServiceClient);
+  private workflowService = inject(ProductWorkflowService);
   private fb = inject(FormBuilder);
 
+  @ViewChild('confirmDialog') confirmDialog!: UiConfirmDialogComponent;
   filterForm: FormGroup = this.fb.group({
     search: [''],
     categoryIds: [[]],
@@ -132,6 +138,22 @@ export class ProductListComponent extends AdminBaseComponent implements OnInit {
   }
 
   deleteProduct(product: ProductDto) {
-    // Implement delete logic
+    this.confirmDialog.open({
+      message: this.formatter.format(this.ConfirmationMessages.deleteConfirmation, product.name),
+      accept: async () => {
+        try {
+          await this.productService.delete(product.id);
+          this.toast.success(this.formatter.format(this.ConfirmationMessages.deleteSuccess, product.name));
+          await this.loadProducts();
+        } catch (error) {
+          this.toast.error(this.formatter.format(this.ConfirmationMessages.deleteFailed, product.name));
+        }
+      }
+    });
+  }
+
+  onCreateProduct() {
+    this.workflowService.resetWorkflow();
+    this.navigation.goToProductCreate();
   }
 }

@@ -1,9 +1,7 @@
-import { Component, OnInit, OnDestroy, inject, signal, computed } from '@angular/core';
+import { Component, OnInit, inject, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ActivatedRoute, Router } from '@angular/router';
-import { Subject, takeUntil } from 'rxjs';
-import { ProductWorkflowService } from '../../../services/product-workflow.service';
-import { WorkflowStep, WorkflowNavigation, InventoryItemData, WorkflowEvent } from '../../../models/product-workflow.models';
+import { takeUntil } from 'rxjs';
+import { WorkflowStep, WorkflowNavigation, WorkflowEvent } from '../../../models/product-workflow.models';
 import { BasicInfoStepComponent } from '../basic-info-step/basic-info-step.component';
 import { ProductDetailsStepComponent } from '../product-details-step/product-details-step.component';
 import { MediaUploadStepComponent } from '../media-upload-step/media-upload-step.component';
@@ -115,13 +113,13 @@ export class ProductWorkflowComponent extends BaseProductFlowComponent implement
     description: ['', [Validators.maxLength(1000)]],
     categoryId: ['', [Validators.required]],
     categoryName: ['', [Validators.required]],
-    purchasePrice: [1, [Validators.required, Validators.min(1)]],
-    rentalPrice: [1, [Validators.min(1)]],
+    purchasePrice: [null, [Validators.required, Validators.min(1)]],
+    rentalPrice: [null, [Validators.required, Validators.min(1)]],
     isActive: [false],
     isPurchasable: [true],
     isRentable: [true],
-    securityDeposit: [0, [Validators.min(0)]],
-    maxRentalDays: [3, [Validators.min(3), Validators.max(365)]],
+    securityDeposit: [null, [Validators.required, Validators.min(1)]],
+    maxRentalDays: [null, [Validators.required, Validators.min(1), Validators.max(365)]],
     tags: [[]] // Array for chips component
   });
   productDetailsForm: FormGroup = this.fb.group({
@@ -163,6 +161,7 @@ export class ProductWorkflowComponent extends BaseProductFlowComponent implement
 
   override ngOnInit(): void {
     super.ngOnInit();
+
     this.initializeWorkflow();
     this.subscribeToWorkflowEvents();
     this.updateNavigation();
@@ -175,9 +174,9 @@ export class ProductWorkflowComponent extends BaseProductFlowComponent implement
       // Get product ID from route params if editing
       const productId = this.route.snapshot.paramMap.get('id');
       this.productId.set(productId || undefined);
-
       // Initialize workflow service
       await this.workflowService.initializeWorkflow(productId || undefined);
+
     } catch (error) {
       console.error('Failed to initialize workflow:', error);
       this.router.navigate(['/products']);

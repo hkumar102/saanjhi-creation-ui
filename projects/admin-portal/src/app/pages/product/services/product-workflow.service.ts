@@ -125,7 +125,11 @@ export class ProductWorkflowService {
       currentStep: WorkflowStep.BASIC_INFO,
       isEditMode: false,
       isDraft: false,
-      completedSteps: []
+      completedSteps: [],
+      basicInfo: undefined,
+      productDetails: undefined,
+      mediaData: undefined,
+      inventoryData: undefined  
     });
     this.saveStateToLocalStorage();
     this.emitEvent({ type: 'STEP_CHANGED', step: WorkflowStep.BASIC_INFO });
@@ -250,12 +254,15 @@ export class ProductWorkflowService {
   // Save as draft
   async saveDraft(): Promise<boolean> {
     try {
-      await this.saveProduct();
-      const state = this.workflowState();
-      await this.loadExistingProduct(state.productId!);
-      this.toast.success('Draft saved successfully');
-      this.emitEvent({ type: 'SAVE_DRAFT', success: true });
-      return true;
+      const result = await this.saveProduct();
+      if (result) {
+        const state = this.workflowState();
+        await this.loadExistingProduct(state.productId!);
+        this.toast.success('Draft saved successfully');
+        this.emitEvent({ type: 'SAVE_DRAFT', success: true });
+        return true;
+      }
+      return false
     } catch (error) {
       this.toast.error('Failed to save draft');
       this.emitEvent({ type: 'SAVE_DRAFT', success: false });
