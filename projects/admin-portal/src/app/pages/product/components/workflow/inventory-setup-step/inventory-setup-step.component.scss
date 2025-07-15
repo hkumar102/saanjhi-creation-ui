@@ -1,0 +1,23 @@
+.inventory-setup-step {
+  .inventory-items-table {
+    margin-top: 1rem;
+  }
+  .inventory-item-row {
+    margin-bottom: 1rem;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+    border: 1px solid var(--surface-border);
+    padding: 1rem;
+    border-radius: 8px;
+    background: var(--surface-card);
+  }
+  label {
+    font-size: 0.95rem;
+    font-weight: 500;
+    margin-bottom: 0.25rem;
+    display: block;
+  }
+  .p-button-danger {
+    background: var(--danger-color);
+    border-color: var(--danger-color);
+  }
+}

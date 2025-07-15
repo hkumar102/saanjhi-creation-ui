@@ -1,0 +1,115 @@
+<saanjhi-ui-confirm-dialog #confirmDialog />
+<div class="inventory-setup-step">
+  <h3 class="text-xl font-semibold mb-3">Inventory Setup</h3>
+  <p class="text-color-secondary mb-4">Configure stock levels, SKU, and availability for your product.</p>
+
+  <form [formGroup]="form" class="p-fluid">
+    <div class="grid mb-3">
+      <div class="col-12 md:col-6 flex align-items-end">
+        <saanjhi-ui-button type="button" icon="pi pi-plus" label="Add Item" (onClick)="addItem()"
+          class="p-button-sm"></saanjhi-ui-button>
+      </div>
+    </div>
+    <p-divider />
+    <div class="inventory-items-table">
+      <div *ngIf="inventoryItems.length === 0" class="text-color-secondary mb-3">No inventory items added yet.</div>
+      <div *ngFor="let item of inventoryItems.controls; let i = index" [formGroup]="item"
+        class="inventory-item-row grid mb-2 surface-card border-round p-2">
+        <div class="col-12 grid">
+          <div class="col-12 md:col-4 lg:col-3">
+            <saanjhi-ui-form-control label="Size" inputId="size-{{i}}" [control]="item.get('size')"
+              [errorMessages]="{ required: 'Size is required' }">
+              <saanjhi-ui-autocomplete formControlName="size" [suggestions]="availableSizes" [dropdown]="true"
+                [forceSelection]="true" />
+            </saanjhi-ui-form-control>
+          </div>
+          <div class="col-12 md:col-4 lg:col-3">
+            <saanjhi-ui-form-control label="Color" inputId="color-{{i}}" [control]="item.get('color')"
+              [errorMessages]="{ required: 'Color is required' }">
+              <saanjhi-ui-autocomplete formControlName="color" [suggestions]="availableColors" [dropdown]="true"
+                [forceSelection]="true" />
+            </saanjhi-ui-form-control>
+          </div>
+          <div class="col-12 md:col-4 lg:col-3">
+            <saanjhi-ui-form-control label="Condition" inputId="condition-{{i}}" [control]="item.get('condition')"
+              [errorMessages]="{ required: 'Condition is required' }">
+              <saanjhi-ui-autocomplete inputId="condition-{{i}}" [suggestions]="conditionOptions"
+                formControlName="condition" class="w-full" optionLabel="label" optionValue="value" [dropdown]="true"
+                [forceSelection]="true">
+              </saanjhi-ui-autocomplete>
+            </saanjhi-ui-form-control>
+          </div>
+          <div class="col-12 md:col-4 lg:col-3">
+            <saanjhi-ui-form-control label="Acquisition Cost" inputId="acquisitionCost-{{i}}"
+              [control]="item.get('acquisitionCost')"
+              [errorMessages]="{ required: 'Cost is required', min: 'Cost must be greater than 0' }"
+              helpText="Cost of acquiring this item.">
+              <saanjhi-ui-input-number inputId="acquisitionCost-{{i}}" formControlName="acquisitionCost" mode="currency"
+                currency="USD" class="w-full">
+              </saanjhi-ui-input-number>
+            </saanjhi-ui-form-control>
+          </div>
+          <div class="col-12 md:col-4 lg:col-3">
+            <saanjhi-ui-form-control label="Acquisition Date" inputId="acquisitionDate-{{i}}"
+              [control]="item.get('acquisitionDate')" [errorMessages]="{ required: 'Date is required' }"
+              helpText="Date when this item was acquired.">
+              <p-date-picker formControlName="acquisitionDate" [showIcon]="true" styleClass="w-full"></p-date-picker>
+            </saanjhi-ui-form-control>
+          </div>
+          <div class="col-12 md:col-4 lg:col-3">
+            <saanjhi-ui-form-control label="Warehouse Location" inputId="warehouseLocation-{{i}}"
+              [control]="item.get('warehouseLocation')" [errorMessages]="{ required: 'Location is required' }">
+              <saanjhi-ui-input formControlName="warehouseLocation" class="w-full" />
+            </saanjhi-ui-form-control>
+          </div>
+
+          <!-- Status -->
+          <div class="col-12 md:col-4 lg:col-3">
+            <saanjhi-ui-form-control label="Status" inputId="status-{{i}}" [control]="item.get('status')">
+              <saanjhi-ui-autocomplete inputId="status-{{i}}" [suggestions]="availableStatuses" formControlName="status"
+                class="w-full" optionLabel="label" optionValue="value" [dropdown]="true" [forceSelection]="true">
+              </saanjhi-ui-autocomplete>
+            </saanjhi-ui-form-control>
+          </div>
+
+          <div class="col-12 grid">
+            <!-- Is Retired -->
+            <div class="col-12 md:col-4 lg:col-3">
+              <saanjhi-ui-form-control label="Is Retired" inputId="isRetired-{{i}}" [control]="item.get('isRetired')">
+                <saanjhi-ui-checkbox formControlName="isRetired" inputId="isRetired-{{i}}" />
+              </saanjhi-ui-form-control>
+            </div>
+
+            <!-- Retirement Reason -->
+            <div class="col-12 md:col-4 lg:col-3" *ngIf="item.get('isRetired')?.value === true">
+              <saanjhi-ui-form-control label="Retirement Reason" inputId="retirementReason-{{i}}"
+                [control]="item.get('retirementReason')">
+                <saanjhi-ui-input formControlName="retirementReason" class="w-full" />
+              </saanjhi-ui-form-control>
+            </div>
+
+            <!-- Retirement Date -->
+            <div class="col-12 md:col-4 lg:col-3" *ngIf="item.get('isRetired')?.value === true">
+              <saanjhi-ui-form-control label="Retirement Date" inputId="retirementDate-{{i}}"
+                [control]="item.get('retirementDate')">
+                <p-date-picker formControlName="retirementDate" [showIcon]="true" styleClass="w-full"></p-date-picker>
+              </saanjhi-ui-form-control>
+            </div>
+          </div>
+
+        </div>
+        <div class="col-12 grid">
+
+          <div class="col-12">
+            <label>Condition Notes</label>
+            <saanjhi-ui-textarea formControlName="conditionNotes" [rows]="2" class="w-full"></saanjhi-ui-textarea>
+          </div>
+        </div>
+        <div class="col-12 flex align-items-end">
+          <saanjhi-ui-button type="button" icon="pi pi-trash" (onClick)="removeItem(i)" severity="danger"
+            label="Remove"></saanjhi-ui-button>
+        </div>
+      </div>
+    </div>
+  </form>
+</div>

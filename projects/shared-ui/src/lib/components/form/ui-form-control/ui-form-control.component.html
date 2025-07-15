@@ -1,0 +1,28 @@
+<div [class]="fieldClass">
+    <!-- Traditional label (shows above input) -->
+    <label *ngIf="useTraditionalLabel" class="block mb-1 font-bold text-color" [for]="inputId">
+        {{ label }}
+    </label>
+
+    <!-- Conditional wrapper for floating label -->
+    <ng-container *ngIf="useFloatingLabel; else noFloatingLabel">
+        <p-floatLabel>
+            <ng-container [ngTemplateOutlet]="noFloatingLabel"></ng-container>
+            <label [for]="inputId">{{ floatingLabel }}</label>
+        </p-floatLabel>
+    </ng-container>
+
+    <!-- Template for non-floating label content -->
+    <ng-template #noFloatingLabel>
+        <ng-content></ng-content>
+    </ng-template>
+
+    <!-- Error messages -->
+    <saanjhi-ui-form-error *ngIf="control && shouldShowErrors" [control]="control" [messages]="errorMessages">
+    </saanjhi-ui-form-error>
+
+    <!-- Help text -->
+    <small *ngIf="helpText" class="text-color-secondary block mt-1">
+        {{ helpText }}
+    </small>
+</div>

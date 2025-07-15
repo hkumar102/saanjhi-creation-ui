@@ -1,0 +1,104 @@
+<!-- Product Details Step -->
+<form [formGroup]="detailsForm" class="p-fluid">
+    <!-- Brand and Design Section -->
+    <div class="grid">
+        <div class="col-12">
+            <h3 class="text-xl font-semibold text-color mb-3">Brand & Design Information</h3>
+        </div>
+        <!-- Brand -->
+        <div class="col-12 md:col-6">
+            <saanjhi-ui-form-control floatingLabel="Brand" inputId="brand" [control]="detailsForm.get('brand')">
+                <saanjhi-ui-input inputId="brand" formControlName="brand" class="w-full"></saanjhi-ui-input>
+            </saanjhi-ui-form-control>
+        </div>
+        <!-- Designer -->
+        <div class="col-12 md:col-6">
+            <saanjhi-ui-form-control floatingLabel="Designer" inputId="designer"
+                [control]="detailsForm.get('designer')">
+                <saanjhi-ui-input inputId="designer" formControlName="designer" class="w-full"></saanjhi-ui-input>
+            </saanjhi-ui-form-control>
+        </div>
+    </div>
+    <p-divider />
+    <!-- Material and Care Section -->
+    <div class="grid">
+        <div class="col-12">
+            <h3 class="text-xl font-semibold text-color mb-3">Material & Care</h3>
+        </div>
+        <!-- Material -->
+        <div class="col-12 md:col-6">
+            <saanjhi-ui-form-control floatingLabel="Material" inputId="material" [control]="detailsForm.get('material')"
+                helpText="e.g., Cotton, Silk, Polyester, Leather">
+                <saanjhi-ui-input inputId="material" formControlName="material" class="w-full"></saanjhi-ui-input>
+            </saanjhi-ui-form-control>
+        </div>
+        <!-- Care Instructions -->
+        <div class="col-12 md:col-6">
+            <saanjhi-ui-form-control floatingLabel="Care Instructions" inputId="careInstructions"
+                [control]="detailsForm.get('careInstructions')"
+                helpText="e.g., Hand wash only, Dry clean, Machine wash cold">
+                <saanjhi-ui-textarea inputId="careInstructions" formControlName="careInstructions" [rows]="3"
+                    class="w-full"></saanjhi-ui-textarea>
+            </saanjhi-ui-form-control>
+        </div>
+    </div>
+    <p-divider />
+    <!-- Style Information Section -->
+    <div class="grid">
+        <div class="col-12">
+            <h3 class="text-xl font-semibold text-color mb-3">Style Information</h3>
+        </div>
+        <!-- Occasion -->
+        <div class="col-12 md:col-6">
+            <saanjhi-ui-form-control floatingLabel="Occasion" inputId="occasion"
+                [control]="detailsForm.get('occasion')">
+                <saanjhi-ui-dropdown inputId="occasion" formControlName="occasion" [options]="occasionOptions()"
+                    optionLabel="label" optionValue="value" [showClear]="true" class="w-full"></saanjhi-ui-dropdown>
+            </saanjhi-ui-form-control>
+        </div>
+        <!-- Season -->
+        <div class="col-12 md:col-6">
+            <saanjhi-ui-form-control floatingLabel="Season" inputId="season" [control]="detailsForm.get('season')">
+                <saanjhi-ui-dropdown inputId="season" formControlName="season" [options]="seasonOptions()"
+                    optionLabel="label" optionValue="value" [showClear]="true" class="w-full"></saanjhi-ui-dropdown>
+            </saanjhi-ui-form-control>
+        </div>
+    </div>
+    <p-divider />
+    <!-- Availability Section -->
+    <div class="grid">
+        <div class="col-12">
+            <h3 class="text-xl font-semibold text-color mb-3">Available Options</h3>
+            <p class="text-color-secondary mb-3">
+                Specify the sizes and colors available for this product. These will be used in inventory management.
+            </p>
+        </div>
+        <!-- Available Sizes -->
+        <div class="col-12">
+            <h3 class="block text-color font-medium mb-2">Available Sizes</h3>
+            <div class="flex flex-wrap gap-2">
+                <!-- Common Size Options -->
+                <div class="flex align-items-center" *ngFor="let size of availableSizes">
+                    <saanjhi-ui-form-control name="availableSizes" [label]="size" inputId="size-{{size}}"
+                        [control]="detailsForm.get('availableSizes')">
+                        <saanjhi-ui-checkbox [inputId]="'size-' + size" name="availableSizes" formControlName="availableSizes" [value]="size" class="mr-2" [binary]="false"></saanjhi-ui-checkbox>
+                    </saanjhi-ui-form-control>
+                </div>
+            </div>
+        </div>
+
+        <!-- Available Colors -->
+        <div class="col-12">
+            <h3 class="block text-color font-medium mb-2 mt-4">Available Colors</h3>
+            <div class="flex flex-wrap gap-2">
+                <!-- Common Color Options -->
+                <div class="flex align-items-center" *ngFor="let color of availableColors">
+                    <saanjhi-ui-form-control name="availableColors" [label]="color" inputId="color-{{color}}"
+                        [control]="detailsForm.get('availableColors')">
+                        <saanjhi-ui-checkbox formControlName="availableColors" name="availableColors" [inputId]="'color-' + color" [value]="color" class="mr-2" [binary]="false"></saanjhi-ui-checkbox>
+                    </saanjhi-ui-form-control>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>

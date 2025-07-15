@@ -1,26 +1,32 @@
 import { Routes } from '@angular/router';
-import { ProductListComponent } from './product-list/product-list.component';
-import { ProductFormComponent } from './product-form/product-form.component';
-
-export const productRoutes: Routes = [
+import { ProductWorkflowComponent } from './components/workflow/product-workflow/product-workflow.component';
+import { ProductListComponent } from './components/product-list/product-list.component';
+export const PRODUCT_PATH = {
+  CREATE: 'create',
+  EDIT: 'edit/:id',
+  DETAILS: 'details/:id'
+}
+export const PRODUCT_ROUTES: Routes = [
+  {
+    path: '',
+    redirectTo: 'list',
+    pathMatch: 'full'
+  },
     {
-        path: '',
-        component: ProductListComponent,
-        title: 'Products'
+      path: 'list',
+      component: ProductListComponent
     },
-    {
-        path: 'create',
-        component: ProductFormComponent,
-        title: 'Create Product'
-    },
-    {
-        path: 'edit/:id',
-        component: ProductFormComponent,
-        title: 'Edit Product'
-    },
-    {
-        path: 'details/:id',
-        loadComponent: () => import('./product-details/product-details.component').then(m => m.ProductDetailsPageComponent),
-        title: 'Product Details'
-    }
+  {
+    path: PRODUCT_PATH.CREATE,
+    component: ProductWorkflowComponent
+    // loadComponent: () => import('./components/product-workflow/product-workflow.component').then(m => m.ProductWorkflowComponent)
+  },
+  {
+    path: PRODUCT_PATH.EDIT,
+    component: ProductWorkflowComponent
+  },
+  //   {
+  //     path: 'details/:id',
+  //     loadComponent: () => import('./product-details/product-details.component').then(m => m.ProductDetailsPageComponent)
+  //   }
 ];

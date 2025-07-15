@@ -1,2 +1,2 @@
-<p-checkbox [(ngModel)]="value" [binary]="true" [inputId]="inputId" [disabled]="disabled" (onChange)="onChange(value)"
-  (onBlur)="onTouched()" [attr.id]="id"/>
+<p-checkbox [inputId]="inputId" [binary]="binary" [value]="value" [disabled]="disabled" [ngModel]="modelValue"
+  (onChange)="onCheckboxChange($event)" />

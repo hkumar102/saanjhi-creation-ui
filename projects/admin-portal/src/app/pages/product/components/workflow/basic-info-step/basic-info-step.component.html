@@ -1,0 +1,116 @@
+<form [formGroup]="form" class="flex flex-column gap-4">
+  <!-- Product Name -->
+  <saanjhi-ui-form-control label="Product Name *" inputId="name" [control]="form.get('name')"
+    [errorMessages]="{ required: 'Product name is required' }">
+    <saanjhi-ui-input inputId="name" formControlName="name">
+    </saanjhi-ui-input>
+  </saanjhi-ui-form-control>
+
+  <!-- Category Selection -->
+  <saanjhi-ui-form-control label="Category *" inputId="categoryId" [control]="form.get('category')"
+    [errorMessages]="{ required: 'Please select a category' }">
+    <saanjhi-ui-category-select inputId="categoryId" formControlName="categoryId"
+      (categorySelected)="onCategorySelected($event)">
+    </saanjhi-ui-category-select>
+  </saanjhi-ui-form-control>
+
+  <!-- Description -->
+  <saanjhi-ui-form-control label="Description" inputId="description" [control]="form.get('description')"
+    helpText="Provide a detailed description to help customers understand your product better.">
+    <saanjhi-ui-textarea inputId="description" formControlName="description" class="w-full"></saanjhi-ui-textarea>
+  </saanjhi-ui-form-control>
+
+  <p-divider></p-divider>
+
+  <!-- Pricing Section -->
+  <div class="grid">
+    <div class="col-12 md:col-6">
+      <!-- Is Purchasable -->
+      <saanjhi-ui-form-control inputId="isPurchasable"
+        helpText="When checked, this product will be visible to customers and available for purchase.">
+        <div class="flex align-items-center gap-2">
+          <saanjhi-ui-checkbox inputId="isPurchasable" formControlName="isPurchasable" [binary]="true">
+          </saanjhi-ui-checkbox>
+          <label for="isPurchasable" class="text-color font-semibold">
+            Product Can be purchased
+          </label>
+        </div>
+      </saanjhi-ui-form-control>
+    </div>
+    <div class="col-12 md:col-6">
+      <saanjhi-ui-form-control label="Purchase Price" inputId="purchasePrice" [control]="form.get('purchasePrice')"
+        [errorMessages]="{ required: 'Purchase price is required', min: 'Price must be greater than 0' }">
+        <saanjhi-ui-input-number inputId="purchasePrice" mode="currency" currency="INR" locale="en-IN"
+          formControlName="purchasePrice" class="w-full">
+        </saanjhi-ui-input-number>
+      </saanjhi-ui-form-control>
+    </div>
+  </div>
+  <div class="grid">
+    <div class="col-12 md:col-6">
+      <!-- Is Rentable -->
+      <saanjhi-ui-form-control inputId="isRentable"
+        helpText="When checked, this product will be visible to customers and available for rental.">
+        <div class="flex align-items-center gap-2">
+          <saanjhi-ui-checkbox inputId="isRentable" formControlName="isRentable" [binary]="true">
+          </saanjhi-ui-checkbox>
+          <label for="isRentable" class="text-color font-semibold">
+            Product Can be rented
+          </label>
+        </div>
+      </saanjhi-ui-form-control>
+    </div>
+    <ng-container *ngIf="form.get('isRentable')?.value === true">
+      <div class="col-12 md:col-6">
+        <saanjhi-ui-form-control label="Rental Price" inputId="rentalPrice" [control]="form.get('rentalPrice')"
+          [errorMessages]="{ min: 'Rental price must be greater than 0' }"
+          helpText="Daily rental rate for this product">
+          <saanjhi-ui-input-number inputId="rentalPrice" mode="currency" currency="INR" locale="en-IN"
+            formControlName="rentalPrice" class="w-full">
+          </saanjhi-ui-input-number>
+        </saanjhi-ui-form-control>
+      </div>
+      <div class="col-12 md:col-6">
+        <saanjhi-ui-form-control label="Security Deposit" inputId="securityDeposit"
+          [control]="form.get('securityDeposit')" [errorMessages]="{ min: 'Security deposit must be greater than 0' }"
+          helpText="Security deposit for this product">
+          <saanjhi-ui-input-number inputId="securityDeposit" mode="currency" currency="INR" locale="en-IN"
+            formControlName="securityDeposit" class="w-full">
+          </saanjhi-ui-input-number>
+        </saanjhi-ui-form-control>
+      </div>
+      <div class="col-12 md:col-6">
+        <saanjhi-ui-form-control label="Rental Days" inputId="maxRentalDays" [control]="form.get('maxRentalDays')"
+          [errorMessages]="{ min: 'Rental days must be greater than 0' }"
+          helpText="Maximum rental days for this product">
+          <saanjhi-ui-input-number inputId="maxRentalDays" mode="decimal" locale="en-IN" formControlName="maxRentalDays"
+            class="w-full">
+          </saanjhi-ui-input-number>
+        </saanjhi-ui-form-control>
+      </div>
+    </ng-container>
+
+  </div>
+
+  <p-divider></p-divider>
+
+  <!-- Product Status -->
+  <saanjhi-ui-form-control inputId="isActive"
+    helpText="When checked, this product will be visible to customers and available for purchase/rental.">
+    <div class="flex align-items-center gap-2">
+      <saanjhi-ui-checkbox inputId="isActive" formControlName="isActive" [binary]="true">
+      </saanjhi-ui-checkbox>
+      <label for="isActive" class="text-color font-semibold">
+        Product is active and available
+      </label>
+    </div>
+  </saanjhi-ui-form-control>
+
+  <!-- Form Summary (for debugging) -->
+  <div *ngIf="false" class="mt-4 p-3 surface-100 border-round">
+    <h4 class="text-lg font-semibold mb-2">Form Debug Info</h4>
+    <p><strong>Valid:</strong> {{ form.valid }}</p>
+    <p><strong>Value:</strong></p>
+    <pre class="text-sm">{{ form.value | json }}</pre>
+  </div>
+</form>

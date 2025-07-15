@@ -1,0 +1,69 @@
+<div class="media-upload-step">
+  <h3 class="text-xl font-semibold mb-3">Upload Product Media</h3>
+  <p class="text-color-secondary mb-4">Drag & drop images or use the file picker. Select a main image, reorder,
+    and remove files as needed.</p>
+
+  <div *ngIf="mediaData?.existingMedia?.length" class="mb-4">
+    <div class="preview-grid grid gap-3">
+      <div *ngFor="let media of mediaData?.existingMedia; let i = index"
+        class="preview-item flex gap-2 flex-row">
+        <div class="preview-thumb">
+          <img [src]="media.thumbnailUrl" />
+        </div>
+        <div class="flex flex-column gap-2">
+          <span>{{ media.color }}</span>
+          <span>{{ media.altText }}</span>
+          <span>{{ media.isPrimary ? 'Yes' : 'No' }}</span>         
+          <saanjhi-ui-button type="button" icon="pi pi-trash" severity="danger" [rounded]="true" [outlined]="true"
+            (onClick)="onExistingMediaRemoved(i)"></saanjhi-ui-button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Drag & Drop Area / File Picker -->
+  <div class="upload-area border-round p-2">
+    <p-fileUpload name="media[]" [customUpload]="true" [multiple]="true" accept="image/*,video/*"
+      (onSelect)="onFilesSelected($event)" [showUploadButton]="false" [showCancelButton]="false"
+      chooseLabel="Browse Files" [mode]="'basic'">
+      <ng-template pTemplate="content">
+        <div class="text-center">
+          <i class="pi pi-upload text-4xl text-primary mb-2"></i>
+          <div>Drag & drop files here or click to browse</div>
+        </div>
+      </ng-template>
+    </p-fileUpload>
+  </div>
+
+  <!-- Preview Grid -->
+  <form [formGroup]="mediaForm">
+    <div class="preview-grid grid gap-3">
+      <div *ngFor="let fileGroup of uploadedFilesArray.controls; let i = index" [formGroup]="fileGroup"
+        class="preview-item flex gap-2 flex-row">
+        <div class="preview-thumb">
+          <img [src]="fileGroup.get('previewUrl')?.value" />
+        </div>
+        <div class="flex flex-column gap-2">
+          <saanjhi-ui-form-control label="Color" inputId="fileName{{i}}" [control]="fileGroup.get('color')"
+            [errorMessages]="{ required: 'File name is required' }">
+            <p-autoComplete formControlName="color" [dropdown]="true" [forceSelection]="true"
+              [suggestions]="availableColors" (completeMethod)="searchColors($event)" />
+          </saanjhi-ui-form-control>
+          <saanjhi-ui-form-control label="Is Main File" inputId="fileName{{i}}" [control]="fileGroup.get('isPrimary')"
+            [errorMessages]="{ required: 'File name is required' }">
+            <p-checkbox inputId="isPrimary{{i}}" formControlName="isPrimary" binary="true"
+              (onChange)="setMainImage(i)" />
+          </saanjhi-ui-form-control>
+          <saanjhi-ui-form-control label="Alt Text" inputId="altText{{i}}" helpText="Alt text (optional)">
+            <saanjhi-ui-input type="text" pInputText formControlName="altText" class="w-full" />
+          </saanjhi-ui-form-control>
+          <saanjhi-ui-button type="button" icon="pi pi-trash" severity="danger" [rounded]="true" [outlined]="true"
+            (onClick)="onFileRemoved(i)"></saanjhi-ui-button>
+        </div>
+      </div>
+    </div>
+  </form>
+
+  <!-- Error Display (if needed) -->
+  <div *ngIf="uploadError" class="text-danger mt-3">{{ uploadError }}</div>
+</div>

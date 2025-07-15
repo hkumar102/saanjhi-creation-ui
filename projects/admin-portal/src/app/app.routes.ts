@@ -1,9 +1,9 @@
 import { Routes } from '@angular/router';
 import { AuthGuard } from '@saanjhi-creation-ui/shared-common';
-import { CATEGORY_ROUTES } from './pages/category/category.routes';
 import { CUSTOMER_ROUTES } from './pages/customer/customer.routes';
 import { USER_ROUTES } from './pages/user/user.routes';
 import { RENTAL_ROUTES } from './pages/rental/rental.routes';
+import { PRODUCT_ROUTES } from './pages/product/product.routes';
 export const routes: Routes = [
     {
         path: 'login',
@@ -27,16 +27,6 @@ export const routes: Routes = [
             }]
     },
     {
-        path: 'products',
-        loadChildren: () => import('./pages/product/product.routes').then(m => m.productRoutes),
-        canActivate: [AuthGuard]
-    },
-    {
-        path: 'categories',
-        children: CATEGORY_ROUTES,
-        canActivate: [AuthGuard]
-    },
-    {
         path: 'customers',
         children: CUSTOMER_ROUTES,
         canActivate: [AuthGuard]
@@ -52,6 +42,11 @@ export const routes: Routes = [
         canActivate: [AuthGuard]
     },
     {
+        path: 'products',
+        children: PRODUCT_ROUTES,
+        canActivate: [AuthGuard]
+    },
+    {
         path: 'reports',
         loadComponent: () => import('./pages/rental/rental-reports/rental-reports.component').then(m => m.RentalReportsComponent),
         canActivate: [AuthGuard]
@@ -59,16 +54,6 @@ export const routes: Routes = [
     {
         path: '',
         pathMatch: 'full',
-        redirectTo: '/dashboard'
-    },
-    {
-        path: 'dashboard',
-        loadChildren: () => import('./pages/dashboard/dashboard.routes').then(r => r.dashboardRoutes),
-        canActivate: [AuthGuard]
-    },
-    {
-        path: 'inventory',
-        loadChildren: () => import('./pages/inventory/inventory.routes').then(r => r.inventoryRoutes),
-        canActivate: [AuthGuard]
+        redirectTo: '/products'
     }
 ];

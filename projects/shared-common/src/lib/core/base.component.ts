@@ -1,9 +1,11 @@
 import { Directive, inject } from '@angular/core';
 import { MessageFormatterService, ToastService } from '../services';
 import { AppMessages } from '../constants';
+import { Subject } from 'rxjs/internal/Subject';
 
 @Directive()
 export abstract class BaseComponent {
+    protected destroy$ = new Subject<void>();
     protected formatter = inject(MessageFormatterService);
     protected toast = inject(ToastService);
 
