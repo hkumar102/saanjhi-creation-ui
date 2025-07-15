@@ -12,8 +12,8 @@
     "build": "npx ng build",
     "watch": "npx ng build --watch --configuration development",
     "test": "npx ng test",
-    "render-build-admin": "npm install --legacy-peer-deps && npx ng build admin-portal --configuration=production",
-    "render-build-public": "npm install --legacy-peer-deps && npx ng build public-portal --configuration=production"
+    "render-build-admin": "yarn install && npx ng build admin-portal --configuration=production",
+    "render-build-public": "yarn install && npx ng build public-portal --configuration=production"
   },
   "private": true,
   "dependencies": {
