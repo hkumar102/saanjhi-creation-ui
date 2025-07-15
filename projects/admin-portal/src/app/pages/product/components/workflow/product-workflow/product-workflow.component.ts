@@ -76,35 +76,35 @@ export class ProductWorkflowComponent extends BaseProductFlowComponent implement
       step: WorkflowStep.BASIC_INFO,
       label: 'Basic Info',
       description: 'Product name, category, and pricing',
-      icon: 'info',
+      icon: 'fa-shirt',
       id: 1
     },
     {
       step: WorkflowStep.PRODUCT_DETAILS,
       label: 'Product Details',
       description: 'Brand, size, color, and specifications',
-      icon: 'book',
+      icon: 'fa-info',
       id: 2
     },
     {
       step: WorkflowStep.MEDIA_UPLOAD,
       label: 'Media Upload',
       description: 'Product images and videos',
-      icon: 'photo_library',
+      icon: 'fa-images',
       id: 3
     },
     {
       step: WorkflowStep.INVENTORY_SETUP,
       label: 'Inventory Setup',
       description: 'Stock levels and availability',
-      icon: 'inventory',
+      icon: 'fa-boxes-stacked',
       id: 4
     },
     {
       step: WorkflowStep.REVIEW,
       label: 'Review & Publish',
       description: 'Review all details and publish',
-      icon: 'publish',
+      icon: 'fa-upload',
       id: 5
     }
   ];
@@ -207,7 +207,7 @@ export class ProductWorkflowComponent extends BaseProductFlowComponent implement
         break;
       case 'PUBLISH_PRODUCT':
         if (event.success) {
-          // Navigation is handled by the service
+          this.router.navigate(['/products/list']);
         }
         break;
     }
@@ -303,9 +303,9 @@ export class ProductWorkflowComponent extends BaseProductFlowComponent implement
       case 'completed':
         return `${baseClasses} bg-green-500 text-white border-2 border-green-500`;
       case 'active':
-        return `${baseClasses} bg-primary text-primary-contrast border-2 border-primary`;
+        return `${baseClasses} text-primary-contrast border-2 border-primary`;
       case 'pending':
-        return `${baseClasses} bg-surface-100 text-primary border-2 border-primary hover:bg-primary-50`;
+        return `${baseClasses} p-button-secondary`;
       case 'disabled':
         return `${baseClasses} bg-surface-200 text-surface-500 border-2 border-surface-300 cursor-not-allowed`;
       case 'invalid':

@@ -1,5 +1,6 @@
 import { Routes } from '@angular/router';
 import { ProductWorkflowComponent } from './components/workflow/product-workflow/product-workflow.component';
+import { ProductListComponent } from './components/product-list/product-list.component';
 export const PRODUCT_PATH = {
   CREATE: 'create',
   EDIT: 'edit/:id',
@@ -11,10 +12,10 @@ export const PRODUCT_ROUTES: Routes = [
     redirectTo: 'list',
     pathMatch: 'full'
   },
-  //   {
-  //     path: 'list',
-  //     loadComponent: () => import('./product-list/product-list.component').then(m => m.ProductListComponent)
-  //   },
+    {
+      path: 'list',
+      component: ProductListComponent
+    },
   {
     path: PRODUCT_PATH.CREATE,
     component: ProductWorkflowComponent

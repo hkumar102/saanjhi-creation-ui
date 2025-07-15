@@ -3,7 +3,9 @@ import {
     forwardRef,
     Input,
     Output,
-    EventEmitter
+    EventEmitter,
+    SimpleChanges,
+    output
 } from '@angular/core';
 import {
     ControlValueAccessor,
@@ -41,6 +43,7 @@ import { AutoCompleteModule, AutoCompleteSelectEvent } from 'primeng/autocomplet
         (onBlur)="onTouched(); onBlur.emit($event)"
         (onFocus)="onFocus.emit($event)"
         (onClear)="onClear.emit($event)"
+        (onUnselect)="onUnselectHandler($event)"
         styleClass="w-full"
         >
         </p-autoComplete>
@@ -92,6 +95,7 @@ export class UiAutocompleteComponent<T = any>
     @Output() onBlur = new EventEmitter<any>();
     @Output() onFocus = new EventEmitter<any>();
     @Output() onClear = new EventEmitter<any>();
+    @Output() onUnselect = new EventEmitter<any>();
 
     value!: T | T[] | null | undefined;
     onChange = (_: any) => { };
@@ -114,6 +118,14 @@ export class UiAutocompleteComponent<T = any>
         }
     }
 
+    ngOnChanges(changes: SimpleChanges) {
+        if (changes['suggestions']) {
+            console.log('Suggestions changed:', changes['suggestions'].currentValue);
+            console.log('Type:', typeof changes['suggestions'].currentValue);
+            console.log('IsArray:', Array.isArray(changes['suggestions'].currentValue));
+        }
+    }
+
     registerOnChange(fn: any): void {
         this.onChange = fn;
     }
@@ -127,8 +139,32 @@ export class UiAutocompleteComponent<T = any>
     }
 
     handleChange(value: any): void {
-        this.value = value;
-        this.onChange(value);
+        if (this.optionValue && (typeof value !== 'object' || Array.isArray(value))) {
+            if (this.multiple && Array.isArray(value)) {
+                const resolved = value.map(val =>
+                    typeof val === 'object'
+                        ? val
+                        : this.suggestions.find(opt => opt[this.optionValue!] === val)
+                ).filter(v => v);
+                this.value = resolved;
+            } else {
+                this.value = this.suggestions.find(opt => opt[this.optionValue!] === value) ?? value;
+            }
+        } else {
+            this.value = value;
+        }
+
+        if (this.optionValue) {
+            if (this.multiple && Array.isArray(this.value)) {
+                const emittedValues = (this.value as T[]).map(v => v?.[this.optionValue as keyof T]);
+                this.onChange(emittedValues);
+            } else {
+                const emitted = (this.value as T)?.[this.optionValue as keyof T];
+                this.onChange(emitted);
+            }
+        } else {
+            this.onChange(this.value);
+        }
     }
 
     completeMethodHandler(event: any): void {
@@ -137,16 +173,12 @@ export class UiAutocompleteComponent<T = any>
     }
 
     selectMethodHandler(selected: AutoCompleteSelectEvent): void {
-        this.value = selected.value;
-
-        const emittedValue = this.optionValue
-            ? selected?.value?.[this.optionValue]
-            : selected.value;
-
-        this.onChange(emittedValue);
         this.onTouched();
-        // If optionValue is set, emit just that field (like ID)
+        this.onSelect.emit(this.value);
+    }
 
-        this.onSelect.emit(selected);
+    onUnselectHandler(event: any): void {
+        this.onTouched();
+        this.onUnselect.emit(this.value);        
     }
 }

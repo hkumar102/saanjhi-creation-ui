@@ -1,7 +1,9 @@
-<div class="product-workflow">
-    <div class="flex justify-content-between align-items-center">
-        <h2 class="mb-4">Product Workflow</h2>
-        <button pButton type="button" label="Cancel" (click)="cancelWorkflow()" class="p-button-secondary"></button>
+<div class="flex flex-column gap-4">
+    <div class="shadow-1 px-3 bg-white border-round-xl">
+        <div class="flex justify-content-between align-items-center">
+            <h2 class="mb-4">Product Workflow</h2>
+            <button pButton type="button" label="Cancel" (click)="cancelWorkflow()" class="p-button-secondary"></button>
+        </div>
     </div>
     <p-stepper styleClass="mb-4" [value]="currentStep().id">
         <p-card styleClass="mb-4">
@@ -9,12 +11,10 @@
                 <p-step *ngFor="let step of steps" [value]="step.id">
                     <ng-template #content let-activateCallback="activateCallback" let-value="step">
                         <div class="flex flex-column justify-content-center gap-2 align-items-center">
-                            <p-button [rounded]="true" icon="pi pi-{{ step.icon }}" [size]="'large'" [rounded]="true"
-                                [text]="true" [raised]="true"
-                                [severity]="isStepCompleted(step.step) ? 'success' : 'secondary'"
-                                [styleClass]="getStepClasses(step.step)" (onClick)="goToStep(step.step)"></p-button>
+                            <p-button [rounded]="true" icon="fa-solid {{ step.icon }}" [size]="'large'" [rounded]="true"
+                                [text]="true" [raised]="true" [styleClass]="getStepClasses(step.step)"
+                                (onClick)="goToStep(step.step)"></p-button>
                             <div>
-                                <i class="pi" [ngClass]="step.icon"></i>
                                 <div class="ml-2 flex flex-column text-center gap-2">
                                     <span class="font-semibold">{{ step.label }}</span>
                                     <small class="text-color-secondary">{{ step.description }}</small>
@@ -64,15 +64,19 @@
         </ng-container>
     </div> -->
 
-    <div class="workflow-actions mt-4 flex gap-2">
-        <button pButton type="button" label="Previous" (click)="goToPreviousStep()"
-            [disabled]="!navigation().canGoPrevious"></button>
-        <button pButton type="button" label="Next" (click)="goToNextStep()"
-            [disabled]="!navigation().canGoNext"></button>
-        <button pButton type="button" label="Save Draft" (click)="saveDraft()"
-            [disabled]="!navigation().canSave"></button>
-        <button pButton type="button" label="Publish" (click)="publishProduct()"
-            [disabled]="!navigation().canPublish"></button>
+    <div class="workflow-actions mt-4 flex gap-2 justify-content-between">
+        <div class="flex gap-2">
+            <button pButton severity="info" type="button" label="Previous" (click)="goToPreviousStep()"
+                [disabled]="!navigation().canGoPrevious" icon="fa-solid fa-arrow-left"></button>
+            <button pButton type="button" severity="info" label="Next" (click)="goToNextStep()"
+                [disabled]="!navigation().canGoNext" icon="fa-solid fa-arrow-right"></button>
+        </div>
+        <div class="flex gap-2">
+            <button pButton type="button" severity="warn" label="Save Draft" (click)="saveDraft()"
+                [disabled]="!navigation().canSave" icon="fa-solid fa-save"></button>
+            <button pButton type="button" label="Publish" (click)="publishProduct()"
+                [disabled]="!navigation().canPublish" icon="fa-solid fa-paper-plane"></button>
 
+        </div>
     </div>
 </div>

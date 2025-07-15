@@ -1,6 +1,6 @@
 <div class="media-upload-step">
   <h3 class="text-xl font-semibold mb-3">Upload Product Media</h3>
-  <p class="text-color-secondary mb-4">Drag & drop images/videos or use the file picker. Select a main image, reorder,
+  <p class="text-color-secondary mb-4">Drag & drop images or use the file picker. Select a main image, reorder,
     and remove files as needed.</p>
 
   <div *ngIf="mediaData?.existingMedia?.length" class="mb-4">
@@ -22,10 +22,10 @@
   </div>
 
   <!-- Drag & Drop Area / File Picker -->
-  <div class="upload-area surface-100 border-round p-4 mb-4">
+  <div class="upload-area border-round p-2">
     <p-fileUpload name="media[]" [customUpload]="true" [multiple]="true" accept="image/*,video/*"
       (onSelect)="onFilesSelected($event)" [showUploadButton]="false" [showCancelButton]="false"
-      chooseLabel="Browse Files" class="w-full" [mode]="'basic'">
+      chooseLabel="Browse Files" [mode]="'basic'">
       <ng-template pTemplate="content">
         <div class="text-center">
           <i class="pi pi-upload text-4xl text-primary mb-2"></i>

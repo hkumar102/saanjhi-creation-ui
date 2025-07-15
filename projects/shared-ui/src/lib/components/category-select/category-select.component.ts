@@ -4,7 +4,8 @@ import {
     forwardRef,
     inject,
     signal,
-    output
+    output,
+    input
 } from '@angular/core';
 import {
     ControlValueAccessor,
@@ -38,8 +39,10 @@ import { UiAutocompleteComponent } from '../ui-autocomplete/ui-autocomplete.comp
         optionValue="id" 
         [suggestions]="categories()" 
         [dropdown]="true" 
+        [multiple]="multiple()"
         (completeMethod)="onSearch($event)"
-        (onSelect)="handleAutoCompleteSelect($event)"></saanjhi-ui-autocomplete>
+        (onSelect)="handleAutoCompleteSelect($event)"
+        (onUnselect)="handleAutoCompleteSelect($event)"></saanjhi-ui-autocomplete>
     `,
     changeDetection: ChangeDetectionStrategy.OnPush,
     providers: [
@@ -55,13 +58,14 @@ export class CategorySelectComponent implements ControlValueAccessor {
     private toast = inject(ToastService);
 
     private pendingValue: any = null;
-
+    //Input properties
+    multiple = input<boolean>(false);
     // Output properties
     categorySelected = output<CategoryDto | CategoryDto[] | null>();
 
     // Internal state
     categories = signal<CategoryDto[]>([]); // Filtered categories for display
-    control = new FormControl({ value: {}, disabled: false });
+    control = new FormControl<CategoryDto[] | CategoryDto | null>({ value: this.multiple() ? [] : null, disabled: false });
 
     // ControlValueAccessor implementation
     public onChange = (value: any) => { this.categorySelected.emit(value); };
@@ -77,15 +81,19 @@ export class CategorySelectComponent implements ControlValueAccessor {
             return;
         }
 
-        if (typeof value === 'string') {
-            const category = this.categories().find(c => c.id === value);
-            if (category) {
-                this.control.setValue(category, { emitEvent: false });
-            } else {
-                this.control.setValue({ id: value, name: '' }, { emitEvent: false });
+        const resolveValue = (val: any) => {
+            if (typeof val === 'string') {
+                const category = this.categories().find(c => c.id === val);
+                return category ?? { id: val, name: '' };
             }
+            return val;
+        };
+
+        if (this.multiple()) {
+            const values = Array.isArray(value) ? value.map(resolveValue) : [];
+            this.control.setValue(values, { emitEvent: false });
         } else {
-            this.control.setValue(value, { emitEvent: false });
+            this.control.setValue(resolveValue(value), { emitEvent: false });
         }
     }
 
@@ -156,10 +164,28 @@ export class CategorySelectComponent implements ControlValueAccessor {
     }
 
     handleAutoCompleteSelect(event: any) {
-        const value = event.value || event;
-        this.writeValue(value);               // Save full CategoryDto
-        this.onChange(value);                 // Emit full object
-        this.onTouched();
-        this.categorySelected.emit(value);
+        if (this.multiple()) {
+            // Extract only IDs from selected category objects
+            const ids = (event || []).map((item: any) => typeof item === 'string' ? item : item?.id);
+            this.onChange(ids);
+            this.categorySelected.emit(event);
+        } else {
+            const id = typeof event === 'string' ? event : event?.id;
+            this.onChange(id);
+            this.categorySelected.emit(event);
+        }
+    }
+
+    handleOnChange(event: any) {
+        if (this.multiple()) {
+            // Extract only IDs from selected category objects
+            const ids = (event || []).map((item: any) => typeof item === 'string' ? item : item?.id);
+            this.onChange(ids);
+            this.categorySelected.emit(event);
+        } else {
+            const id = typeof event === 'string' ? event : event?.id;
+            this.onChange(id);
+            this.categorySelected.emit(event);
+        }
     }
 }

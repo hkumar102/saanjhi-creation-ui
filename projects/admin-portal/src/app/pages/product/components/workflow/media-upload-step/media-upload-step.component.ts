@@ -180,6 +180,10 @@ export class MediaUploadStepComponent extends BaseProductFlowComponent implement
     };
     this.addFileToForm(newFile);
     this.saveToWorkflowState();
+    this.uploadedFilesArray.markAsDirty();
+    this.uploadedFilesArray.markAsTouched();
+    this.uploadedFilesArray.updateValueAndValidity();
+
   }
 
   isRealFile(file: any): boolean {

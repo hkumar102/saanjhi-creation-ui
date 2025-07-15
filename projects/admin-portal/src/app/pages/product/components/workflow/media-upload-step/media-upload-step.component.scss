@@ -2,7 +2,6 @@
   .upload-area {
     border: 2px dashed var(--surface-border);
     background: var(--surface-100);
-    min-height: 120px;
     transition: border-color 0.2s;
     &:hover {
       border-color: var(--primary-color);
