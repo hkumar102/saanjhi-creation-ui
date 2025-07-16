@@ -22,6 +22,7 @@ import { AutoCompleteModule, AutoCompleteSelectEvent } from 'primeng/autocomplet
     imports: [CommonModule, AutoCompleteModule, FormsModule],
     template: `
         <p-autoComplete
+        #autoComplete
         [inputId]="inputId"
         [(ngModel)]="value"
         [suggestions]="suggestions"
@@ -44,7 +45,9 @@ import { AutoCompleteModule, AutoCompleteSelectEvent } from 'primeng/autocomplet
         (onFocus)="onFocus.emit($event)"
         (onClear)="onClear.emit($event)"
         (onUnselect)="onUnselectHandler($event)"
-        styleClass="w-full"
+        (onFocus)="autoComplete.show()"
+        [unique]="true"
+        [styleClass]="styleClass"
         >
         </p-autoComplete>
   `,
@@ -59,6 +62,7 @@ import { AutoCompleteModule, AutoCompleteSelectEvent } from 'primeng/autocomplet
 export class UiAutocompleteComponent<T = any>
     implements ControlValueAccessor {
     @Input() inputId?: string;
+    @Input() styleClass?: string;
     private _suggestions: any[] = [];
 
     @Input()

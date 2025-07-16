@@ -1,105 +1,44 @@
 <saanjhi-ui-confirm-dialog #confirmDialog />
-
-<p-card styleClass="mb-3">
-    <div class="flex justify-content-between align-items-center">
-        <div class="flex-1">
-            <form [formGroup]="filterForm" class="grid">
-                <saanjhi-ui-form-control label="Search" inputId="search" class="col-12 md:col-6">
-                    <saanjhi-ui-input inputId="search" formControlName="search"
-                        placeholder="Search..."></saanjhi-ui-input>
-                </saanjhi-ui-form-control>
-
-                <saanjhi-ui-form-control label="Category" inputId="categoryIds" class="col-12 md:col-6">
-                    <saanjhi-ui-category-select [multiple]="true" inputId="categoryIds" formControlName="categoryIds">
-                    </saanjhi-ui-category-select>
-                </saanjhi-ui-form-control>
-            </form>
+<div class="flex flex-column gap-2 surface-0">
+    <div class="flex justify-content-between gap-2 p-3 surface-0">
+        <p-button icon="fa-solid fa-filter" label="Filters" (click)="showFilters = !showFilters"
+            class="p-button-outlined" severity="warn"></p-button>
+        <p-button icon="fa-solid fa-plus" label="Add Product" [routerLink]="['/products/create']"
+            class="p-button-outlined" severity="info"></p-button>
+    </div>
+    <div class="px-3">
+        <div class="flex gap-2 border-top-1 border-200">
+            <div class="p-2 w-15rem border-right-1 border-200 pr-4">
+                <app-product-filter (filtersChanged)="onFiltersChanged($event)"></app-product-filter>
+            </div>
+            <div class="xl:w-9 flex-1">
+                <div class="flex flex-column gap-2 p-3">
+                    <div class="flex justify-content-between align-items-center">
+                        <div class="text-sm font-bold">Showing {{products.length}}-{{totalCount}} results</div>
+                        <div class="flex gap-2 align-items-center">
+                            <div class="text-base">Sort By:</div>
+                            <div><saanjhi-ui-autocomplete styleClass="w-10rem"
+                                    [dropdown]="true"></saanjhi-ui-autocomplete>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="flex align-items-center gap-3">
+                        <div><span class="font-bold text-sm">Active Filter</span></div>
+                        <div class="flex flex-wrap gap-2">
+                            <p-badge value="Lehenga"></p-badge>
+                            <p-badge value="Lehenga"></p-badge>
+                            <p-badge value="Lehenga"></p-badge>
+                            <p-badge value="Lehenga"></p-badge>
+                        </div>
+                    </div>
+                </div>
+                <div class="px-3">
+                    <div class="flex flex-wrap gap-3 justify-content-between">
+                        <app-product-card *ngFor="let product of products" [product]="product"></app-product-card>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
-    <div class="flex justify-content-between align-items-center gap-2">
-        <button pButton severity="warn" type="button" label="Search Products" icon="fa-solid fa-magnifying-glass"
-            (click)="loadProducts()"></button>
-        <button pButton severity="info" type="button" label="Create Product" icon="fa-solid fa-plus"
-            (click)="onCreateProduct()"></button>
-    </div>
-</p-card>
 
-<p-table [value]="products" [rows]="query.pageSize" [totalRecords]="totalCount" [lazy]="true" [loading]="isLoading"
-    (onLazyLoad)="onPageChange($event)" [sortField]="query.sortBy" [sortOrder]="query.sortDesc ? -1 : 1"
-    (sortFunction)="onSort($event)" [responsiveLayout]="'scroll'">
-
-    <ng-template pTemplate="header">
-        <tr>
-            <th pSortableColumn="mainImage">
-                <div class="flex items-center gap-2">
-                    Image
-                    <p-sortIcon field="mainImage" />
-                </div>
-            </th>
-            <th pSortableColumn="name">
-                <div class="flex items-center gap-2">
-                    Name
-                    <p-sortIcon field="name" />
-                </div>
-            </th>
-            <th pSortableColumn="sku">
-                <div class="flex items-center gap-2">
-                    SKU
-                    <p-sortIcon field="sku" />
-                </div>
-            </th>
-            <th pSortableColumn="purchasePrice">
-                <div class="flex items-center gap-2">
-                    Purchase Price
-                    <p-sortIcon field="purchasePrice" />
-                </div>
-            </th>
-            <th pSortableColumn="rentalPrice">
-                <div class="flex items-center gap-2">
-                    Rental Price
-                    <p-sortIcon field="rentalPrice" />
-                </div>
-            </th>
-            <th pSortableColumn="securityDeposit">
-                <div class="flex items-center gap-2">
-                    Security Deposit
-                    <p-sortIcon field="securityDeposit" />
-                </div>
-            </th>
-            <th pSortableColumn="categoryName">
-                <div class="flex items-center gap-2">
-                    Category
-                    <p-sortIcon field="categoryName" />
-                </div>
-            </th>
-            <th>
-                <div class="flex items-center gap-2">
-                    Actions
-                </div>
-            </th>
-        </tr>
-    </ng-template>
-
-    <ng-template pTemplate="body" let-product>
-        <tr>
-            <td>
-                <img *ngIf="product.mainImage?.thumbnailUrl" [src]="product.mainImage.thumbnailUrl" alt="Product"
-                    width="48" height="48" />
-            </td>
-            <td>{{ product.name }}</td>
-            <td>{{ product.sku }}</td>
-            <td>{{ product.purchasePrice | appCurrency }}</td>
-            <td>{{ product.rentalPrice | appCurrency }}</td>
-            <td>{{ product.securityDeposit | appCurrency }}</td>
-            <td>{{ product.categoryName }}</td>
-            <td>
-                <div class="flex gap-2">
-                    <p-button icon="pi pi-pencil" [routerLink]="['/products/edit', product.id]" class="p-button-text"
-                        severity="info"></p-button>
-                    <p-button icon="pi pi-trash" severity="danger" (click)="deleteProduct(product)"
-                        class="p-button-text"></p-button>
-                </div>
-            </td>
-        </tr>
-    </ng-template>
-</p-table>
+</div>

@@ -4,12 +4,15 @@ import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { ProductServiceClient, ProductDto, GetAllProductsQuery, ProductDtoPaginatedResult, AppCurrencyPipe } from '@saanjhi-creation-ui/shared-common';
 import { TableModule } from 'primeng/table';
 import { ButtonModule } from 'primeng/button';
-import { CategorySelectComponent, UiFormControlComponent, UiInputComponent, UiConfirmDialogComponent } from '@saanjhi-creation-ui/shared-ui';
+import { UiConfirmDialogComponent, UiAutocompleteComponent } from '@saanjhi-creation-ui/shared-ui';
 import { takeUntil } from 'rxjs';
 import { AdminBaseComponent } from '../../../../common/components/base/admin-base.component';
-import { Card } from "primeng/card";
 import { RouterModule } from '@angular/router';
 import { ProductWorkflowService } from '../../services/product-workflow.service';
+import { ProductSearchComponent } from "./product-filter/product-filter.component";
+import { ProductCardComponent } from "./product-card/product-card.component";
+import { DropdownModule } from "primeng/dropdown";
+import { Badge } from "primeng/badge";
 
 @Component({
   selector: 'app-product-list',
@@ -19,15 +22,15 @@ import { ProductWorkflowService } from '../../services/product-workflow.service'
     ReactiveFormsModule,
     TableModule,
     ButtonModule,
-    UiFormControlComponent,
-    CategorySelectComponent,
-    UiInputComponent,
-    AppCurrencyPipe,
-    Card,
     RouterModule,
     UiConfirmDialogComponent,
-    RouterModule
-  ],
+    RouterModule,
+    ProductSearchComponent,
+    ProductCardComponent,
+    DropdownModule,
+    UiAutocompleteComponent,
+    Badge
+],
   templateUrl: './product-list.component.html',
   styleUrls: ['./product-list.component.scss']
 })
@@ -37,13 +40,7 @@ export class ProductListComponent extends AdminBaseComponent implements OnInit {
   private fb = inject(FormBuilder);
 
   @ViewChild('confirmDialog') confirmDialog!: UiConfirmDialogComponent;
-  filterForm: FormGroup = this.fb.group({
-    search: [''],
-    categoryIds: [[]],
-    isActive: [undefined],
-    isRentable: [undefined],
-    isPurchasable: [undefined]
-  });
+
 
   categories = [{
     "id": "f36f0952-4623-44a7-91f4-14b01e74ae52",
@@ -81,34 +78,22 @@ export class ProductListComponent extends AdminBaseComponent implements OnInit {
     "updatedAt": null
   }];
 
+  showFilters = false
+
   products: ProductDto[] = [];
   totalCount = 0;
   isLoading = false;
+  query: Partial<GetAllProductsQuery> = {};
 
-  query: GetAllProductsQuery = {
-    page: 1,
-    pageSize: 20,
-    sortBy: 'createdAt',
-    sortDesc: true,
-    includeMedia: true,
-    includeInventory: true,
-    organizeMediaByColor: false
-  };
 
   ngOnInit() {
-    this.filterForm.valueChanges.pipe(takeUntil(this.destroy$)).subscribe(() => {
-      this.onFilterChange();
-    });
+
   }
 
   async loadProducts() {
     this.isLoading = true;
     try {
-      const filters = this.filterForm.value;
-      const result: ProductDtoPaginatedResult = await this.productService.search({
-        ...this.query,
-        ...filters
-      });
+      const result: ProductDtoPaginatedResult = await this.productService.search(this.query as GetAllProductsQuery);
       this.products = result.items || [];
       this.totalCount = result.totalCount;
     } finally {
@@ -128,7 +113,8 @@ export class ProductListComponent extends AdminBaseComponent implements OnInit {
     this.loadProducts();
   }
 
-  onFilterChange() {
+  onFiltersChanged(filters: GetAllProductsQuery) {
+    this.query = filters;
     this.query.page = 1;
     this.loadProducts();
   }

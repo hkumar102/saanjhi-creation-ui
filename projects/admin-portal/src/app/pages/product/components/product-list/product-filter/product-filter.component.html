@@ -1,0 +1,99 @@
+<!-- Reusable filter templates -->
+<ng-template #filterInputs let-form="form">
+    <div [formGroup]="form" class="flex flex-column gap-2">
+        <!-- Search Bar -->
+        <div>
+            <saanjhi-ui-form-control label="Search" [control]="form.get('search')" class="w-full">
+                <input type="text" pInputText placeholder="Search by name, description etc" formControlName="search"
+                    class="w-full" />
+            </saanjhi-ui-form-control>
+        </div>
+
+        <!-- Categories -->
+        <div>
+            <saanjhi-ui-form-control label="Categories" [control]="form.get('categoryIds')" class="w-full">
+                <saanjhi-ui-category-select [multiple]="true" inputId="categoryIds" formControlName="categoryIds"
+                    class="w-full"></saanjhi-ui-category-select>
+            </saanjhi-ui-form-control>
+        </div>
+
+        <!-- Rentable, Purchasable, Active -->
+        <div>
+            <div class="flex flex-column gap-2">
+                <div class="flex gap-3 align-items-center">
+                    <saanjhi-ui-form-control label="Rentable" [control]="form.get('isRentable')">
+                        <p-toggleswitch formControlName="isRentable"></p-toggleswitch>
+                    </saanjhi-ui-form-control>
+                </div>
+                <div class="flex gap-3 align-items-center">
+                    <saanjhi-ui-form-control label="Purchasable" [control]="form.get('isPurchasable')">
+                        <p-toggleswitch formControlName="isPurchasable"></p-toggleswitch>
+                    </saanjhi-ui-form-control>
+                </div>
+                <div class="flex gap-3 align-items-center">
+                    <saanjhi-ui-form-control label="Active" [control]="form.get('isActive')">
+                        <p-toggleswitch formControlName="isActive"></p-toggleswitch>
+                    </saanjhi-ui-form-control>
+                </div>
+            </div>
+        </div>
+
+        <div>
+            <div class="flex flex-column col-12">
+                <!-- Purchase Price -->
+                <div class="flex-1 flex flex-column gap-2">
+                    <saanjhi-ui-form-control label="Active" [control]="form.get('isActive')">
+                        <p-slider [range]="true" [min]="0" [max]="10000" inputId="purchasePriceRange"
+                            formControlName="purchasePriceRange" (onSlideEnd)="onPurchasePriceChange($event)"
+                            styleClass="w-full"></p-slider>
+                        <div class="text-sm text-gray-600 mt-1">
+                            ₹{{ filterForm.get('minPurchasePrice')?.value }} - ₹{{
+                            filterForm.get('maxPurchasePrice')?.value
+                            }}
+                        </div>
+                    </saanjhi-ui-form-control>
+                </div>
+
+                <!-- Rental Price -->
+                <div class="flex-1 flex flex-column gap-2">
+                    <saanjhi-ui-form-control label="Rental Price" [control]="form.get('rentalPriceRange')">
+                        <p-slider [range]="true" [min]="0" [max]="5000" formControlName="rentalPriceRange"
+                            (onSlideEnd)="onRentalPriceChange($event)" styleClass="w-full"></p-slider>
+                        <div class="text-sm text-gray-600 mt-1">
+                            ₹{{ filterForm.get('minRentalPrice')?.value }} - ₹{{ filterForm.get('maxRentalPrice')?.value
+                            }}
+                        </div>
+                    </saanjhi-ui-form-control>
+                </div>
+            </div>
+        </div>
+
+        <div>
+            <saanjhi-ui-form-control label="Descending" [control]="form.get('sortDesc')">
+                <p-toggleswitch formControlName="sortDesc"></p-toggleswitch>
+            </saanjhi-ui-form-control>
+        </div>
+
+        <!-- Apply / Reset -->
+        <div class="flex flex-column gap-2">
+            <button pButton label="Apply Filters" (click)="onApplyFilters()" icon="fa-solid fa-filter"></button>
+            <button pButton label="Reset" severity="secondary" (click)="onResetFilters()" icon="fa-solid fa-refresh"></button>
+        </div>
+    </div>
+</ng-template>
+
+<!-- DESKTOP VIEW -->
+<div class="hidden md:flex md:flex-column gap-2 border-right border-gray-300" @slideIn>
+    <form [formGroup]="filterForm">
+        <ng-container *ngTemplateOutlet="filterInputs; context: { form: filterForm }"></ng-container>
+    </form>
+</div>
+
+<!-- MOBILE VIEW -->
+<div class="md:hidden" *ngIf="isVisible">
+    <p-sidebar [(visible)]="isVisible" position="left" [modal]="true" [dismissible]="false" (onHide)="isVisibleChange.emit(false)">
+        <form [formGroup]="filterForm" class="p-3">
+            <ng-container *ngTemplateOutlet="filterInputs; context: { form: filterForm }"></ng-container>
+        </form>
+    </p-sidebar>
+</div>
