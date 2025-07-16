@@ -14,49 +14,35 @@
     </div>
 
     <!-- Desktop Navigation -->
-    <nav class="desktop-nav hidden md:flex">
+    <nav class="desktop-nav hidden md:flex" *ngIf="isLoggedIn()">
       <ul class="nav-list">
         <!-- ✅ Dynamic Navigation with Submenus -->
-        <li *ngFor="let item of navigationMenu" 
-            class="nav-item"
-            [class.nav-item-with-submenu]="hasSubmenu(item)"
-            [class.submenu-open]="isSubmenuOpen(item.label)">
-          
+        <li *ngFor="let item of navigationMenu" class="nav-item" [class.nav-item-with-submenu]="hasSubmenu(item)"
+          [class.submenu-open]="isSubmenuOpen(item.label)">
+
           <!-- Main Menu Item -->
-          <a *ngIf="!hasSubmenu(item)" 
-             [routerLink]="item.routerLink" 
-             routerLinkActive="active"
-             class="nav-link">
+          <a *ngIf="!hasSubmenu(item)" [routerLink]="item.routerLink" routerLinkActive="active" class="nav-link">
             <i *ngIf="item.icon" [class]="item.icon" class="mr-2"></i>
             {{ item.label }}
           </a>
 
           <!-- Menu Item with Submenu -->
-          <button *ngIf="hasSubmenu(item)" 
-                  type="button"
-                  class="nav-link nav-button"
-                  (click)="toggleSubmenu(item.label, $event)"
-                  [class.active]="isSubmenuOpen(item.label)">
+          <button *ngIf="hasSubmenu(item)" type="button" class="nav-link nav-button"
+            (click)="toggleSubmenu(item.label, $event)" [class.active]="isSubmenuOpen(item.label)">
             <i *ngIf="item.icon" [class]="item.icon" class="mr-2"></i>
             {{ item.label }}
-            <i class="pi pi-chevron-down ml-2 submenu-arrow" 
-               [class.rotated]="isSubmenuOpen(item.label)"></i>
+            <i class="pi pi-chevron-down ml-2 submenu-arrow" [class.rotated]="isSubmenuOpen(item.label)"></i>
           </button>
 
           <!-- Submenu Dropdown -->
-          <div *ngIf="hasSubmenu(item) && isSubmenuOpen(item.label)" 
-               class="submenu-dropdown">
+          <div *ngIf="hasSubmenu(item) && isSubmenuOpen(item.label)" class="submenu-dropdown">
             <ul class="submenu-list">
-              <li *ngFor="let subItem of getSubmenuItems(item)" 
-                  class="submenu-item"
-                  [class.submenu-item-with-children]="hasSubmenu(subItem)">
-                
+              <li *ngFor="let subItem of getSubmenuItems(item)" class="submenu-item"
+                [class.submenu-item-with-children]="hasSubmenu(subItem)">
+
                 <!-- Simple Submenu Item -->
-                <a *ngIf="!hasSubmenu(subItem)" 
-                   [routerLink]="subItem.routerLink" 
-                   routerLinkActive="active"
-                   class="submenu-link"
-                   (click)="closeAllSubmenus()">
+                <a *ngIf="!hasSubmenu(subItem)" [routerLink]="subItem.routerLink" routerLinkActive="active"
+                  class="submenu-link" (click)="closeAllSubmenus()">
                   <i *ngIf="subItem.icon" [class]="subItem.icon" class="mr-2"></i>
                   {{ subItem.label }}
                 </a>
@@ -67,13 +53,11 @@
                     <i *ngIf="subItem.icon" [class]="subItem.icon" class="mr-2"></i>
                     {{ subItem.label }}
                   </span>
-                  
+
                   <ul class="nested-submenu">
                     <li *ngFor="let nestedItem of getSubmenuItems(subItem)">
-                      <a [routerLink]="nestedItem.routerLink" 
-                         routerLinkActive="active"
-                         class="nested-submenu-link"
-                         (click)="closeAllSubmenus()">
+                      <a [routerLink]="nestedItem.routerLink" routerLinkActive="active" class="nested-submenu-link"
+                        (click)="closeAllSubmenus()">
                         <i *ngIf="nestedItem.icon" [class]="nestedItem.icon" class="mr-2"></i>
                         {{ nestedItem.label }}
                       </a>
@@ -88,7 +72,7 @@
     </nav>
 
     <!-- Action Buttons -->
-    <div class="header-actions">
+    <div class="header-actions" *ngIf="isLoggedIn()">
       <!-- Search (Desktop) -->
       <!-- <button class="action-btn search-btn hidden lg:flex" type="button" (click)="toggleSearch()" aria-label="Search">
         <i class="pi pi-search"></i>
@@ -151,7 +135,7 @@
   </div>
 
   <!-- ✅ Enhanced Mobile Navigation with Submenus -->
-  <nav class="mobile-nav md:hidden" [class.open]="isMobileMenuOpen()">
+  <nav class="mobile-nav md:hidden" [class.open]="isMobileMenuOpen()" *ngIf="isLoggedIn()">
     <div class="mobile-nav-content">
       <!-- Mobile Header -->
       <div class="mobile-nav-header mb-4">
@@ -180,43 +164,35 @@
 
       <!-- ✅ Mobile Menu Items with Submenus -->
       <ul class="mobile-nav-list">
-        <li *ngFor="let item of navigationMenu" 
-            class="mobile-nav-item"
-            [class.mobile-submenu-open]="isSubmenuOpen(item.label)">
-          
+        <li *ngFor="let item of navigationMenu" class="mobile-nav-item"
+          [class.mobile-submenu-open]="isSubmenuOpen(item.label)">
+
           <!-- Simple Mobile Menu Item -->
-          <a *ngIf="!hasSubmenu(item)" 
-             [routerLink]="item.routerLink" 
-             class="mobile-nav-link"
-             (click)="closeMobileMenu()">
+          <a *ngIf="!hasSubmenu(item)" [routerLink]="item.routerLink" class="mobile-nav-link"
+            (click)="closeMobileMenu()">
             <i *ngIf="item.icon" [class]="item.icon" class="mr-2"></i>
             {{ item.label }}
           </a>
 
           <!-- Mobile Menu Item with Submenu -->
           <div *ngIf="hasSubmenu(item)" class="mobile-nav-item-with-submenu">
-            <button type="button" 
-                    class="mobile-nav-button"
-                    (click)="toggleSubmenu(item.label, $event)"
-                    [class.active]="isSubmenuOpen(item.label)">
+            <button type="button" class="mobile-nav-button" (click)="toggleSubmenu(item.label, $event)"
+              [class.active]="isSubmenuOpen(item.label)">
               <span class="mobile-nav-label">
                 <i *ngIf="item.icon" [class]="item.icon" class="mr-2"></i>
                 {{ item.label }}
               </span>
-              <i class="pi pi-chevron-down mobile-submenu-arrow" 
-                 [class.rotated]="isSubmenuOpen(item.label)"></i>
+              <i class="pi pi-chevron-down mobile-submenu-arrow" [class.rotated]="isSubmenuOpen(item.label)"></i>
             </button>
 
             <!-- Mobile Submenu -->
             <div *ngIf="isSubmenuOpen(item.label)" class="mobile-submenu">
               <ul class="mobile-submenu-list">
                 <li *ngFor="let subItem of getSubmenuItems(item)" class="mobile-submenu-item">
-                  
+
                   <!-- Simple Mobile Submenu Item -->
-                  <a *ngIf="!hasSubmenu(subItem)" 
-                     [routerLink]="subItem.routerLink" 
-                     class="mobile-submenu-link"
-                     (click)="closeMobileMenu()">
+                  <a *ngIf="!hasSubmenu(subItem)" [routerLink]="subItem.routerLink" class="mobile-submenu-link"
+                    (click)="closeMobileMenu()">
                     <i *ngIf="subItem.icon" [class]="subItem.icon" class="mr-2"></i>
                     {{ subItem.label }}
                   </a>
@@ -229,9 +205,7 @@
                     </span>
                     <ul class="mobile-nested-list">
                       <li *ngFor="let nestedItem of getSubmenuItems(subItem)">
-                        <a [routerLink]="nestedItem.routerLink" 
-                           class="mobile-nested-link"
-                           (click)="closeMobileMenu()">
+                        <a [routerLink]="nestedItem.routerLink" class="mobile-nested-link" (click)="closeMobileMenu()">
                           <i *ngIf="nestedItem.icon" [class]="nestedItem.icon" class="mr-2"></i>
                           {{ nestedItem.label }}
                         </a>
