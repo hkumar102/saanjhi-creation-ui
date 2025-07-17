@@ -1,9 +1,10 @@
 import { CommonModule } from "@angular/common";
-import { Component, Input, OnInit } from "@angular/core";
+import { Component, Input, OnInit, model } from "@angular/core";
 import { RouterModule } from "@angular/router";
-import { ProductDto, AppCurrencyPipe } from "@saanjhi-creation-ui/shared-common";
+import { ProductDto, AppCurrencyPipe, ProductMediaDto } from "@saanjhi-creation-ui/shared-common";
 import { Button } from "primeng/button";
 import { ImageModule } from 'primeng/image';
+import { GalleriaModule } from 'primeng/galleria';
 
 
 @Component({
@@ -11,14 +12,15 @@ import { ImageModule } from 'primeng/image';
     standalone: true,
     templateUrl: './product-card.component.html',
     styleUrls: ['./product-card.component.scss'],
-    imports: [CommonModule, AppCurrencyPipe, Button, RouterModule, ImageModule],
+    imports: [CommonModule, AppCurrencyPipe, Button, RouterModule, ImageModule, GalleriaModule],
 })
 export class ProductCardComponent implements OnInit {
     @Input() product!: ProductDto;
     defaultImage = 'assets/images/default-product.svg';
-    selectedImage: string | undefined;
-
+    images: ProductMediaDto[] = [];
+    hasMedia = false;
     ngOnInit() {
-        this.selectedImage = this.product.mainImage ? this.product.mainImage.variants?.small?.url : this.product.media?.[0]?.url ?? this.defaultImage;
+        this.images = this.product.media?.length ? this.product.media : [{ url: this.defaultImage } as ProductMediaDto];
+        this.hasMedia = Array.isArray(this.product.media) && this.product.media.length > 0;
     }
 }

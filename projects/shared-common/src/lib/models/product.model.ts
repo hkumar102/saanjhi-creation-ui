@@ -173,3 +173,13 @@ export interface AddProductMediaCommand {
   altText?: string;
 }
 
+export interface ProductActiveFilter{
+  label: string;
+  value: string;
+  key: string;
+}
+
+export interface ProductFilterEvent {
+  query: GetAllProductsQuery;
+  activeFilters: ProductActiveFilter[];
+}

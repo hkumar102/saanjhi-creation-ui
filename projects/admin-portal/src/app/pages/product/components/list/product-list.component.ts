@@ -1,14 +1,14 @@
 import { Component, OnInit, ViewChild, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
-import { ProductServiceClient, ProductDto, GetAllProductsQuery, ProductDtoPaginatedResult, AppCurrencyPipe, CategoryServiceClient, CategoryDto, AvailableColors, AvailableSizes } from '@saanjhi-creation-ui/shared-common';
+import { ProductServiceClient, ProductDto, GetAllProductsQuery, ProductDtoPaginatedResult, AppCurrencyPipe, CategoryServiceClient, CategoryDto, AvailableColors, AvailableSizes, ProductFilterEvent, ProductActiveFilter } from '@saanjhi-creation-ui/shared-common';
 import { TableModule } from 'primeng/table';
 import { ButtonModule } from 'primeng/button';
 import { UiConfirmDialogComponent, UiAutocompleteComponent } from '@saanjhi-creation-ui/shared-ui';
 import { AdminBaseComponent } from '../../../../common/components/base/admin-base.component';
 import { RouterModule } from '@angular/router';
 import { ProductWorkflowService } from '../../services/product-workflow.service';
-import { ProductSearchComponent } from "./product-filter/product-filter.component";
+import { ProductFilterComponent } from "./product-filter/product-filter.component";
 import { ProductCardComponent } from "./product-card/product-card.component";
 import { DropdownModule } from "primeng/dropdown";
 import { Badge } from "primeng/badge";
@@ -25,10 +25,9 @@ import { IInfiniteScrollEvent, InfiniteScrollDirective } from 'ngx-infinite-scro
     RouterModule,
     UiConfirmDialogComponent,
     RouterModule,
-    ProductSearchComponent,
+    ProductFilterComponent,
     ProductCardComponent,
     DropdownModule,
-    UiAutocompleteComponent,
     Badge,
     InfiniteScrollDirective
   ],
@@ -39,7 +38,6 @@ export class ProductListComponent extends AdminBaseComponent implements OnInit {
   private productService = inject(ProductServiceClient);
   private categoryService = inject(CategoryServiceClient);
   private workflowService = inject(ProductWorkflowService);
-  private fb = inject(FormBuilder);
 
   @ViewChild('confirmDialog') confirmDialog!: UiConfirmDialogComponent;
 
@@ -47,15 +45,13 @@ export class ProductListComponent extends AdminBaseComponent implements OnInit {
   categories: CategoryDto[] = [];
   colors = AvailableColors.map(c => c.name);
   sizes = AvailableSizes;
-
-  showFilters = false
-
   products: ProductDto[] = [];
   totalCount = 0;
   isLoading = false;
   query: Partial<GetAllProductsQuery> = {};
   pageSize = 50;
   pageNumber = 1;
+  activeFilters: ProductActiveFilter[] = [];
 
 
   async ngOnInit() {
@@ -93,8 +89,10 @@ export class ProductListComponent extends AdminBaseComponent implements OnInit {
     this.loadProducts();
   }
 
-  onFiltersChanged(filters: GetAllProductsQuery) {
-    this.query = filters;
+  onFiltersChanged(filters: ProductFilterEvent) {
+    this.query = filters.query;
+    this.activeFilters = filters.activeFilters;
+    console.log('Filters changed:', filters.activeFilters);
     this.resetList();
     this.loadProducts();
   }

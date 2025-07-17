@@ -15,20 +15,17 @@
                 <div class="flex flex-column gap-2 p-3">
                     <div class="flex justify-content-between align-items-center">
                         <div class="text-sm">Showing {{products.length}}-{{totalCount}} results</div>
-                        <div class="flex gap-2 align-items-center">
+                        <!-- <div class="flex gap-2 align-items-center">
                             <div class="text-base">Sort By:</div>
                             <div><saanjhi-ui-autocomplete styleClass="w-10rem"
                                     [dropdown]="true"></saanjhi-ui-autocomplete>
                             </div>
-                        </div>
+                        </div> -->
                     </div>
-                    <div class="flex align-items-center gap-3">
+                    <div class="flex align-items-center gap-3" *ngIf="activeFilters.length > 0">
                         <div><span class="text-sm">Active Filter</span></div>
                         <div class="flex flex-wrap gap-2">
-                            <p-badge value="Lehenga"></p-badge>
-                            <p-badge value="Lehenga"></p-badge>
-                            <p-badge value="Lehenga"></p-badge>
-                            <p-badge value="Lehenga"></p-badge>
+                            <p-badge *ngFor="let filter of activeFilters" [value]="filter.value" severity="info"></p-badge>
                         </div>
                     </div>
                 </div>
