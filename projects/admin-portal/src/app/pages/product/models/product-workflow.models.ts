@@ -94,6 +94,7 @@ export interface InventoryItemData {
   isRetired?: boolean;
   retirementReason?: string;
   retirementDate?: Date;
+  barcodeImageBase64?: string;
 }
 
 // Workflow navigation

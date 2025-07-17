@@ -3,13 +3,16 @@ import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormArray, FormGroup, Validators } from '@angular/forms';
 import { ProductWorkflowService } from '../../../services/product-workflow.service';
 import { WorkflowStep, InventoryItemData } from '../../../models/product-workflow.models';
-import { UiAutocompleteComponent, UiButtonComponent, UiCheckboxComponent, UiConfirmDialogComponent, UiDropdownComponent, UiFormControlComponent, UiInputComponent, UiInputNumberComponent, UiTextareaComponent } from '@saanjhi-creation-ui/shared-ui';
+import { UiAutocompleteComponent, UiButtonComponent, UiConfirmDialogComponent, UiFormControlComponent, UiInputComponent, UiInputNumberComponent, UiTextareaComponent } from '@saanjhi-creation-ui/shared-ui';
 import { DividerModule } from 'primeng/divider';
 import { DatePicker } from "primeng/datepicker";
 import { AutoCompleteModule } from 'primeng/autocomplete';
 import { AdminBaseComponent } from '../../../../../common/components/base/admin-base.component';
-import { AvailableColors, AvailableSizes, inventoryStatusOptions, itemConditionOptions } from '@saanjhi-creation-ui/shared-common';
+import { inventoryStatusOptions, itemConditionOptions, AppCurrencyPipe } from '@saanjhi-creation-ui/shared-common';
 import { Checkbox } from "primeng/checkbox";
+import { TableModule } from "primeng/table";
+import { BadgeModule } from 'primeng/badge';
+import { ButtonModule } from 'primeng/button';
 @Component({
   selector: 'app-inventory-setup-step',
   standalone: true,
@@ -26,7 +29,11 @@ import { Checkbox } from "primeng/checkbox";
     AutoCompleteModule,
     UiConfirmDialogComponent,
     UiAutocompleteComponent,
-    Checkbox
+    Checkbox,
+    TableModule,
+    BadgeModule,
+    AppCurrencyPipe,
+    ButtonModule
 ],
   templateUrl: './inventory-setup-step.component.html',
   styleUrls: ['./inventory-setup-step.component.scss']
@@ -45,6 +52,7 @@ export class InventorySetupStepComponent extends AdminBaseComponent implements O
   availableSizes: string[] = [];
   availableColors: string[] = [];
   availableStatuses = inventoryStatusOptions;
+  existingItems: InventoryItemData[] = [];
 
   ngOnInit(): void {
     this.loadFromWorkflow();
@@ -92,7 +100,7 @@ export class InventorySetupStepComponent extends AdminBaseComponent implements O
       serialNumber: [data?.serialNumber || ''],
       conditionNotes: [data?.conditionNotes || ''],
       warehouseLocation: [data?.warehouseLocation || 'Palam', Validators.required],
-      isRetired: [data?.isRetired],
+      isRetired: [data?.isRetired || false],
       retirementReason: [data?.retirementReason || ''],
       retirementDate: [data?.retirementDate ? new Date(data?.retirementDate) : null]
     });
@@ -103,8 +111,9 @@ export class InventorySetupStepComponent extends AdminBaseComponent implements O
     const setup = state.inventoryData;
     const productDetails = state.productDetails;
     if (setup?.inventoryItems?.length) {
+      this.existingItems = setup.inventoryItems.filter(x => !!x.id);
       this.inventoryItems.clear();
-      setup.inventoryItems.forEach(item => {
+      setup.inventoryItems.filter(x => !x.id).forEach(item => {
         this.inventoryItems.push(this.createItemForm(item));
       });
       this.inventoryItems.markAsUntouched();

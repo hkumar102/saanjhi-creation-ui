@@ -5,6 +5,7 @@ export interface InventoryItemDto {
   color?: string;
   serialNumber?: string;
   barcode?: string;
+  quantity: number;
   status: InventoryStatus;
   condition: ItemCondition;
   conditionNotes?: string;
@@ -22,8 +23,6 @@ export interface InventoryItemDto {
   productBrand?: string;
   isAvailable: boolean;
   daysSinceLastRented: number;
-  createdAt: Date;
-  updatedAt?: Date;
 }
 
 export enum InventoryStatus {
