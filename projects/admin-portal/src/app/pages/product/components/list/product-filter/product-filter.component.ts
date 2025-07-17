@@ -237,12 +237,12 @@ export class ProductFilterComponent extends BaseComponent implements OnInit {
             //if key already exists, update it
             const existingFilterIndex = this.activeFilters.findIndex(f => f.key === 'search');
             if (existingFilterIndex > -1) {
-                this.activeFilters[existingFilterIndex].value = value[0] || '';
+                this.activeFilters[existingFilterIndex].value = value || '';
                 return;
             }
             this.activeFilters.push({
                 label: 'Search',
-                value: value[0] || '',
+                value: value || '',
                 key: 'search'
             });
         }

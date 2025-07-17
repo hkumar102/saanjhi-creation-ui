@@ -14,7 +14,7 @@
     </div>
 
     <!-- Desktop Navigation -->
-    <nav class="desktop-nav hidden md:flex" *ngIf="isLoggedIn()">
+    <nav class="desktop-nav hidden md:flex flex-1" *ngIf="isLoggedIn()">
       <ul class="nav-list">
         <!-- ✅ Dynamic Navigation with Submenus -->
         <li *ngFor="let item of navigationMenu" class="nav-item" [class.nav-item-with-submenu]="hasSubmenu(item)"
