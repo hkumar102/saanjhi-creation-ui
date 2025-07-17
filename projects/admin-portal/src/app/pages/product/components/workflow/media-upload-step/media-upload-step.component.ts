@@ -45,7 +45,7 @@ export function requiredArray(control: AbstractControl): ValidationErrors | null
 export class MediaUploadStepComponent extends BaseProductFlowComponent implements OnInit {
 
   files: File[] = [];
-  availableColors: string[] = ['Red', 'Green', 'Blue', 'Yellow', 'Black', 'White'];
+  availableColors: string[] = [];
   previewUrls: string[] = [];
   mainImageIndex: number = 0;
   uploadError: string | null = null;
@@ -77,10 +77,12 @@ export class MediaUploadStepComponent extends BaseProductFlowComponent implement
   override ngOnInit(): void {
     super.ngOnInit();
     // Load media data from workflow state
-    const mediaData = (this.workflowService.state()).mediaData;
+    const state = (this.workflowService.state());
+    const mediaData = state?.mediaData;
     if (mediaData) {
       this.mediaData = mediaData;
       this.workflowService.updateStepData(WorkflowStep.MEDIA_UPLOAD, mediaData);
+      this.availableColors = state.productDetails?.availableColors || [];
     }
 
     this.uploadedFilesArray.valueChanges.pipe(takeUntil(this.destroy$)).subscribe(() => {

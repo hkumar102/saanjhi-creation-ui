@@ -1,11 +1,10 @@
-import { Component, EventEmitter, Input, input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, inject, Input, OnInit, Output } from '@angular/core';
 import {
     FormBuilder,
     FormGroup,
     ReactiveFormsModule
 } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FormsModule } from '@angular/forms';
 import { InputTextModule } from 'primeng/inputtext';
 import { MultiSelectModule } from 'primeng/multiselect';
@@ -14,10 +13,12 @@ import { ToggleSwitchModule } from 'primeng/toggleswitch';
 import { SliderModule, SliderSlideEndEvent } from 'primeng/slider';
 import { ButtonModule } from 'primeng/button';
 import { PanelModule } from 'primeng/panel';
-import { GetAllProductsQuery } from '@saanjhi-creation-ui/shared-common';
+import { BaseComponent, CategoryDto, ColorCodePipe, GetAllProductsQuery } from '@saanjhi-creation-ui/shared-common';
 import { SidebarModule } from 'primeng/sidebar';
-import { CategorySelectComponent, UiFormControlComponent } from "@saanjhi-creation-ui/shared-ui";
+import { UiFormControlComponent } from "@saanjhi-creation-ui/shared-ui";
 import { trigger, transition, style, animate, state } from '@angular/animations';
+import { CheckboxModule } from "primeng/checkbox";
+import { debounce, debounceTime, takeUntil } from 'rxjs';
 
 @Component({
     selector: 'app-product-filter',
@@ -36,8 +37,9 @@ import { trigger, transition, style, animate, state } from '@angular/animations'
         ButtonModule,
         PanelModule,
         SidebarModule,
-        CategorySelectComponent,
-        UiFormControlComponent
+        UiFormControlComponent,
+        CheckboxModule,
+        ColorCodePipe
     ],
     animations: [
         trigger('slideIn', [
@@ -48,20 +50,32 @@ import { trigger, transition, style, animate, state } from '@angular/animations'
         ])
     ]
 })
-export class ProductSearchComponent implements OnInit {
+export class ProductSearchComponent extends BaseComponent implements OnInit {
+
+    private fb = inject(FormBuilder);
+
+    @Input() categories: CategoryDto[] = [];
     @Input() isVisible = false;
+    @Input() colors: string[] = [];
+    @Input() sizes: string[] = [];
     @Output() isVisibleChange = new EventEmitter<boolean>();
     @Output() filtersChanged = new EventEmitter<GetAllProductsQuery>();
 
     filterForm!: FormGroup;
-
-    purchasePriceRange: [number, number] = [0, 10000];
-    rentalPriceRange: [number, number] = [0, 5000];
+    purchasePriceRange: [number, number] = [0, 100000];
+    rentalPriceRange: [number, number] = [0, 50000];
     categoryOptions: { id: string; name: string }[] = [];
     sizeOptions: string[] = [];
     colorOptions: string[] = [];
     occasionOptions: string[] = [];
     seasonOptions: string[] = [];
+
+    //Color selection logic
+    showAll = false;
+    selectedColors: string[] = [];
+    get visibleColors(): string[] {
+        return this.showAll ? this.colors : this.colors.slice(0, 5);
+    }
 
     showDesktopFilters = false;
     defaultQuery = {
@@ -92,7 +106,6 @@ export class ProductSearchComponent implements OnInit {
         rentalPriceRange: [this.rentalPriceRange]
     }
 
-    constructor(private fb: FormBuilder) { }
 
     ngOnInit(): void {
         this.filterForm = this.fb.group(this.defaultQuery);
@@ -105,6 +118,16 @@ export class ProductSearchComponent implements OnInit {
             purchasePriceRange: this.purchasePriceRange,
             rentalPriceRange: this.rentalPriceRange
         });
+
+        this.onApplyFilters();
+
+        this.filterForm.valueChanges
+        .pipe(
+            debounceTime(500),
+            takeUntil(this.destroy$))
+        .subscribe(() => {
+            this.onApplyFilters();
+        });
     }
 
     onApplyFilters(): void {
@@ -113,7 +136,6 @@ export class ProductSearchComponent implements OnInit {
     }
 
     onResetFilters(): void {
-        this.filterForm.reset(this.defaultQuery);
         this.filterForm.patchValue({});
         this.purchasePriceRange = [0, 10000];
         this.rentalPriceRange = [0, 5000];
@@ -133,5 +155,20 @@ export class ProductSearchComponent implements OnInit {
             minRentalPrice: event.values?.[0],
             maxRentalPrice: event.values?.[1]
         });
+    }
+
+    toggleColor(color: string) {
+        const index = this.selectedColors.indexOf(color);
+        if (index === -1) {
+            this.selectedColors.push(color);
+        } else {
+            this.selectedColors.splice(index, 1);
+        }
+
+        this.filterForm.patchValue({ colors: this.selectedColors });
+    }
+
+    isColorSelected(color: string): boolean {
+        return this.selectedColors.includes(color);
     }
 }

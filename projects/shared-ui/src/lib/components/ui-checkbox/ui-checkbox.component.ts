@@ -13,6 +13,17 @@ import { BaseFormControl } from '../base-form-control';
   standalone: true,
   imports: [CommonModule, CheckboxModule, FormsModule],
   templateUrl: './ui-checkbox.component.html',
+  template: `
+    <p-checkbox
+      [inputId]="inputId"
+      [binary]="binary"
+      [value]="value"
+      [disabled]="disabled"
+      [name]="name"
+      [checked]="isChecked()"
+      (onChange)="handleChange($event.checked)">
+    </p-checkbox>
+  `,
   providers: [
     {
       provide: NG_VALUE_ACCESSOR,
@@ -31,8 +42,8 @@ export class UiCheckboxComponent extends BaseFormControl implements ControlValue
   @Input() name: string = '';
   @Input() binary: boolean = false;
 
-  @Output() change = new EventEmitter<boolean>();
-  modelValue: any = this.binary ? false : [];
+  @Output() change = new EventEmitter<any>();
+  modelValue?: boolean | string | number | any[] | undefined | null;
 
 
   onChange = (val: any) => { };
@@ -40,7 +51,8 @@ export class UiCheckboxComponent extends BaseFormControl implements ControlValue
 
 
   writeValue(val: any): void {
-    this.modelValue = val;
+    // this.modelValue = val;
+    this.modelValue = this.binary ? val : val;
   }
 
   registerOnChange(fn: any): void {
@@ -55,29 +67,33 @@ export class UiCheckboxComponent extends BaseFormControl implements ControlValue
     this.disabled = isDisabled;
   }
 
-
-  onCheckboxChange(event: CheckboxChangeEvent) {
+  handleChange(checked: boolean) {
     if (this.binary) {
-      this.modelValue = event.checked;
-      this.onChange(this.modelValue);
+      this.modelValue = checked;
     } else {
-      const current = Array.isArray(this.modelValue) ? [...this.modelValue] : [];
+      let currentModelValue = Array.isArray(this.modelValue) ? [...this.modelValue] : [];
+      const index = currentModelValue.findIndex(v => v === this.value);
 
-      if (event.checked) {
-        if (!current.includes(this.value)) {
-          current.push(this.value);
-        }
-      } else {
-        const index = current.indexOf(this.value);
-        if (index !== -1) {
-          current.splice(index, 1);
-        }
+      if (checked && index === -1) {
+        currentModelValue.push(this.value);
+      } else if (!checked && index !== -1) {
+        currentModelValue.splice(index, 1);
       }
 
-      this.modelValue = current;
-      this.onChange(current);
+      this.modelValue = currentModelValue;
     }
 
+    // this.onChange(this.modelValue);
+    this.change.emit(this.modelValue);
+  }
+
+  isChecked(): boolean {
+    if (this.binary) return !!this.modelValue;
+    return Array.isArray(this.modelValue) && this.modelValue.includes(this.value);
+  }
+
+  onCheckboxChange(event: CheckboxChangeEvent) {
     this.onTouched();
+    this.change.emit(this.modelValue);
   }
 }

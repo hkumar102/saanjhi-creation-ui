@@ -1,2 +1,2 @@
 <p-checkbox [inputId]="inputId" [binary]="binary" [value]="value" [disabled]="disabled" [ngModel]="modelValue"
-  (onChange)="onCheckboxChange($event)" />
+  (onChange)="onCheckboxChange($event)" (ngModelChange)="handleChange($event)" />

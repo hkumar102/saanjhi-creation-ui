@@ -59,7 +59,7 @@ export interface ProductDto {
   availableColors?: string[];
   material?: string;
   careInstructions?: string;
-  occasion?: string;
+  occasion?: string[];
   season?: string;
   isActive: boolean;
   isRentable: boolean;
@@ -93,7 +93,7 @@ export interface GetAllProductsQuery {
   sizes?: string[];
   colors?: string[];
   material?: string;
-  occasion?: string;
+  occasion?: string[];
   season?: string;
   hasAvailableInventory?: boolean;
   minAvailableQuantity?: number;
@@ -130,7 +130,7 @@ export interface CreateProductCommand {
   availableColors?: string[];
   material?: string;
   careInstructions?: string;
-  occasion?: string;
+  occasion?: string[];
   season?: string;
   isActive: boolean;
   isRentable: boolean;
@@ -154,7 +154,7 @@ export interface UpdateProductCommand {
   availableColors?: string[];
   material?: string;
   careInstructions?: string;
-  occasion?: string;
+  occasion?: string[];
   season?: string;
   isActive: boolean;
   isRentable: boolean;
@@ -173,15 +173,3 @@ export interface AddProductMediaCommand {
   altText?: string;
 }
 
-export const AvailableSizes = [
-  'XS', 'S', 'M', 'L', 'XL', 'XXL', 'XXXL',
-  '28', '30', '32', '34', '36', '38', '40', '42', '44',
-  '4', '6', '8', '10', '12', '14', '16', '18', '20',
-  'One Size', 'Free Size', 'Custom'
-];
-
-export const AvailableColors = [
-  'Black', 'White', 'Red', 'Blue', 'Green', 'Yellow', 'Pink', 'Purple', 'Orange', 'Brown',
-  'Gray', 'Beige', 'Navy', 'Maroon', 'Olive', 'Teal', 'Turquoise', 'Gold', 'Silver',
-  'Multicolor', 'Custom'
-];

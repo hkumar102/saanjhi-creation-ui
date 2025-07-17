@@ -113,15 +113,23 @@ export class UiAutocompleteComponent<T = any>
             return;
         }
 
-        // If optionValue is defined, map incoming ID to object
-        if (this.optionValue && Array.isArray(this.suggestions)) {
+        if (this.multiple && Array.isArray(obj)) {
+            if (this.optionValue && Array.isArray(this.suggestions)) {
+                this.value = obj.map(val => {
+                    const match = this.suggestions.find(item => item[this.optionValue as keyof T] === val);
+                    return match ?? val;
+                });
+            } else {
+                this.value = obj;
+            }
+        } else if (this.optionValue && Array.isArray(this.suggestions)) {
             const match = this.suggestions.find(item => item[this.optionValue as keyof T] === obj);
             this.value = match ?? obj;
         } else {
             this.value = obj;
         }
     }
-    
+
     registerOnChange(fn: any): void {
         this.onChange = fn;
     }
@@ -175,6 +183,6 @@ export class UiAutocompleteComponent<T = any>
 
     onUnselectHandler(event: any): void {
         this.onTouched();
-        this.onUnselect.emit(this.value);        
+        this.onUnselect.emit(this.value);
     }
 }

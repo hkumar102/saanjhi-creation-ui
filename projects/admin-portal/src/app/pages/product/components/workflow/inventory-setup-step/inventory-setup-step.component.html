@@ -45,7 +45,7 @@
               [errorMessages]="{ required: 'Cost is required', min: 'Cost must be greater than 0' }"
               helpText="Cost of acquiring this item.">
               <saanjhi-ui-input-number inputId="acquisitionCost-{{i}}" formControlName="acquisitionCost" mode="currency"
-                currency="USD" class="w-full">
+                currency="INR" locale="en-IN" class="w-full">
               </saanjhi-ui-input-number>
             </saanjhi-ui-form-control>
           </div>
@@ -76,7 +76,7 @@
             <!-- Is Retired -->
             <div class="col-12 md:col-4 lg:col-3">
               <saanjhi-ui-form-control label="Is Retired" inputId="isRetired-{{i}}" [control]="item.get('isRetired')">
-                <saanjhi-ui-checkbox formControlName="isRetired" inputId="isRetired-{{i}}" />
+                <p-checkbox formControlName="isRetired" inputId="isRetired-{{i}}" binary="true"></p-checkbox>
               </saanjhi-ui-form-control>
             </div>
 

@@ -1,0 +1,129 @@
+<!-- Reusable filter templates -->
+<ng-template #filterInputs let-form="form">
+    <div [formGroup]="form" class="flex flex-column gap-2">
+        <!-- Search Bar -->
+        <div>
+            <saanjhi-ui-form-control label="Search" [control]="form.get('search')" class="w-full">
+                <input type="text" pInputText placeholder="Search by name, description etc" formControlName="search"
+                    class="w-full" />
+            </saanjhi-ui-form-control>
+        </div>
+
+        <!-- Categories -->
+        <div class="max-h-13rem overflow-y-scroll">
+            <div class="mb-2">
+                <span class="font-bold">Category</span>
+            </div>
+            <div class="flex flex-column gap-2  text-gray-500">
+                <div *ngFor="let category of categories" class="flex align-items-center">
+                    <p-checkbox [inputId]="category.id" name="categories" [value]="category.id"
+                        formControlName="categoryIds" />
+                    <label [for]="category.id" class="ml-2 text-sm"> {{ category.name }} </label>
+                </div>
+            </div>
+        </div>
+
+        <!-- Rentable, Purchasable, Active -->
+
+        <div>
+            <div class="flex flex-column col-12">
+                <!-- Purchase Price -->
+                <div class="flex-1 flex flex-column gap-2">
+                    <saanjhi-ui-form-control label="Purchase Price" [control]="form.get('purchasePriceRange')">
+                        <p-slider [range]="true" [min]="0" [max]="100000" (onSlideEnd)="onPurchasePriceChange($event)"
+                            inputId="purchasePriceRange" formControlName="purchasePriceRange"
+                            styleClass="w-full mt-3"></p-slider>
+                        <div class="text-sm text-gray-500 mt-1 text-center">
+                            ₹{{ filterForm.get('purchasePriceRange')?.value[0] }} - ₹{{
+                            filterForm.get('purchasePriceRange')?.value[1]
+                            }}
+                        </div>
+                    </saanjhi-ui-form-control>
+                </div>
+
+                <!-- Rental Price -->
+                <div class="flex-1 flex flex-column gap-2">
+                    <saanjhi-ui-form-control label="Rental Price" [control]="form.get('rentalPriceRange')">
+                        <p-slider [range]="true" [min]="0" [max]="50000" (onSlideEnd)="onRentalPriceChange($event)"
+                            inputId="rentalPriceRange" formControlName="rentalPriceRange"
+                            styleClass="w-full mt-3 mb-2"></p-slider>
+                        <div class="text-sm text-gray-500 mt-1 text-center">
+                            ₹{{ filterForm.get('rentalPriceRange')?.value[0] }} - ₹{{ filterForm.get('rentalPriceRange')?.value[1] }}
+                        </div>
+                    </saanjhi-ui-form-control>
+                </div>
+            </div>
+        </div>
+
+        <!-- Colors -->
+        <div>
+            <div class="mb-2">
+                <span class="font-bold">Colors</span>
+            </div>
+            <div class="flex flex-wrap gap-3  text-gray-500">
+                <ng-container *ngFor="let color of visibleColors">
+                    <div class="flex gap-2 cursor-pointer flex-1" (click)="toggleColor(color)">
+                        <div class="color-option">
+                            <div class="border-round-2xl border-2 flex justify-content-center"
+                                style="width: 1.5rem; height: 1.5rem;" [ngStyle]="{
+                                        'background-color': color | colorCode,
+                                        'border-color': isColorSelected(color) ? 'green' : '#ccc'
+                        }"></div>
+                        </div>
+                        <span class="text-sm">{{ color }}</span>
+                    </div>
+                </ng-container>
+
+                <!-- More / Less toggle -->
+                <div class="flex flex-1 align-items-center gap-2 cursor-pointer"
+                    (click)="this.showAll = !this.showAll;">
+                    <div class="color-option">
+                        <div style="width: 1.5rem; height: 1.5rem;"
+                            class="border-round-2xl border-2 flex justify-content-center bg-black-alpha-90 text-white">
+                            {{ showAll ? '-' : '+' }}
+                        </div>
+                    </div>
+                    <span class="text-sm">{{ showAll ? 'Less' : 'More' }}</span>
+                </div>
+            </div>
+        </div>
+        <!-- Sizes -->
+        <div class="flex flex-column gap-2">
+            <div class="mb-2">
+                <span class="font-bold">Sizes</span>
+            </div>
+            <div class="flex gap-2 flex-wrap justify-content-between text-gray-500">
+                <div *ngFor="let size of sizes" class="flex align-items-center  w-3">
+                    <p-checkbox [inputId]="size" name="sizes" [value]="size" formControlName="sizes" />
+                    <label [for]="size" class="ml-2 text-sm"> {{ size }} </label>
+                </div>
+            </div>
+        </div>
+        <!-- Apply / Reset -->
+        <div class="flex flex-column gap-2">
+            <!-- <button pButton label="Apply Filters" (click)="onApplyFilters()" icon="fa-solid fa-filter"></button> -->
+            <button pButton label="Reset" severity="secondary" (click)="onResetFilters()"
+                icon="fa-solid fa-refresh"></button>
+        </div>
+    </div>
+</ng-template>
+
+<!-- DESKTOP VIEW -->
+<div class="hidden md:flex md:flex-column gap-2 border-right border-gray-300" @slideIn>
+    <div>
+        <h3>Filter Options</h3>
+    </div>
+    <form [formGroup]="filterForm">
+        <ng-container *ngTemplateOutlet="filterInputs; context: { form: filterForm }"></ng-container>
+    </form>
+</div>
+
+<!-- MOBILE VIEW -->
+<div class="md:hidden" *ngIf="isVisible">
+    <p-sidebar [(visible)]="isVisible" position="left" [modal]="true" [dismissible]="false"
+        (onHide)="isVisibleChange.emit(false)">
+        <form [formGroup]="filterForm" class="p-3">
+            <ng-container *ngTemplateOutlet="filterInputs; context: { form: filterForm }"></ng-container>
+        </form>
+    </p-sidebar>
+</div>

@@ -205,4 +205,11 @@ export class HeaderComponent implements OnInit {
   getSubmenuItems(item: MenuItem): MenuItem[] {
     return item.items || [];
   }
+
+  isScrolled = false;
+
+  @HostListener('window:scroll', [])
+  onWindowScroll() {
+    this.isScrolled = window.scrollY > 0;
+  }
 }

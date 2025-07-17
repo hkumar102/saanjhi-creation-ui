@@ -1,0 +1,43 @@
+<div class="surface-card border-round shadow-1 w-full">
+    <!-- Image Preview with Dots -->
+    <div class="image-container">
+        <img [src]="selectedImage" alt="Product"
+            class="" style="object-fit: contain;max-width:100%;max-height:100%;" />
+        <!-- <p-image [src]="selectedImage" alt="Product"
+            class="w-full" /> -->
+
+        <!-- Discount Badge -->
+        <div class="absolute top-0 left-0 m-2 px-2 py-1 text-xs font-bold bg-white text-black-alpha-90">
+            {{product.categoryName}}
+        </div>
+
+        <!-- Edit Button -->
+        <div class="absolute top-0 right-0 m-2 px-2 py-1">
+            <p-button icon="fa-solid fa-pencil" severity="secondary" [rounded]="true" [outlined]="true" class="p-button-rounded p-button-text"
+                [routerLink]="['/products/edit', product.id]" styleClass="bg-white" aria-label="Edit Product"></p-button>
+        </div>
+
+        <!-- Image Dots -->
+        <div *ngIf="product.mainImage" class="absolute bottom-0 left-0 right-0 py-2 flex justify-content-center gap-1 bg-black-alpha-50 opacity-70">
+            <ng-container *ngFor="let media of product.media; let i = index">
+                <button (click)="selectedImage = media.url" aria-label="image selector" class="p-button p-0 dot bg-white"></button>
+            </ng-container>
+        </div>
+    </div>
+
+    <!-- Product Info -->
+    <div class="p-3 flex flex-column gap-2">
+        <div class="text-xs text-500 flex justify-content-between">
+            <div>{{product.categoryName}}</div>
+            <span>{{product.purchasePrice | appCurrency}}</span>
+        </div>
+
+        <div class="flex align-items-center justify-content-between">
+            <div class="text-sm font-bold text-900 ellipsis">{{product.name}}</div>            
+        </div>
+
+        <div>
+            <span class="text-lg font-bold text-900">Rent {{product.rentalPrice | appCurrency}}</span>
+        </div>
+    </div>
+</div>

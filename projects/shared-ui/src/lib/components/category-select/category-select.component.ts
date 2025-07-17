@@ -42,7 +42,8 @@ import { UiAutocompleteComponent } from '../ui-autocomplete/ui-autocomplete.comp
         [multiple]="multiple()"
         (completeMethod)="onSearch($event)"
         (onSelect)="handleAutoCompleteSelect($event)"
-        (onUnselect)="handleAutoCompleteSelect($event)"></saanjhi-ui-autocomplete>
+        (onUnselect)="handleAutoCompleteSelect($event)"
+        styleClass="w-full"></saanjhi-ui-autocomplete>
     `,
     changeDetection: ChangeDetectionStrategy.OnPush,
     providers: [

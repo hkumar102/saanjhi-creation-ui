@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy, inject, signal, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { Subject, takeUntil } from 'rxjs';
 import { ProductWorkflowService } from '../../../services/product-workflow.service';
 
@@ -11,34 +11,29 @@ import { TextareaModule } from 'primeng/textarea';
 import { DropdownModule } from 'primeng/dropdown';
 import { FloatLabelModule } from 'primeng/floatlabel';
 import { DividerModule } from 'primeng/divider';
-import {
-    UiInputComponent,
-    UiTextareaComponent,
-    UiFormControlComponent,
-    UiDropdownComponent,
-    UiChipsComponent,
-    UiCheckboxComponent
-} from '@saanjhi-creation-ui/shared-ui';
+import { UiInputComponent, UiTextareaComponent, UiFormControlComponent, UiDropdownComponent, UiCheckboxComponent, UiAutocompleteComponent } from '@saanjhi-creation-ui/shared-ui';
 import { AvailableColors, AvailableSizes } from '@saanjhi-creation-ui/shared-common';
+import { Checkbox } from "primeng/checkbox";
 
 @Component({
     selector: 'app-product-details-step',
     standalone: true,
     imports: [
-        CommonModule,
-        ReactiveFormsModule,
-        InputTextModule,
-        InputNumberModule,
-        TextareaModule,
-        DropdownModule,
-        FloatLabelModule,
-        DividerModule,
-        UiInputComponent,
-        UiTextareaComponent,
-        UiFormControlComponent,
-        UiDropdownComponent,
-        UiCheckboxComponent
-    ],
+    CommonModule,
+    ReactiveFormsModule,
+    InputTextModule,
+    InputNumberModule,
+    TextareaModule,
+    DropdownModule,
+    FloatLabelModule,
+    DividerModule,
+    UiInputComponent,
+    UiTextareaComponent,
+    UiFormControlComponent,
+    UiDropdownComponent,
+    UiAutocompleteComponent,
+    Checkbox
+],
     templateUrl: './product-details-step.component.html',
     styleUrls: ['./product-details-step.component.scss']
 })
@@ -66,7 +61,8 @@ export class ProductDetailsStepComponent implements OnInit, OnDestroy {
         { label: 'Evening', value: 'Evening' },
         { label: 'Beach', value: 'Beach' },
         { label: 'Travel', value: 'Travel' },
-        { label: 'Festival', value: 'Festival' }
+        { label: 'Festival', value: 'Festival' },
+        { label: 'All Occasions', value: 'All Occasions' }
     ]);
 
     seasonOptions = signal([
@@ -78,7 +74,7 @@ export class ProductDetailsStepComponent implements OnInit, OnDestroy {
     ]);
 
     availableSizes = AvailableSizes;
-    availableColors = AvailableColors;
+    availableColors = AvailableColors.map(c => c.name);
 
     ngOnInit(): void {
         this.loadExistingData();

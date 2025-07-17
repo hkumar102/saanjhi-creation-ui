@@ -9,6 +9,7 @@ import { DatePicker } from "primeng/datepicker";
 import { AutoCompleteModule } from 'primeng/autocomplete';
 import { AdminBaseComponent } from '../../../../../common/components/base/admin-base.component';
 import { AvailableColors, AvailableSizes, inventoryStatusOptions, itemConditionOptions } from '@saanjhi-creation-ui/shared-common';
+import { Checkbox } from "primeng/checkbox";
 @Component({
   selector: 'app-inventory-setup-step',
   standalone: true,
@@ -24,9 +25,9 @@ import { AvailableColors, AvailableSizes, inventoryStatusOptions, itemConditionO
     DatePicker,
     AutoCompleteModule,
     UiConfirmDialogComponent,
-    UiCheckboxComponent,
-    UiAutocompleteComponent
-  ],
+    UiAutocompleteComponent,
+    Checkbox
+],
   templateUrl: './inventory-setup-step.component.html',
   styleUrls: ['./inventory-setup-step.component.scss']
 })
@@ -82,15 +83,15 @@ export class InventorySetupStepComponent extends AdminBaseComponent implements O
     return this.fb.group({
       id: [data?.id],
       productId: [data?.productId || state.productId, Validators.required],
-      size: [data?.size || null, Validators.required],
-      color: [data?.color || null, Validators.required],
+      size: [data?.size || state.productDetails?.availableSizes?.[0] || '', Validators.required],
+      color: [data?.color || state.productDetails?.availableColors?.[0] || '', Validators.required],
       condition: [data?.condition || 1, Validators.required],
-      status: [data?.status, Validators.required],
+      status: [data?.status || 1, Validators.required],
       acquisitionDate: [data?.acquisitionDate ? new Date(data?.acquisitionDate) : new Date(), Validators.required],
       acquisitionCost: [data?.acquisitionCost || 0, [Validators.required, Validators.min(1)]],
       serialNumber: [data?.serialNumber || ''],
       conditionNotes: [data?.conditionNotes || ''],
-      warehouseLocation: [data?.warehouseLocation || '', Validators.required],
+      warehouseLocation: [data?.warehouseLocation || 'Palam', Validators.required],
       isRetired: [data?.isRetired],
       retirementReason: [data?.retirementReason || ''],
       retirementDate: [data?.retirementDate ? new Date(data?.retirementDate) : null]

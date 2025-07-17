@@ -28,9 +28,9 @@
       <!-- Is Purchasable -->
       <saanjhi-ui-form-control inputId="isPurchasable"
         helpText="When checked, this product will be visible to customers and available for purchase.">
-        <div class="flex align-items-center gap-2">
-          <saanjhi-ui-checkbox inputId="isPurchasable" formControlName="isPurchasable" [binary]="true">
-          </saanjhi-ui-checkbox>
+        <div class="flex align-items-center gap-2">          
+          <p-checkbox inputId="isPurchasable" formControlName="isPurchasable" [binary]="true">
+          </p-checkbox>
           <label for="isPurchasable" class="text-color font-semibold">
             Product Can be purchased
           </label>
@@ -72,7 +72,9 @@
       </div>
       <div class="col-12 md:col-6">
         <saanjhi-ui-form-control label="Security Deposit" inputId="securityDeposit"
-          [control]="form.get('securityDeposit')" [errorMessages]="{ min: 'Security deposit must be greater than 0' }"
+          [control]="form.get('securityDeposit')" [errorMessages]="{ min: 'Security deposit must be greater than 0', 
+            securityDepositTooLow: 'Security deposit must be greater than or equal to the rental price',
+            securityDepositTooHigh: 'Security deposit must be less than twice the purchase price' }"
           helpText="Security deposit for this product">
           <saanjhi-ui-input-number inputId="securityDeposit" mode="currency" currency="INR" locale="en-IN"
             formControlName="securityDeposit" class="w-full">

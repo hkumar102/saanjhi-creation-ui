@@ -49,7 +49,7 @@ export interface ProductDetailsData {
   availableColors?: string[];
   material?: string;
   careInstructions?: string;
-  occasion?: string;
+  occasion?: string[];
   season?: string;
   isValid?: boolean; // Optional field for validation
 }

@@ -65,6 +65,8 @@ export class UiFormControlComponent extends BaseFormControl {
   /** Whether to show errors immediately (default: false - shows on touched/dirty) */
   @Input() showErrorsImmediately: boolean = false;
 
+   @Input() styleClass: string = '';
+
   /**
    * Determines if we should show floating label
    */

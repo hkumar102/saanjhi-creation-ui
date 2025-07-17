@@ -1,20 +1,20 @@
 <saanjhi-ui-confirm-dialog #confirmDialog />
-<div class="flex flex-column gap-2 surface-0">
-    <div class="flex justify-content-between gap-2 p-3 surface-0">
-        <p-button icon="fa-solid fa-filter" label="Filters" (click)="showFilters = !showFilters"
-            class="p-button-outlined" severity="warn"></p-button>
+<div class="flex flex-column gap-2 surface-0" infiniteScroll [infiniteScrollDistance]="2" [infiniteScrollThrottle]="200"
+    (scrolled)="onScroll()">
+    <div class="flex justify-content-end gap-2 p-3 surface-0">
         <p-button icon="fa-solid fa-plus" label="Add Product" [routerLink]="['/products/create']"
             class="p-button-outlined" severity="info"></p-button>
     </div>
     <div class="px-3">
         <div class="flex gap-2 border-top-1 border-200">
             <div class="p-2 w-15rem border-right-1 border-200 pr-4">
-                <app-product-filter (filtersChanged)="onFiltersChanged($event)"></app-product-filter>
+                <app-product-filter (filtersChanged)="onFiltersChanged($event)" [categories]="categories"
+                    [colors]="colors" [sizes]="sizes"></app-product-filter>
             </div>
             <div class="xl:w-9 flex-1">
                 <div class="flex flex-column gap-2 p-3">
                     <div class="flex justify-content-between align-items-center">
-                        <div class="text-sm font-bold">Showing {{products.length}}-{{totalCount}} results</div>
+                        <div class="text-sm">Showing {{products.length}}-{{totalCount}} results</div>
                         <div class="flex gap-2 align-items-center">
                             <div class="text-base">Sort By:</div>
                             <div><saanjhi-ui-autocomplete styleClass="w-10rem"
@@ -23,7 +23,7 @@
                         </div>
                     </div>
                     <div class="flex align-items-center gap-3">
-                        <div><span class="font-bold text-sm">Active Filter</span></div>
+                        <div><span class="text-sm">Active Filter</span></div>
                         <div class="flex flex-wrap gap-2">
                             <p-badge value="Lehenga"></p-badge>
                             <p-badge value="Lehenga"></p-badge>
@@ -33,7 +33,7 @@
                     </div>
                 </div>
                 <div class="px-3">
-                    <div class="flex flex-wrap gap-3 justify-content-between">
+                    <div class="flex flex-wrap gap-3 justify-content-start">
                         <app-product-card *ngFor="let product of products" [product]="product"></app-product-card>
                     </div>
                 </div>

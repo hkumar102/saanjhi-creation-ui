@@ -13,10 +13,27 @@ import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { ButtonModule } from 'primeng/button';
 import { StepperModule } from 'primeng/stepper';
 import { ReviewPublishStepComponent } from '../review-publish-step/review-publish-step.component';
-import { AbstractControl, FormArray, FormBuilder, FormGroup, ValidationErrors, Validators } from '@angular/forms';
+import { AbstractControl, FormArray, FormBuilder, FormControl, FormGroup, ValidationErrors, Validators } from '@angular/forms';
 import { BaseProductFlowComponent } from '../../base-product-flow.component';
 import { CardModule } from 'primeng/card';
 
+function securityDepositValidator(control: FormControl): ValidationErrors | null {
+  const purchasePrice = control.parent?.get('purchasePrice')?.value;
+  const rentalPrice = control.parent?.get('rentalPrice')?.value;
+  const securityDeposit = control.value
+
+  if (securityDeposit == null || purchasePrice == null || rentalPrice == null) {
+    return null;
+  }
+
+  if (securityDeposit < rentalPrice) {
+    return { securityDepositTooLow: true };
+  }
+  if (securityDeposit >= 2 * purchasePrice) {
+    return { securityDepositTooHigh: true };
+  }
+  return null;
+}
 
 export function requiredArray(control: AbstractControl): ValidationErrors | null {
   return (control instanceof FormArray && control.length > 0) ? null : { required: true };
@@ -118,14 +135,14 @@ export class ProductWorkflowComponent extends BaseProductFlowComponent implement
     isActive: [false],
     isPurchasable: [true],
     isRentable: [true],
-    securityDeposit: [null, [Validators.required, Validators.min(1)]],
+    securityDeposit: [null, [Validators.required, Validators.min(1), securityDepositValidator]],
     maxRentalDays: [null, [Validators.required, Validators.min(1), Validators.max(365)]],
     tags: [[]] // Array for chips component
   });
   productDetailsForm: FormGroup = this.fb.group({
     // Brand and Design
-    brand: ['', [Validators.required]],
-    designer: ['', [Validators.required]],
+    brand: ['Saanjhi Creation', [Validators.required]],
+    designer: ['Neelam', [Validators.required]],
 
     // Availability Options
     availableSizes: [[], [Validators.required]],
@@ -136,7 +153,7 @@ export class ProductWorkflowComponent extends BaseProductFlowComponent implement
     careInstructions: ['', [Validators.required]],
 
     // Styling
-    occasion: ['', [Validators.required]],
+    occasion: [[], [Validators.required]],
     season: ['', [Validators.required]]
   });
   mediaUploadForm: FormGroup = this.fb.group(

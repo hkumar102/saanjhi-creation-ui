@@ -1,6 +1,6 @@
 import { Routes } from '@angular/router';
 import { ProductWorkflowComponent } from './components/workflow/product-workflow/product-workflow.component';
-import { ProductListComponent } from './components/product-list/product-list.component';
+import { ProductListComponent } from './components/list/product-list.component';
 export const PRODUCT_PATH = {
   CREATE: 'create',
   EDIT: 'edit/:id',
