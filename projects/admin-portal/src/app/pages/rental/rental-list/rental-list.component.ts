@@ -56,7 +56,7 @@ export class RentalListComponent extends AdminBaseComponent implements OnInit {
 
     filtersForm: FormGroup = this.fb.group({
         customerIds: [null],
-        productIds: [null],
+        productIds: [['248bde43-013d-4c7f-ae32-aa2a28c74aae']],
         dateRange: [null as Date[] | null]
     });
 

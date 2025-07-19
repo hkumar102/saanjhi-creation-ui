@@ -40,9 +40,11 @@ import { UiAutocompleteComponent } from '../ui-autocomplete/ui-autocomplete.comp
         [suggestions]="categories()" 
         [dropdown]="true" 
         [multiple]="multiple()"
+        [forceSelection]="true"
         (completeMethod)="onSearch($event)"
         (onSelect)="handleAutoCompleteSelect($event)"
         (onUnselect)="handleAutoCompleteSelect($event)"
+        [placeholder]="'Select Category'"
         styleClass="w-full"></saanjhi-ui-autocomplete>
     `,
     changeDetection: ChangeDetectionStrategy.OnPush,
@@ -69,7 +71,7 @@ export class CategorySelectComponent implements ControlValueAccessor {
     control = new FormControl<CategoryDto[] | CategoryDto | null>({ value: this.multiple() ? [] : null, disabled: false });
 
     // ControlValueAccessor implementation
-    public onChange = (value: any) => { this.categorySelected.emit(value); };
+    public onChange = (value: any) => { };
     private onTouched = () => { };
 
     async ngOnInit() {
@@ -77,25 +79,7 @@ export class CategorySelectComponent implements ControlValueAccessor {
     }
 
     writeValue(value: any): void {
-        if (!this.categories().length) {
-            this.pendingValue = value;
-            return;
-        }
-
-        const resolveValue = (val: any) => {
-            if (typeof val === 'string') {
-                const category = this.categories().find(c => c.id === val);
-                return category ?? { id: val, name: '' };
-            }
-            return val;
-        };
-
-        if (this.multiple()) {
-            const values = Array.isArray(value) ? value.map(resolveValue) : [];
-            this.control.setValue(values, { emitEvent: false });
-        } else {
-            this.control.setValue(resolveValue(value), { emitEvent: false });
-        }
+        this.control.setValue(value);
     }
 
     registerOnChange(fn: any): void {
@@ -164,29 +148,14 @@ export class CategorySelectComponent implements ControlValueAccessor {
         this.filterCategories(query);
     }
 
-    handleAutoCompleteSelect(event: any) {
-        if (this.multiple()) {
-            // Extract only IDs from selected category objects
-            const ids = (event || []).map((item: any) => typeof item === 'string' ? item : item?.id);
-            this.onChange(ids);
-            this.categorySelected.emit(event);
-        } else {
-            const id = typeof event === 'string' ? event : event?.id;
-            this.onChange(id);
-            this.categorySelected.emit(event);
-        }
-    }
-
-    handleOnChange(event: any) {
-        if (this.multiple()) {
-            // Extract only IDs from selected category objects
-            const ids = (event || []).map((item: any) => typeof item === 'string' ? item : item?.id);
-            this.onChange(ids);
-            this.categorySelected.emit(event);
-        } else {
-            const id = typeof event === 'string' ? event : event?.id;
-            this.onChange(id);
-            this.categorySelected.emit(event);
+    handleAutoCompleteSelect(event: CategoryDto | CategoryDto[]) {
+        this.categorySelected.emit(event);
+        if (event) {
+            if (this.multiple()) {
+                this.onChange((event as CategoryDto[]).map(p => p.id));
+            } else {
+                this.onChange(event);
+            }
         }
     }
 }

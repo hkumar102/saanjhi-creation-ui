@@ -4,7 +4,8 @@ import {
     forwardRef,
     input,
     ChangeDetectorRef,
-    inject
+    inject,
+    Input
 } from '@angular/core';
 import {
     ControlValueAccessor,
@@ -38,7 +39,7 @@ import { InputNumberModule } from 'primeng/inputnumber';
             [prefix]="prefix()"
             [suffix]="suffix()"
             [placeholder]="placeholder()"
-            [disabled]="disabled()"
+            [disabled]="disabled"
             [readonly]="readonly()"
             [showButtons]="showButtons()"
             [buttonLayout]="buttonLayout()"
@@ -67,6 +68,8 @@ import { InputNumberModule } from 'primeng/inputnumber';
 })
 export class UiInputNumberComponent implements ControlValueAccessor {
     private cdr = inject(ChangeDetectorRef);
+
+    @Input() disabled = false;
     // Input properties
     inputId = input<string>('');
     styleClass = input<string>('');
@@ -80,8 +83,7 @@ export class UiInputNumberComponent implements ControlValueAccessor {
     maxFractionDigits = input<number | undefined>(undefined);
     prefix = input<string>('');
     suffix = input<string>('');
-    placeholder = input<string>('');
-    disabled = input<boolean>(false);
+    placeholder = input<string>('');    
     readonly = input<boolean>(false);
     showButtons = input<boolean>(false);
     buttonLayout = input<'stacked' | 'horizontal' | 'vertical'>('stacked');
@@ -94,7 +96,6 @@ export class UiInputNumberComponent implements ControlValueAccessor {
 
     // Internal value
     value: number | null = null;
-
     // ControlValueAccessor implementation
     private onChange = (value: any) => { };
     private onTouched = () => { };
@@ -114,6 +115,7 @@ export class UiInputNumberComponent implements ControlValueAccessor {
 
     setDisabledState(isDisabled: boolean): void {
         // This will be handled by the disabled input property
+         this.disabled = isDisabled;
     }
 
     // Event handlers

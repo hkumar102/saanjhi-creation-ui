@@ -5,7 +5,6 @@ export interface InventoryItemDto {
   color?: string;
   serialNumber?: string;
   barcode?: string;
-  quantity: number;
   status: InventoryStatus;
   condition: ItemCondition;
   conditionNotes?: string;
@@ -96,4 +95,25 @@ export interface UpdateInventoryStatusCommand {
   inventoryItemId: string;
   status: InventoryStatus;
   conditionNotes?: string;
+}
+
+export interface SearchInventoryQuery {
+  page?: number;
+  pageSize?: number;
+  size?: string;
+  color?: string;
+  status?: InventoryStatus;
+  condition?: ItemCondition;
+  includeRetired?: boolean;
+  sortBy?: string;
+  sortDesc?: boolean;
+  productId?: string;
+  productIds?: string[];
+  acquisitionCostMin?: number;
+  acquisitionCostMax?: number;
+}
+
+export const DEFAULT_INVENTORY_CONSTANTS = {
+  WAREHOUSE_LOCATION: 'Palam',
+  CONDITION: 1, // Default condition set to 'New'
 }

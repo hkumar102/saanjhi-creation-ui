@@ -1,0 +1,28 @@
+<div>
+    <div class="mb-2">
+        <span class="font-bold">Colors</span>
+    </div>
+    <div class="flex flex-wrap gap-3 text-gray-500">
+        <ng-container *ngFor="let color of visibleColors">
+            <div class="flex gap-2 cursor-pointer flex-1" (click)="toggleColor(color.name)">
+                <div class="color-option">
+                    <div class="border-round-2xl border-2 flex justify-content-center"
+                        style="width: 1.5rem; height: 1.5rem;" [ngStyle]="{
+              'background-color': color.code,
+              'border-color': isSelected(color.name) ? 'green' : '#ccc'
+            }"></div>
+                </div>
+                <span class="text-sm">{{ color.name }}</span>
+            </div>
+        </ng-container>
+        <div class="flex flex-1 align-items-center gap-2 cursor-pointer" (click)="showAll = !showAll">
+            <div class="color-option">
+                <div style="width: 1.5rem; height: 1.5rem;"
+                    class="border-round-2xl border-2 flex justify-content-center bg-black-alpha-90 text-white">
+                    {{ showAll ? '-' : '+' }}
+                </div>
+            </div>
+            <span class="text-sm">{{ showAll ? 'Less' : 'More' }}</span>
+        </div>
+    </div>
+</div>

@@ -4,8 +4,11 @@ import {
     Input,
     Output,
     EventEmitter,
-    SimpleChanges,
-    output
+    ChangeDetectorRef,
+    output,
+    ContentChild,
+    TemplateRef,
+    inject
 } from '@angular/core';
 import {
     ControlValueAccessor,
@@ -24,9 +27,8 @@ import { AutoCompleteModule, AutoCompleteSelectEvent } from 'primeng/autocomplet
         <p-autoComplete
         #autoComplete
         [inputId]="inputId"
-        [(ngModel)]="value"
+        [ngModel]="primengValue"
         [suggestions]="suggestions"
-        [field]="field"
         [dropdown]="dropdown"
         [multiple]="multiple"
         [disabled]="disabled"
@@ -38,17 +40,35 @@ import { AutoCompleteModule, AutoCompleteSelectEvent } from 'primeng/autocomplet
         [delay]="delay"
         [optionLabel]="optionLabel"
         [optionValue]="optionValue"
-        (ngModelChange)="handleChange($event)"
+        (ngModelChange)="readValueFromPrimeNg($event)"
         (completeMethod)="completeMethodHandler($event)"
         (onSelect)="selectMethodHandler($event)"
         (onBlur)="onTouched(); onBlur.emit($event)"
-        (onFocus)="onFocus.emit($event)"
         (onClear)="onClear.emit($event)"
         (onUnselect)="onUnselectHandler($event)"
-        (onFocus)="autoComplete.show()"
         [unique]="true"
         [styleClass]="styleClass"
         >
+            <ng-container *ngIf="headerTemplate">
+              <ng-template pTemplate="header">
+                <ng-container *ngTemplateOutlet="headerTemplate"></ng-container>
+              </ng-template>
+            </ng-container>
+            <ng-container *ngIf="itemTemplate">
+              <ng-template pTemplate="item" let-item>
+                <ng-container *ngTemplateOutlet="itemTemplate; context: { $implicit: item }"></ng-container>
+              </ng-template>
+            </ng-container>
+            <ng-container *ngIf="selectedItemTemplate">
+              <ng-template pTemplate="selectedItem" let-item>
+                <ng-container *ngTemplateOutlet="selectedItemTemplate; context: { $implicit: item }"></ng-container>
+              </ng-template>
+            </ng-container>
+            <ng-container *ngIf="footerTemplate">
+              <ng-template pTemplate="footer">
+                <ng-container *ngTemplateOutlet="footerTemplate"></ng-container>
+              </ng-template>
+            </ng-container>
         </p-autoComplete>
   `,
     providers: [
@@ -61,32 +81,36 @@ import { AutoCompleteModule, AutoCompleteSelectEvent } from 'primeng/autocomplet
 })
 export class UiAutocompleteComponent<T = any>
     implements ControlValueAccessor {
+    private cdr = inject(ChangeDetectorRef);
+
+    @ContentChild('item', { static: false }) itemTemplate?: TemplateRef<any>;
+    @ContentChild('selectedItem', { static: false }) selectedItemTemplate?: TemplateRef<any>;
+    @ContentChild('header', { static: false }) headerTemplate?: TemplateRef<any>;
+    @ContentChild('footer', { static: false }) footerTemplate?: TemplateRef<any>;
+
     @Input() inputId?: string;
     @Input() styleClass?: string;
+
     private _suggestions: any[] = [];
 
     @Input()
     set suggestions(value: any[]) {
         this._suggestions = value;
         // Try resolving again if value is a primitive
-        if (this.optionValue && this.value && typeof this.value !== 'object') {
-            const match = this.optionValue
-                ? value.find(item => item[this.optionValue as keyof typeof item] === this.value)
-                : undefined;
-            if (match) {
-                this.value = match;
-            }
+        if (this.pendingValue) {
+            this.sendValueToPrimeNg(this.pendingValue);
+            this.pendingValue = null;
         }
     }
     get suggestions(): any[] {
         return this._suggestions;
     }
-    @Input() field?: string;
-    @Input() dropdown: boolean = false;
+
+    @Input() dropdown: boolean = true;
     @Input() multiple: boolean = false;
     @Input() disabled: boolean = false;
     @Input() placeholder?: string;
-    @Input() forceSelection: boolean = false;
+    @Input() forceSelection: boolean = true;
     @Input() completeOnFocus: boolean = false;
     @Input() minLength: number = 1;
     @Input() virtualScroll: boolean = false;
@@ -102,6 +126,9 @@ export class UiAutocompleteComponent<T = any>
     @Output() onUnselect = new EventEmitter<any>();
 
     value!: T | T[] | null | undefined;
+    pendingValue: T | T[] | null | undefined;
+    primengValue: T | T[] | null | undefined;
+
     onChange = (_: any) => { };
     onTouched = () => { };
     control = new FormControl({ value: {}, disabled: false });
@@ -109,25 +136,55 @@ export class UiAutocompleteComponent<T = any>
 
     writeValue(obj: any): void {
         if (obj == null) {
-            this.value = null;
+            this.value = obj;
+            this.primengValue = obj;
+            this.cdr.markForCheck(); // Force change detection
+            setTimeout(() => {
+                this.primengValue = null; // Ensure reference changes for PrimeNG
+                this.cdr.markForCheck();
+            });
             return;
         }
 
-        if (this.multiple && Array.isArray(obj)) {
-            if (this.optionValue && Array.isArray(this.suggestions)) {
-                this.value = obj.map(val => {
-                    const match = this.suggestions.find(item => item[this.optionValue as keyof T] === val);
-                    return match ?? val;
-                });
-            } else {
-                this.value = obj;
-            }
-        } else if (this.optionValue && Array.isArray(this.suggestions)) {
-            const match = this.suggestions.find(item => item[this.optionValue as keyof T] === obj);
-            this.value = match ?? obj;
-        } else {
+        if (!this.suggestions || !this.suggestions.length) {
             this.value = obj;
+            this.pendingValue = obj;
+            return;
         }
+
+        this.sendValueToPrimeNg(obj);
+    }
+
+    sendValueToPrimeNg(obj: any): void {
+        if (!this.suggestions || !this.suggestions.length) {
+            return;
+        }
+
+        // Value can be a single object or an array, we just need to handle the case of multiple
+        if (this.multiple) {
+            //if multiple is true, we need pass object array to value
+            if (Array.isArray(obj)) {
+                const initialValue = obj as any[];
+                //We need to validate if suggestions are available else we cant really set as object
+                //but for now we will assume suggestions are available
+                if (this.optionValue) {
+                    // If optionValue is set, then initialValue will be array of values either string or number
+                    this.primengValue = this.suggestions.filter(item => initialValue.includes(item[this.optionValue as keyof T]));
+                } else {
+                    // If optionValue is not set, we assume initialValue is an array of objects
+                    this.primengValue = initialValue;
+                }
+            }
+        } else {
+            if (this.optionValue) {
+                // If optionValue is set, we need to find the object in suggestions
+                this.primengValue = this.suggestions.find(item => item[this.optionValue!] === obj);
+            } else {
+                this.primengValue = this.suggestions.find(item => item === obj);
+            }
+        }
+
+        this.value = this.primengValue;
     }
 
     registerOnChange(fn: any): void {
@@ -142,33 +199,10 @@ export class UiAutocompleteComponent<T = any>
         this.disabled = isDisabled;
     }
 
-    handleChange(value: any): void {
-        if (this.optionValue && (typeof value !== 'object' || Array.isArray(value))) {
-            if (this.multiple && Array.isArray(value)) {
-                const resolved = value.map(val =>
-                    typeof val === 'object'
-                        ? val
-                        : this.suggestions.find(opt => opt[this.optionValue!] === val)
-                ).filter(v => v);
-                this.value = resolved;
-            } else {
-                this.value = this.suggestions.find(opt => opt[this.optionValue!] === value) ?? value;
-            }
-        } else {
-            this.value = value;
-        }
-
-        if (this.optionValue) {
-            if (this.multiple && Array.isArray(this.value)) {
-                const emittedValues = (this.value as T[]).map(v => v?.[this.optionValue as keyof T]);
-                this.onChange(emittedValues);
-            } else {
-                const emitted = (this.value as T)?.[this.optionValue as keyof T];
-                this.onChange(emitted);
-            }
-        } else {
-            this.onChange(this.value);
-        }
+    // When Primeng emits we will get either an object or an array of objects depending on multiple
+    readValueFromPrimeNg(value: any): void {
+        //this.onChange(value);
+        //this.sendValueToPrimeNg(value);
     }
 
     completeMethodHandler(event: any): void {
@@ -178,10 +212,59 @@ export class UiAutocompleteComponent<T = any>
 
     selectMethodHandler(selected: AutoCompleteSelectEvent): void {
         this.onTouched();
-        this.onSelect.emit(this.value);
+        let isAnyChangeDetected = false;
+        let emittedValue: any;
+        if (this.multiple) {
+            if (!this.value) {
+                this.value = [];
+            }
+            let selectedObj = selected.value;
+
+            if (this.optionValue) {
+                selectedObj = this.suggestions.find(item => item[this.optionValue!] === selected.value[this.optionValue!]);
+                // Prevent duplicates by optionValue
+                if (!(this.value as any[]).some(item => item[this.optionValue!] === selectedObj[this.optionValue!])) {
+                    ((this.value || []) as T[]).push(selectedObj);
+                    isAnyChangeDetected = true;
+                }
+                emittedValue = (this.value as T[]).map(item => item[this.optionValue as keyof T]);
+            } else {
+                // Prevent duplicates by object reference
+                if (!((this.value || []) as T[]).includes(selectedObj)) {
+                    ((this.value || []) as T[]).push(selectedObj);
+                    isAnyChangeDetected = true;
+                }
+                emittedValue = (this.value as T[]);
+            }
+        } else {
+            let selectedObj = selected.value;
+            this.value = selectedObj;
+            emittedValue = selected.value;
+            if (this.optionValue) {
+                selectedObj = this.suggestions.find(item => item[this.optionValue!] === selected.value[this.optionValue!]);
+                emittedValue = selectedObj[this.optionValue!] as any;
+            }
+            isAnyChangeDetected = true;
+        }
+
+        if (isAnyChangeDetected) {
+            this.onChange(emittedValue);
+            this.onSelect.emit(this.value);
+        }
+
+        this.primengValue = Array.isArray(this.value) ? [...this.value] as T[] : this.value as T;
+
     }
 
     onUnselectHandler(event: any): void {
+        if (this.multiple) {
+            this.value = (this.value as T[]).filter(item => item !== event.value);
+            if (this.optionValue) {
+                this.onChange((this.value as any[]).map(item => item[this.optionValue!]));
+            } else {
+                this.onChange(this.value);
+            }
+        }
         this.onTouched();
         this.onUnselect.emit(this.value);
     }

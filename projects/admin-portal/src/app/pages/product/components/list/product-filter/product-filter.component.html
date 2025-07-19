@@ -58,48 +58,12 @@
 
         <!-- Colors -->
         <div>
-            <div class="mb-2">
-                <span class="font-bold">Colors</span>
-            </div>
-            <div class="flex flex-wrap gap-3  text-gray-500">
-                <ng-container *ngFor="let color of visibleColors">
-                    <div class="flex gap-2 cursor-pointer flex-1" (click)="toggleColor(color)">
-                        <div class="color-option">
-                            <div class="border-round-2xl border-2 flex justify-content-center"
-                                style="width: 1.5rem; height: 1.5rem;" [ngStyle]="{
-                                        'background-color': color | colorCode,
-                                        'border-color': isColorSelected(color) ? 'green' : '#ccc'
-                        }"></div>
-                        </div>
-                        <span class="text-sm">{{ color }}</span>
-                    </div>
-                </ng-container>
-
-                <!-- More / Less toggle -->
-                <div class="flex flex-1 align-items-center gap-2 cursor-pointer"
-                    (click)="this.showAll = !this.showAll;">
-                    <div class="color-option">
-                        <div style="width: 1.5rem; height: 1.5rem;"
-                            class="border-round-2xl border-2 flex justify-content-center bg-black-alpha-90 text-white">
-                            {{ showAll ? '-' : '+' }}
-                        </div>
-                    </div>
-                    <span class="text-sm">{{ showAll ? 'Less' : 'More' }}</span>
-                </div>
-            </div>
+            <color-multi-select formControlName="colors"></color-multi-select>
         </div>
         <!-- Sizes -->
-        <div class="flex flex-column gap-2">
-            <div class="mb-2">
-                <span class="font-bold">Sizes</span>
-            </div>
-            <div class="flex gap-2 flex-wrap justify-content-between text-gray-500">
-                <div *ngFor="let size of sizes" class="flex align-items-center  w-3">
-                    <p-checkbox [inputId]="size" name="sizes" [value]="size" formControlName="sizes" />
-                    <label [for]="size" class="ml-2 text-sm"> {{ size }} </label>
-                </div>
-            </div>
-        </div>       
+        <div>
+            <size-multi-select formControlName="sizes"></size-multi-select>
+        </div>
     </div>
 </ng-template>
 
@@ -108,8 +72,7 @@
     <div class="flex justify-content-between align-items-center">
         <h3>Filter Options</h3>
         <div>
-            <button pButton severity="warn" (click)="onResetFilters()"
-                icon="fa-solid fa-refresh"></button>
+            <button pButton severity="warn" (click)="onResetFilters()" icon="fa-solid fa-refresh"></button>
         </div>
     </div>
     <form [formGroup]="filterForm">

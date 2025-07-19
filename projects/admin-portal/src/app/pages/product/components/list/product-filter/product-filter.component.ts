@@ -19,6 +19,8 @@ import { UiFormControlComponent } from "@saanjhi-creation-ui/shared-ui";
 import { trigger, transition, style, animate, state } from '@angular/animations';
 import { CheckboxModule } from "primeng/checkbox";
 import { debounceTime, takeUntil } from 'rxjs';
+import { ColorMultiSelectComponent } from '../../../../../common/components/color-multi-select/color-multi-select.component';
+import { SizeMultiSelectComponent } from '../../../../../common/components/size-multi-select/size-multi-select.component';
 
 @Component({
     selector: 'app-product-filter',
@@ -39,7 +41,8 @@ import { debounceTime, takeUntil } from 'rxjs';
         SidebarModule,
         UiFormControlComponent,
         CheckboxModule,
-        ColorCodePipe
+        ColorMultiSelectComponent,
+        SizeMultiSelectComponent
     ],
     animations: [
         trigger('slideIn', [

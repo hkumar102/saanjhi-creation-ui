@@ -18,7 +18,7 @@ export * from './ui-dialog/ui-confirm-dialog.component';
 export * from './ui-paginator/ui-paginator.component';
 // export * from './product-details/product-details.component';
 export * from './customer-multi-select/customer-multi-select.component';
-export * from './product-multi-select/product-multi-select.component';
+export * from './product-select/product-select.component';
 export * from './category-select/category-select.component';
 export * from './metric-card/metric-card.component';
 export * from './analytics-chart/analytics-chart.component';

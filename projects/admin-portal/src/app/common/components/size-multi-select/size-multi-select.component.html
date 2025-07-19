@@ -1,0 +1,12 @@
+<div>
+    <div class="mb-2">
+        <span class="font-bold">Sizes</span>
+    </div>
+    <div class="flex gap-2 flex-wrap justify-content-between text-gray-500">
+        <div *ngFor="let size of sizes" class="flex align-items-center w-3 cursor-pointer">
+            <p-checkbox [inputId]="size" (onChange)="toggleSize(size)"
+                [value]="size" styleClass="mr-2"></p-checkbox>
+            <label [for]="size" class="ml-2 text-sm">{{ size }}</label>
+        </div>
+    </div>
+</div>

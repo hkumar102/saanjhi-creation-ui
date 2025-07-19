@@ -52,7 +52,12 @@ export class HeaderComponent implements OnInit {
     {
       label: 'Products',
       routerLink: '/products',
-      icon: 'pi pi-box'
+      icon: 'fa-solid fa-boxes-stacked',
+    },
+    {
+      label: 'Inventory',
+      routerLink: '/inventory',
+      icon: 'fa-solid fa-warehouse'
     },
     // {
     //   label: 'Categories',

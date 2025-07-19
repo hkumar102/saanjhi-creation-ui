@@ -1,0 +1,22 @@
+<form [formGroup]="filterForm" class="flex flex-column gap-3">
+    <saanjhi-ui-form-control label="Serial #" [control]="filterForm.get('serialNumber')">
+        <input pInputText formControlName="serialNumber" class="w-full" />
+    </saanjhi-ui-form-control>
+    <saanjhi-ui-form-control label="Products" [control]="filterForm.get('productIds')">
+        <saanjhi-ui-product-select formControlName="productIds" [multiple]="true" styleClass="w-full">
+            
+        </saanjhi-ui-product-select>
+    </saanjhi-ui-form-control>
+    <color-multi-select formControlName="colors"></color-multi-select>
+    <size-multi-select formControlName="sizes"></size-multi-select>
+    <saanjhi-ui-form-control label="Status" [control]="filterForm.get('statuses')">
+        <saanjhi-ui-autocomplete formControlName="statuses" [suggestions]="statusOptions" [optionLabel]="'label'"
+            [optionValue]="'value'" [multiple]="true" [dropdown]="true" styleClass="w-full" />
+    </saanjhi-ui-form-control>
+    <!-- <saanjhi-ui-form-control label="Retired" [control]="filterForm.get('retired')">
+        <saanjhi-ui-autocomplete formControlName="retired" [suggestions]="retiredOptions" [optionLabel]="'label'"
+            [optionValue]="'value'" [dropdown]="true" styleClass="w-full" />
+    </saanjhi-ui-form-control> -->
+
+    <button pButton label="Apply" (click)="applyFilters()" class="w-full"></button>
+</form>

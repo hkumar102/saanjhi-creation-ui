@@ -1,0 +1,130 @@
+<div class="surface-0 p-4">
+  <div>
+    <h3>Inventory Form</h3>
+    <p class="text-color-secondary mb-4">Fill in the details for the inventory item.</p>
+    <p class="text-red-500" *ngIf="!availableSizes.length || !availableColors.length">
+      <p-message severity="error">Make sure selected product has available sizes and colors.</p-message>
+    </p>
+    <hr class="mb-4" />
+  </div>
+  <form [formGroup]="form" (ngSubmit)="onSubmit()">
+    <div class="grid">
+      <!-- Product Autocomplete -->
+      <div class="col-12 md:col-4">
+        <saanjhi-ui-form-control label="Product" [control]="form.get('productId')" class="w-full">
+          <saanjhi-ui-product-select formControlName="productId"
+            (productSelected)="onProductSelected($event)"></saanjhi-ui-product-select>
+        </saanjhi-ui-form-control>
+        <a [routerLink]="['/products/edit/', form.get('productId')?.value]" pButton *ngIf="form.get('productId')?.value">
+          <span pButtonLabel>Edit Product</span>
+        </a>
+      </div>
+
+      <!-- Size -->
+      <div class="col-12 md:col-4">
+        <saanjhi-ui-form-control label="Size" [control]="form.get('size')" class="w-full"
+          [errorMessages]="{ noAvailableSizes: 'No sizes available for the selected product' }">
+          <saanjhi-ui-autocomplete styleClass="w-full" formControlName="size"
+            [suggestions]="availableSizes"></saanjhi-ui-autocomplete>
+        </saanjhi-ui-form-control>
+      </div>
+
+      <!-- Color -->
+      <div class="col-12 md:col-2">
+        <saanjhi-ui-form-control label="Color" [control]="form.get('color')" class="w-full">
+          <saanjhi-ui-autocomplete styleClass="w-full" formControlName="color"
+            [suggestions]="availableColors"></saanjhi-ui-autocomplete>
+        </saanjhi-ui-form-control>
+      </div>
+
+      <!-- Condition -->
+      <div class="col-12 md:col-2">
+        <saanjhi-ui-form-control label="Condition" [control]="form.get('condition')" class="w-full">
+          <saanjhi-ui-autocomplete formControlName="condition" optionLabel="label" optionValue="value"
+            [suggestions]="availableConditions"></saanjhi-ui-autocomplete>
+        </saanjhi-ui-form-control>
+      </div>
+
+      <!-- Acquisition Cost -->
+      <div class="col-12 md:col-4">
+        <saanjhi-ui-form-control label="Acquisition Cost" helpText="Cost at which the item was acquired."
+          [control]="form.get('acquisitionCost')" class="w-full">
+          <saanjhi-ui-input-number inputId="acquisitionCost" formControlName="acquisitionCost" mode="currency"
+            currency="INR" locale="en-IN" class="w-full">
+          </saanjhi-ui-input-number>
+        </saanjhi-ui-form-control>
+      </div>
+
+      <!-- Acquisition Date -->
+      <div class="col-12 md:col-4">
+        <saanjhi-ui-form-control label="Acquisition Date" inputId="acquisitionDate"
+          [control]="form.get('acquisitionDate')" [errorMessages]="{ required: 'Date is required' }"
+          helpText="Date when this item was acquired.">
+          <p-date-picker formControlName="acquisitionDate" [showIcon]="true" styleClass="w-full"></p-date-picker>
+        </saanjhi-ui-form-control>
+      </div>
+
+      <!-- Warehouse Location -->
+      <div class="col-12 md:col-4">
+        <saanjhi-ui-form-control label="Warehouse Location"
+          helpText="Default location for new items is Palam, do not change if you are not sure"
+          inputId="warehouseLocation" [control]="form.get('warehouseLocation')"
+          [errorMessages]="{ required: 'Location is required' }">
+          <saanjhi-ui-input formControlName="warehouseLocation" class="w-full" />
+        </saanjhi-ui-form-control>
+      </div>
+
+      <div class="col-12 grid" *ngIf="isEditMode">
+        <!-- Is Retired -->
+        <div class="col-12 md:col-4">
+          <saanjhi-ui-form-control label="Is Retired" inputId="isRetired" [control]="form.get('isRetired')">
+            <p-checkbox formControlName="isRetired" inputId="isRetired" binary="true"
+              (onChange)="onIsRetiredChange($event)"></p-checkbox>
+          </saanjhi-ui-form-control>
+        </div>
+
+        <!-- Retirement Reason -->
+        <div class="col-12 md:col-4" *ngIf="form.get('isRetired')?.value === true">
+          <saanjhi-ui-form-control label="Retirement Reason" inputId="retirementReason"
+            [control]="form.get('retirementReason')"
+            [errorMessages]="{retirementFieldRequired: 'Retirement reason is required when retired'}">
+            <saanjhi-ui-input formControlName="retirementReason" class="w-full" />
+          </saanjhi-ui-form-control>
+        </div>
+
+        <!-- Retirement Date -->
+        <div class="col-12 md:col-4" *ngIf="form.get('isRetired')?.value === true">
+          <saanjhi-ui-form-control label="Retirement Date" inputId="retirementDate"
+            [control]="form.get('retirementDate')"
+            [errorMessages]="{retirementFieldRequired: 'Retirement date is required when retired'}">
+            <p-date-picker formControlName="retirementDate" [showIcon]="true" styleClass="w-full"></p-date-picker>
+          </saanjhi-ui-form-control>
+        </div>
+      </div>
+      <!-- Warehouse Location -->
+      <div class="col-12">
+        <saanjhi-ui-form-control inputId="conditionNotes" [control]="form.get('conditionNotes')" label="Condition Notes"
+          helpText="Notes about the condition of the item. like scratches, dents, etc.">
+          <saanjhi-ui-textarea formControlName="conditionNotes" [rows]="2" class="w-full"
+            inputId="conditionNotes"></saanjhi-ui-textarea>
+        </saanjhi-ui-form-control>
+      </div>
+    </div>
+    <div>
+      <hr class="my-4" />
+    </div>
+    <!-- Actions -->
+    <div class="flex justify-content-between gap-2 mt-4">
+      <div class="flex gap-2">
+        <saanjhi-ui-button label="Reset" severity="danger" type="button" (click)="onReset()"></saanjhi-ui-button>
+        <saanjhi-ui-button label="Cancel" type="button" severity="secondary" (click)="onCancel()"></saanjhi-ui-button>
+      </div>
+      <div class="flex gap-2">
+
+        <saanjhi-ui-button label="Save and Add More" (click)="onSaveAndAddMore()"
+          [disabled]="form.invalid"></saanjhi-ui-button>
+        <saanjhi-ui-button label="Save and Close" type="submit" [disabled]="form.invalid"></saanjhi-ui-button>
+      </div>
+    </div>
+  </form>
+</div>

@@ -4,7 +4,8 @@ import {
     forwardRef,
     input,
     ChangeDetectorRef,
-    inject
+    inject,
+    Input
 } from '@angular/core';
 import {
     ControlValueAccessor,
@@ -28,7 +29,7 @@ import { TextareaModule } from 'primeng/textarea';
             pTextarea
             [id]="inputId()"
             [placeholder]="placeholder()"
-            [disabled]="disabled()"
+            [disabled]="disabled"
             [readonly]="readonly()"
             [rows]="rows()"
             [cols]="cols()"
@@ -57,7 +58,7 @@ export class UiTextareaComponent implements ControlValueAccessor {
     inputId = input<string>('');
     styleClass = input<string>('');
     placeholder = input<string>('');
-    disabled = input<boolean>(false);
+    @Input() disabled = false;
     readonly = input<boolean>(false);
     rows = input<number>(4);
     cols = input<number | undefined>(undefined);
@@ -84,6 +85,7 @@ export class UiTextareaComponent implements ControlValueAccessor {
 
     setDisabledState(isDisabled: boolean): void {
         // This will be handled by the disabled input property
+        this.disabled = isDisabled;
     }
 
     // Event handlers

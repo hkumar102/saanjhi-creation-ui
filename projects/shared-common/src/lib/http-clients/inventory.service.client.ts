@@ -1,7 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { lastValueFrom } from 'rxjs';
-import { InventoryItemDto, AddInventoryItemCommand, UpdateInventoryStatusCommand, UpdateInventoryItemCommand } from '../models';
+import { InventoryItemDto, AddInventoryItemCommand, UpdateInventoryStatusCommand, UpdateInventoryItemCommand, SearchInventoryQuery, PaginatedResult } from '../models';
 import { APP_CONFIG, AppConfig } from '@saanjhi-creation-ui/shared-common';
 
 @Injectable({
@@ -17,7 +17,7 @@ export class InventoryServiceClient {
     if (size) params = params.append('size', size);
     if (color) params = params.append('color', color);
     params = params.append('includeRetired', includeRetired.toString());
-    
+
     return lastValueFrom(this.http.get<InventoryItemDto[]>(`${this.baseUrl}/product/${productId}`, { params }));
   }
 
@@ -25,7 +25,7 @@ export class InventoryServiceClient {
     let params = new HttpParams();
     if (size) params = params.append('size', size);
     if (color) params = params.append('color', color);
-    
+
     return lastValueFrom(this.http.get<InventoryItemDto[]>(`${this.baseUrl}/product/${productId}/available`, { params }));
   }
 
@@ -43,5 +43,9 @@ export class InventoryServiceClient {
 
   updateStatus(inventoryItemId: string, command: UpdateInventoryStatusCommand): Promise<void> {
     return lastValueFrom(this.http.put<void>(`${this.baseUrl}/${inventoryItemId}/status`, command));
+  }
+
+  search(command: SearchInventoryQuery): Promise<PaginatedResult<InventoryItemDto>> {
+    return lastValueFrom(this.http.post<PaginatedResult<InventoryItemDto>>(`${this.baseUrl}/search`, command));
   }
 }

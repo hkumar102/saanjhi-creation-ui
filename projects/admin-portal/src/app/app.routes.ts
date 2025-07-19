@@ -4,6 +4,7 @@ import { CUSTOMER_ROUTES } from './pages/customer/customer.routes';
 import { USER_ROUTES } from './pages/user/user.routes';
 import { RENTAL_ROUTES } from './pages/rental/rental.routes';
 import { PRODUCT_ROUTES } from './pages/product/product.routes';
+import { INVENTORY_ROUTES } from './pages/inventory/inventory.routes';
 export const routes: Routes = [
     {
         path: 'login',
@@ -44,6 +45,11 @@ export const routes: Routes = [
     {
         path: 'products',
         children: PRODUCT_ROUTES,
+        canActivate: [AuthGuard]
+    },
+    {
+        path: 'inventory',
+        children: INVENTORY_ROUTES,
         canActivate: [AuthGuard]
     },
     {
