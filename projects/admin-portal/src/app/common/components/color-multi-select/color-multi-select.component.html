@@ -4,15 +4,11 @@
     </div>
     <div class="flex flex-wrap gap-3 text-gray-500">
         <ng-container *ngFor="let color of visibleColors">
-            <div class="flex gap-2 cursor-pointer flex-1" (click)="toggleColor(color.name)">
-                <div class="color-option">
-                    <div class="border-round-2xl border-2 flex justify-content-center"
-                        style="width: 1.5rem; height: 1.5rem;" [ngStyle]="{
-              'background-color': color.code,
-              'border-color': isSelected(color.name) ? 'green' : '#ccc'
-            }"></div>
+            <div class="flex gap-2 cursor-pointer align-items-center flex-1" (click)="toggleColor(color.name)">
+                <div class="color-dot" [ngClass]="{'selected': isSelected(color.name)}">
+                    <div class="fill" [ngStyle]="{'background-color': color.code}"></div>
                 </div>
-                <span class="text-sm">{{ color.name }}</span>
+                <span class="text-sm flex-1">{{ color.name }}</span>
             </div>
         </ng-container>
         <div class="flex flex-1 align-items-center gap-2 cursor-pointer" (click)="showAll = !showAll">

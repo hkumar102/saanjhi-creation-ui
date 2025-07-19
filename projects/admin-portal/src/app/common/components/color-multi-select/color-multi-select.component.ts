@@ -20,12 +20,12 @@ import { AvailableColors } from '@saanjhi-creation-ui/shared-common';
 export class ColorMultiSelectComponent implements ControlValueAccessor {
   @Input() colors = AvailableColors;
   @Input() maxVisible = 8;
+  @Input() showAll = false;
 
   selected: string[] = [];
-  showAll = false;
 
-  onChange = (val: any) => {};
-  onTouched = () => {};
+  onChange = (val: any) => { };
+  onTouched = () => { };
 
   get visibleColors() {
     return this.showAll ? this.colors : this.colors.slice(0, this.maxVisible);

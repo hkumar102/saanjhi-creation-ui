@@ -79,11 +79,10 @@
             <h3 class="block text-color font-medium mb-2">Available Sizes</h3>
             <div class="flex flex-column gap-2">
                 <!-- Common Color Options -->
-                <div class="flex flex-wrap gap-2">
+                <div class="flex flex-wrap gap-2 ">
                     <div class="flex align-items-center" *ngFor="let size of availableSizes">
-                        <p-checkbox [inputId]="'size-' + size" name="availableSizes"
-                            formControlName="availableSizes" [value]="size" class="mr-2"
-                            [binary]="false"></p-checkbox>
+                        <p-checkbox [inputId]="'size-' + size" name="availableSizes" formControlName="availableSizes"
+                            [value]="size" class="mr-2" [binary]="false"></p-checkbox>
                         <label [for]="'size-' + size" class="mr-2 text-color">{{ size }}</label>
                     </div>
                 </div>
@@ -95,21 +94,7 @@
 
         <!-- Available Colors -->
         <div class="col-12">
-            <h3 class="block text-color font-bold mb-2 mt-4">Available Colors</h3>
-            <div class="flex flex-column gap-2">
-                <!-- Common Color Options -->
-                <div class="flex flex-wrap gap-2">
-                    <div class="flex align-items-center" *ngFor="let color of availableColors">
-                        <p-checkbox [inputId]="'color-' + color" name="availableColors"
-                            formControlName="availableColors" [value]="color" class="mr-2"
-                            [binary]="false"></p-checkbox>
-                        <label [for]="'color-' + color" class="mr-2 text-color">{{ color }}</label>
-                    </div>
-                </div>
-                <saanjhi-ui-form-control name="availableColors" label="" [control]="detailsForm.get('availableColors')"
-                    styleClass="flex flex-wrap gap-2">
-                </saanjhi-ui-form-control>
-            </div>
+            <color-multi-select formControlName="availableColors" [showAll]="true"></color-multi-select>
         </div>
     </div>
 </form>

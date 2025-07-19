@@ -14,6 +14,7 @@ import { DividerModule } from 'primeng/divider';
 import { UiInputComponent, UiTextareaComponent, UiFormControlComponent, UiDropdownComponent, UiCheckboxComponent, UiAutocompleteComponent } from '@saanjhi-creation-ui/shared-ui';
 import { AvailableColors, AvailableSizes } from '@saanjhi-creation-ui/shared-common';
 import { Checkbox } from "primeng/checkbox";
+import { ColorMultiSelectComponent } from "../../../../../common/components/color-multi-select/color-multi-select.component";
 
 @Component({
     selector: 'app-product-details-step',
@@ -32,7 +33,8 @@ import { Checkbox } from "primeng/checkbox";
     UiFormControlComponent,
     UiDropdownComponent,
     UiAutocompleteComponent,
-    Checkbox
+    Checkbox,
+    ColorMultiSelectComponent
 ],
     templateUrl: './product-details-step.component.html',
     styleUrls: ['./product-details-step.component.scss']
