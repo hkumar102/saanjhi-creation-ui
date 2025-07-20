@@ -2,8 +2,12 @@
     <div class="mb-2">
         <span class="font-bold">Colors</span>
     </div>
+    <div class="flex" [formGroup]="form">
+        <saanjhi-ui-input type="text" formControlName="searchTerm" placeholder="Search colors..."
+            class="w-full p-inputtext-sm mb-2" />
+    </div>
     <div class="flex flex-wrap gap-3 text-gray-500">
-        <ng-container *ngFor="let color of visibleColors">
+        <ng-container *ngFor="let color of filteredColors">
             <div class="flex gap-2 cursor-pointer align-items-center flex-1" (click)="toggleColor(color.name)">
                 <div class="color-dot" [ngClass]="{'selected': isSelected(color.name)}">
                     <div class="fill" [ngStyle]="{'background-color': color.code}"></div>
@@ -11,14 +15,14 @@
                 <span class="text-sm flex-1">{{ color.name }}</span>
             </div>
         </ng-container>
-        <div class="flex flex-1 align-items-center gap-2 cursor-pointer" (click)="showAll = !showAll">
-            <div class="color-option">
-                <div style="width: 1.5rem; height: 1.5rem;"
-                    class="border-round-2xl border-2 flex justify-content-center bg-black-alpha-90 text-white">
-                    {{ showAll ? '-' : '+' }}
-                </div>
+    </div>
+    <div class="flex align-items-center gap-2 cursor-pointer mt-3" (click)="showMoreColorsClick()">
+        <div class="color-option">
+            <div style="width: 1.5rem; height: 1.5rem;"
+                class="border-round-2xl border-2 flex justify-content-center bg-black-alpha-90 text-white">
+                +
             </div>
-            <span class="text-sm">{{ showAll ? 'Less' : 'More' }}</span>
         </div>
+        <span class="text-sm">Show more</span>
     </div>
 </div>

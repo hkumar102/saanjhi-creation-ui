@@ -8,3 +8,4 @@ export * from './http-clients';
 export * from './services'
 export * from './constants';
 export * from './pipes';
+export * from './utils';

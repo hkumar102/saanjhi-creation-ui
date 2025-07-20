@@ -4,7 +4,7 @@ export interface InventoryItemDto {
   size?: string;
   color?: string;
   serialNumber?: string;
-  barcode?: string;
+  barcodeImageBase64?: string;
   status: InventoryStatus;
   condition: ItemCondition;
   conditionNotes?: string;

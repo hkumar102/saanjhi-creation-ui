@@ -51,12 +51,14 @@ export class CustomerFormComponent extends AdminBaseComponent implements OnInit 
     });
 
     this.addressForm = this.fb.group({
+      id: [null],
+      customerId: [this.customerId, Validators.required],
       line1: ['', Validators.required],
       line2: [''],
-      city: ['-', Validators.required],
-      state: ['-', Validators.required],
-      postalCode: ['-', Validators.required],
-      country: ['-', Validators.required],
+      city: ['Palam', Validators.required],
+      state: ['Delhi', Validators.required],
+      postalCode: [null, Validators.required],
+      country: ['India', Validators.required],
       phoneNumber: ['-', Validators.required],
       type: [0]
     });
@@ -126,30 +128,37 @@ export class CustomerFormComponent extends AdminBaseComponent implements OnInit 
     this.showAddressDialog = true;
   }
 
-  editAddress(index: number): void {
-    const address = this.addresses[index];
-    this.editingAddressIndex = index;
+  editAddress(address: AddressDto): void {
+    this.editingAddressIndex = this.addresses.indexOf(address);
     this.addressForm.patchValue(address);
     this.showAddressDialog = true;
+    this.addressForm.markAllAsDirty();
+    this.addressForm.markAllAsTouched();
+    this.addressForm.updateValueAndValidity();
   }
 
-  onSaveAddress(): void {
-    const newAddress: AddressDto = {
-      ...this.addressForm.value,
-      customerId: this.customerId
+  async onSaveAddress() {
+    const address: AddressDto = {
+      ...this.addressForm.value
     };
 
-    if (this.editingAddressIndex != null) {
-      this.addresses[this.editingAddressIndex] = newAddress;
+    if (address.id) {
+      await this.customerClient.updateAddress(address.id, address as UpdateAddressCommand);
     } else {
-      this.addresses.push(newAddress);
+      await this.customerClient.createAddress(address as CreateAddressCommand);
+    }
+
+    if (this.editingAddressIndex != null) {
+      this.addresses[this.editingAddressIndex] = address;
+    } else {
+      this.addresses.push(address);
     }
 
     this.showAddressDialog = false;
   }
 
-  deleteAddress(index: number): void {
-    this.addresses.splice(index, 1);
+  deleteAddress(address: AddressDto): void {
+    this.addresses.splice(this.addresses.indexOf(address), 1);
   }
 
   goBack() {

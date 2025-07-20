@@ -83,3 +83,7 @@ export interface GetCustomersQuery {
   page?: number;
   pageSize?: number;
 }
+
+export interface CustomerListModel extends CustomerDto {
+  formattedAddress?: string;
+}

@@ -1,95 +1,99 @@
 <saanjhi-ui-confirm-dialog #confirmDialog />
-<saanjhi-ui-card>
-    <div class="grid" [formGroup]="form">
-        <div class="col-12 md:col-8 lg:col-6">
-            <form class="flex flex-wrap gap-4">
-                <div class="flex-1">
-                    <saanjhi-ui-input inputId="search" label="Search" formControlName="search"
-                        placeholder="Search by name, email, or phone">
-                    </saanjhi-ui-input>
-                </div>
+<div class="mt-4">
+    <saanjhi-ui-card>
+        <div class="grid" [formGroup]="form">
+            <div class="col-12 md:col-8 lg:col-6">
+                <form class="flex flex-wrap gap-4">
+                    <div class="flex-1">
+                        <saanjhi-ui-input inputId="search" label="Search" formControlName="search"
+                            placeholder="Search by name, email, or phone">
+                        </saanjhi-ui-input>
+                    </div>
 
-                <div class="flex gap-2">
-                    <saanjhi-ui-button label="Search" icon="pi pi-search" type="submit" (click)="loadCustomers(true)" severity="warn" />
-                    <saanjhi-ui-button label="Clear" type="button" severity="secondary" (click)="clearFilters()" />
-                </div>
-            </form>
+                    <div class="flex gap-2">
+                        <saanjhi-ui-button label="Search" icon="pi pi-search" type="submit"
+                            (click)="loadCustomers(true)" severity="warn" />
+                        <saanjhi-ui-button label="Clear" type="button" severity="secondary" (click)="clearFilters()" />
+                    </div>
+                </form>
+            </div>
+
+            <div class="col-12 md:col-4 lg:col-6 text-right">
+                <saanjhi-ui-button label="Add Customer" icon="pi pi-plus" type="button" (click)="navigateToCreate()"
+                    severity="info" />
+            </div>
         </div>
+    </saanjhi-ui-card>
 
-        <div class="col-12 md:col-4 lg:col-6 text-right">
-            <saanjhi-ui-button label="Add Customer" icon="pi pi-plus" type="button" (click)="navigateToCreate()" severity="info" />
-        </div>
-    </div>
-</saanjhi-ui-card>
+    <p-table [value]="customers" [loading]="loading" [lazy]="true" [paginator]="false" [totalRecords]="totalRecords"
+        [rows]="pageSize" [first]="(page - 1) * pageSize" (onLazyLoad)="onLazyLoad($event)" [sortField]="sortField"
+        [sortOrder]="sortOrder" responsiveLayout="stack" [breakpoint]="'820px'" class="w-full" styleClass="mt-4">
 
-<p-table [value]="customers" [loading]="loading" [lazy]="true" [paginator]="false" [totalRecords]="totalRecords"
-    [rows]="pageSize" [first]="(page - 1) * pageSize" (onLazyLoad)="onLazyLoad($event)" [sortField]="sortField"
-    [sortOrder]="sortOrder" responsiveLayout="stack" [breakpoint]="'820px'" class="w-full" styleClass="mt-4">
-    
-    <ng-template pTemplate="header">
-        <tr>
-            <th pSortableColumn="name">Name <p-sortIcon field="name" /></th>
-            <th pSortableColumn="email">Email <p-sortIcon field="email" /></th>
-            <th pSortableColumn="phoneNumber">Phone <p-sortIcon field="phoneNumber" /></th>
-            <th>Address Count</th>
-            <th>Actions</th>
-        </tr>
-    </ng-template>
-    
-    <ng-template pTemplate="body" let-customer>
-        <tr>
-            <td data-label="Name">
-                <span class="p-column-title">Name</span>
-                <span class="font-semibold">{{ customer.name }}</span>
-            </td>
-            <td data-label="Email">
-                <span class="p-column-title">Email</span>
-                <span class="text-600">{{ customer.email }}</span>
-            </td>
-            <td data-label="Phone">
-                <span class="p-column-title">Phone</span>
-                <span>{{ customer.phoneNumber }}</span>
-            </td>
-            <td data-label="Address Count">
-                <span class="p-column-title">Address Count</span>
-                <span>{{ customer.addresses?.length || 0 }}</span>
-            </td>
-            <td data-label="Actions">
-                <span class="p-column-title">Actions</span>
-                <div class="flex gap-2">
-                    <saanjhi-ui-button icon="pi pi-pencil" size="small" severity="info" 
-                        pTooltip="Edit Customer" (click)="navigateToEdit(customer.id)" />
-                    <saanjhi-ui-button icon="pi pi-trash" size="small" severity="danger" 
-                        pTooltip="Delete Customer" (click)="onDelete(customer)" />
-                </div>
-            </td>
-        </tr>
-    </ng-template>
+        <ng-template pTemplate="header">
+            <tr>
+                <th pSortableColumn="name">Name <p-sortIcon field="name" /></th>
+                <th pSortableColumn="email">Email <p-sortIcon field="email" /></th>
+                <th pSortableColumn="phoneNumber">Phone <p-sortIcon field="phoneNumber" /></th>
+                <th>Address</th>
+                <th>Actions</th>
+            </tr>
+        </ng-template>
 
-    <ng-template pTemplate="emptymessage">
-        <tr>
-            <td colspan="5" class="text-center py-4">
-                <div class="flex flex-column align-items-center gap-3">
-                    <i class="pi pi-users text-4xl text-400"></i>
-                    <span class="text-600">No customers found</span>
-                    <saanjhi-ui-button label="Add First Customer" icon="pi pi-plus" (click)="navigateToCreate()" />
-                </div>
-            </td>
-        </tr>
-    </ng-template>
+        <ng-template pTemplate="body" let-customer>
+            <tr>
+                <td data-label="Name">
+                    <span class="p-column-title">Name</span>
+                    <span class="font-semibold">{{ customer.name }}</span>
+                </td>
+                <td data-label="Email">
+                    <span class="p-column-title">Email</span>
+                    <span class="text-600">{{ customer.email }}</span>
+                </td>
+                <td data-label="Phone">
+                    <span class="p-column-title">Phone</span>
+                    <span>{{ customer.phoneNumber }}</span>
+                </td>
+                <td data-label="Address">
+                    <span class="p-column-title">Address</span>
+                    <span>{{ customer.formattedAddress}}</span>
+                </td>
+                <td data-label="Actions">
+                    <span class="p-column-title">Actions</span>
+                    <div class="flex gap-2">
+                        <saanjhi-ui-button icon="pi pi-pencil" size="small" severity="info" pTooltip="Edit Customer"
+                            (click)="navigateToEdit(customer.id)" />
+                        <saanjhi-ui-button icon="pi pi-trash" size="small" severity="danger" pTooltip="Delete Customer"
+                            (click)="onDelete(customer)" />
+                    </div>
+                </td>
+            </tr>
+        </ng-template>
 
-    <ng-template pTemplate="loadingbody">
-        <tr>
-            <td colspan="5" class="text-center py-4">
-                <div class="flex align-items-center justify-content-center gap-2">
-                    <i class="pi pi-spin pi-spinner text-2xl"></i>
-                    <span>Loading customers...</span>
-                </div>
-            </td>
-        </tr>
-    </ng-template>
-</p-table>
+        <ng-template pTemplate="emptymessage">
+            <tr>
+                <td colspan="5" class="text-center py-4">
+                    <div class="flex flex-column align-items-center gap-3">
+                        <i class="pi pi-users text-4xl text-400"></i>
+                        <span class="text-600">No customers found</span>
+                        <saanjhi-ui-button label="Add First Customer" icon="pi pi-plus" (click)="navigateToCreate()" />
+                    </div>
+                </td>
+            </tr>
+        </ng-template>
 
-<p-paginator [rows]="pageSize" [totalRecords]="totalRecords" [first]="(page - 1) * pageSize"
-    (onPageChange)="onPageChange($event)">
-</p-paginator>
+        <ng-template pTemplate="loadingbody">
+            <tr>
+                <td colspan="5" class="text-center py-4">
+                    <div class="flex align-items-center justify-content-center gap-2">
+                        <i class="pi pi-spin pi-spinner text-2xl"></i>
+                        <span>Loading customers...</span>
+                    </div>
+                </td>
+            </tr>
+        </ng-template>
+    </p-table>
+
+    <p-paginator [rows]="pageSize" [totalRecords]="totalRecords" [first]="(page - 1) * pageSize"
+        (onPageChange)="onPageChange($event)">
+    </p-paginator>
+</div>

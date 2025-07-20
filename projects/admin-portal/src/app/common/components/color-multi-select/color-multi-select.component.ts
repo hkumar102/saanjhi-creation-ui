@@ -1,7 +1,8 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input, forwardRef } from '@angular/core';
-import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
-import { AvailableColors } from '@saanjhi-creation-ui/shared-common';
+import { Component, Input, OnInit, forwardRef, inject } from '@angular/core';
+import { ControlValueAccessor, FormBuilder, NG_VALUE_ACCESSOR, ReactiveFormsModule } from '@angular/forms';
+import { AvailableColor, AvailableColors, ColorsService } from '@saanjhi-creation-ui/shared-common';
+import { UiInputComponent } from "@saanjhi-creation-ui/shared-ui";
 
 @Component({
   selector: 'color-multi-select',
@@ -15,20 +16,49 @@ import { AvailableColors } from '@saanjhi-creation-ui/shared-common';
     }
   ],
   standalone: true,
-  imports: [CommonModule]
+  imports: [
+    CommonModule,
+    UiInputComponent,
+    ReactiveFormsModule]
 })
-export class ColorMultiSelectComponent implements ControlValueAccessor {
-  @Input() colors = AvailableColors;
+export class ColorMultiSelectComponent implements ControlValueAccessor, OnInit {
+  private colorService = inject(ColorsService);
+  private fb = inject(FormBuilder);
+  @Input() colors: AvailableColor[] = [];
   @Input() maxVisible = 8;
   @Input() showAll = false;
 
+  form = this.fb.group({
+    searchTerm: ['']
+  })
+
   selected: string[] = [];
+
 
   onChange = (val: any) => { };
   onTouched = () => { };
 
   get visibleColors() {
     return this.showAll ? this.colors : this.colors.slice(0, this.maxVisible);
+  }
+
+  get filteredColors() {
+    const term = this.searchTerm?.trim().toLowerCase();
+    const filtered = term
+      ? this.colors.filter(c => c.name.toLowerCase().includes(term))
+      : this.colors.slice(0, this.maxVisible);
+    return filtered;
+  }
+
+  get searchTerm(): string | null | undefined {
+    return this.form.get('searchTerm')?.value;
+  }
+
+
+  ngOnInit() {
+    this.colorService.colors$.subscribe(colors => {
+      this.colors = colors;
+    });
   }
 
   toggleColor(color: string) {
@@ -53,5 +83,9 @@ export class ColorMultiSelectComponent implements ControlValueAccessor {
   }
   registerOnTouched(fn: any): void {
     this.onTouched = fn;
+  }
+
+  showMoreColorsClick() {
+    this.maxVisible += 20;
   }
 }

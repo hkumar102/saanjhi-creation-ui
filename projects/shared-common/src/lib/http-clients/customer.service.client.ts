@@ -18,7 +18,7 @@ import { APP_CONFIG, AppConfig } from '@saanjhi-creation-ui/shared-common';
 @Injectable({ providedIn: 'root' })
 export class CustomerServiceClient {
     private config = inject(APP_CONFIG) as AppConfig;
-    private baseUrl = `${this.config.customerServiceBaseUrl}`;
+    private baseUrl = `${this.config.productServiceBaseUrl}`;
     private http = inject(HttpClient);
 
     /**

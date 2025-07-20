@@ -64,11 +64,11 @@ export class HeaderComponent implements OnInit {
     //   routerLink: '/categories',
     //   icon: 'pi pi-tags'
     // },
-    // {
-    //   label: 'Customers',
-    //   routerLink: '/customers',
-    //   icon: 'pi pi-users'
-    // },
+    {
+      label: 'Customers',
+      routerLink: '/customers',
+      icon: 'fa-solid fa-users'
+    },
     // {
     //   label: 'Rentals',
     //   routerLink: '/rentals',

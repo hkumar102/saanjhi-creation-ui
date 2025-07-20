@@ -5,7 +5,8 @@ import {
     MessageFormatterService,
     ToastService,
     PaginatedResult,
-    GetCustomersQuery
+    GetCustomersQuery,
+    getCustomerFormattedAddress
 } from '@saanjhi-creation-ui/shared-common';
 import { CustomerDto } from '@saanjhi-creation-ui/shared-common';
 import { NavigationService } from '../../../services/navigation.service';
@@ -94,7 +95,10 @@ export class CustomerListComponent extends AdminBaseComponent implements OnInit 
         this.loading = true;
         this.customerService.getCustomers(query)
             .then((result: PaginatedResult<CustomerDto>) => {
-                this.customers = result.items || [];
+                this.customers = result.items.map(customer => ({
+                    ...customer,
+                    formattedAddress: getCustomerFormattedAddress(customer)
+                })) || [];
                 this.totalRecords = result.totalCount || 0;
                 this.cdr.markForCheck();
             })

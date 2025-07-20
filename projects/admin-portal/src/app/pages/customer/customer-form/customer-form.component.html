@@ -1,79 +1,89 @@
 <!-- customer-form.component.html -->
-<form [formGroup]="form" (ngSubmit)="onSubmit()" class="p-fluid p-grid p-dir-col p-mt-3 gap-3">
-    <div class="grid gap-4">
-        <div class="col-12">
-            <div class="flex flex-wrap gap-4">
-                <div>
-                    <saanjhi-ui-form-field label="Name" for="name">
-                        <saanjhi-ui-input formControlName="name" inputId="name" placeholder="Name" />
-                        <saanjhi-ui-form-error [control]="form.controls['name']" />
-                    </saanjhi-ui-form-field>
-                </div>
-
-                <div>
-                    <saanjhi-ui-form-field label="Email" for="email">
-                        <saanjhi-ui-input formControlName="email" inputId="email" placeholder="Email" />
-                        <saanjhi-ui-form-error [control]="form.controls['email']" />
-                    </saanjhi-ui-form-field>
-                </div>
-
-                <div>
-                    <saanjhi-ui-form-field label="Phone Number" for="phoneNumber">
-                        <saanjhi-ui-input formControlName="phoneNumber" inputId="phoneNumber"
-                            placeholder="Phone Number" />
-                        <saanjhi-ui-form-error [control]="form.controls['phoneNumber']" />
-                    </saanjhi-ui-form-field>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-12">
-            <div class="flex flex-column gap-2">
-                <h4>Addresses</h4>
-                <p-table [value]="addresses" [responsiveLayout]="'scroll'">
-                    <ng-template pTemplate="header">
-                        <tr>
-                            <th>Line 1</th>
-                            <th>City</th>
-                            <th>State</th>
-                            <th>Postal Code</th>
-                            <th>Country</th>
-                            <th>Type</th>
-                            <th></th>
-                        </tr>
-                    </ng-template>
-                    <ng-template pTemplate="body" let-address>
-                        <tr>
-                            <td>{{ address.line1 }}</td>
-                            <td>{{ address.city }}</td>
-                            <td>{{ address.state }}</td>
-                            <td>{{ address.postalCode }}</td>
-                            <td>{{ address.country }}</td>
-                            <td>{{ address.type | addressTypeLabel }}</td>
-                            <td>
-                                <saanjhi-ui-button icon="pi pi-pencil" size="small" (click)="editAddress(address)" />
-                                <saanjhi-ui-button icon="pi pi-trash" severity="danger" size="small" class="ml-2"
-                                    (click)="deleteAddress(address)" />
-                            </td>
-                        </tr>
-                    </ng-template>
-                </p-table>
-                <saanjhi-ui-button label="Add Address" icon="pi pi-plus" class="mt-2"
-                    (click)="showAddressDialog = true" />
-            </div>
-        </div>
-
-        <div class="col-12">
-            <div class="flex justify-content-end gap-2">
-                <saanjhi-ui-button label="Save" type="submit" icon="pi pi-check" [disabled]="form.invalid" />
-                <saanjhi-ui-button label="Back" type="button" icon="pi pi-times" severity="secondary"
-                    (click)="goBack()" />
-            </div>
-        </div>
+<div class="surface-0 p-4">
+    <div>
+        <h3>Customer Form</h3>
+        <hr />
     </div>
-</form>
-<p-dialog [(visible)]="showAddressDialog" modal [closable]="true" [dismissableMask]="true" [style.width]="'600px'">
-    <ng-template pTemplate="header">Address</ng-template>
+    <div class="mt-4">
+        <form [formGroup]="form" (ngSubmit)="onSubmit()" class="surface-0">
+            <div class="grid">
+                <div class="col-12">
+                    <div class="flex flex-wrap gap-4">
+                        <div>
+                            <saanjhi-ui-form-field label="Name" for="name">
+                                <saanjhi-ui-input formControlName="name" inputId="name" placeholder="Name" />
+                                <saanjhi-ui-form-error [control]="form.controls['name']" />
+                            </saanjhi-ui-form-field>
+                        </div>
+
+                        <div>
+                            <saanjhi-ui-form-field label="Email" for="email">
+                                <saanjhi-ui-input formControlName="email" inputId="email" placeholder="Email" />
+                                <saanjhi-ui-form-error [control]="form.controls['email']" />
+                            </saanjhi-ui-form-field>
+                        </div>
+
+                        <div>
+                            <saanjhi-ui-form-field label="Phone Number" for="phoneNumber">
+                                <saanjhi-ui-input formControlName="phoneNumber" inputId="phoneNumber"
+                                    placeholder="Phone Number" />
+                                <saanjhi-ui-form-error [control]="form.controls['phoneNumber']" />
+                            </saanjhi-ui-form-field>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-12">
+                    <div class="flex flex-column gap-2">
+                        <h4>Addresses</h4>
+                        <p-table [value]="addresses" [responsiveLayout]="'scroll'">
+                            <ng-template pTemplate="header">
+                                <tr>
+                                    <th>Line 1</th>
+                                    <th>City</th>
+                                    <th>State</th>
+                                    <th>Postal Code</th>
+                                    <th>Country</th>
+                                    <th>Type</th>
+                                    <th></th>
+                                </tr>
+                            </ng-template>
+                            <ng-template pTemplate="body" let-address>
+                                <tr>
+                                    <td>{{ address.line1 }}</td>
+                                    <td>{{ address.city }}</td>
+                                    <td>{{ address.state }}</td>
+                                    <td>{{ address.postalCode }}</td>
+                                    <td>{{ address.country }}</td>
+                                    <td>{{ address.type | addressTypeLabel }}</td>
+                                    <td>
+                                        <saanjhi-ui-button icon="pi pi-pencil" size="small"
+                                            (click)="editAddress(address)" />
+                                        <saanjhi-ui-button icon="pi pi-trash" severity="danger" size="small"
+                                            class="ml-2" (click)="deleteAddress(address)" />
+                                    </td>
+                                </tr>
+                            </ng-template>
+                        </p-table>
+                        <saanjhi-ui-button label="Add Address" icon="pi pi-plus" class="mt-2"
+                            (click)="showAddressDialog = true" />
+                    </div>
+                </div>
+
+                <div class="col-12">
+                    <hr />
+                    <div class="flex justify-content-end gap-2">
+                        <saanjhi-ui-button label="Save" type="submit" icon="pi pi-check" [disabled]="form.invalid" />
+                        <saanjhi-ui-button label="Back" type="button" icon="pi pi-times" severity="secondary"
+                            (click)="goBack()" />
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<p-dialog [(visible)]="showAddressDialog" modal [closable]="true" [dismissableMask]="false" [style.width]="'600px'" [modal]="true" [header]="editingAddressIndex != null ? 'Edit Address' : 'Add Address'">
     <ng-template pTemplate="content">
         <form [formGroup]="addressForm">
             <div class="grid">
@@ -88,6 +98,16 @@
                     </saanjhi-ui-form-field>
                 </div>
                 <div class="col-12">
+                    <saanjhi-ui-form-field label="State" inputId="state">
+                        <saanjhi-ui-input formControlName="state" inputId="state" />
+                    </saanjhi-ui-form-field>
+                </div>
+                <div class="col-12">
+                    <saanjhi-ui-form-field label="Postal Code" inputId="postalCode">
+                        <saanjhi-ui-input formControlName="postalCode" inputId="postalCode" />
+                    </saanjhi-ui-form-field>
+                </div>
+                <div class="col-12">
                     <saanjhi-ui-form-field label="Country" inputId="country">
                         <saanjhi-ui-input formControlName="country" inputId="country" />
                     </saanjhi-ui-form-field>
@@ -97,6 +117,6 @@
     </ng-template>
     <ng-template pTemplate="footer">
         <saanjhi-ui-button label="Cancel" icon="pi pi-times" severity="secondary" (click)="showAddressDialog = false" />
-        <saanjhi-ui-button label="Save" icon="pi pi-check" (click)="onSaveAddress()" />
+        <saanjhi-ui-button label="Save" icon="pi pi-check" (click)="onSaveAddress()" [disabled]="addressForm.invalid" />
     </ng-template>
 </p-dialog>
