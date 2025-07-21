@@ -22,6 +22,9 @@ export interface InventoryItemDto {
   productBrand?: string;
   isAvailable: boolean;
   daysSinceLastRented: number;
+  qrCodeImageBase64?: string;
+  availableSizes?: string[];
+  availableColors?: string[];
 }
 
 export enum InventoryStatus {

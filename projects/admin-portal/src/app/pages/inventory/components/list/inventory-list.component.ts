@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, inject, OnInit, ViewChild } from '@angular/core';
 import { InventoryServiceClient, InventoryItemDto, SearchInventoryQuery } from '@saanjhi-creation-ui/shared-common';
 import { BadgeModule } from 'primeng/badge';
 import { Button, ButtonModule } from 'primeng/button';
@@ -7,6 +7,10 @@ import { TableModule } from 'primeng/table';
 import { InventoryFilterComponent } from './inventory-filter/inventory-filter.component';
 import { UiConfirmDialogComponent } from "@saanjhi-creation-ui/shared-ui";
 import { RouterModule } from '@angular/router';
+import { SpeedDialModule } from 'primeng/speeddial';
+import { AdminBaseComponent } from '../../../../common/components/base/admin-base.component';
+import { MenuItem } from 'primeng/api';
+import { ImageModule } from 'primeng/image'
 
 @Component({
     selector: 'app-inventory-list',
@@ -18,12 +22,19 @@ import { RouterModule } from '@angular/router';
         CommonModule,
         InventoryFilterComponent,
         UiConfirmDialogComponent,
-        RouterModule
+        RouterModule,
+        SpeedDialModule,
+        ImageModule
     ],
     templateUrl: './inventory-list.component.html',
     styleUrls: ['./inventory-list.component.scss']
 })
-export class InventoryListComponent implements OnInit {
+export class InventoryListComponent extends AdminBaseComponent implements OnInit {
+    private inventoryService = inject(InventoryServiceClient);
+
+    @ViewChild('confirmDialog') confirmDialog!: UiConfirmDialogComponent;
+
+
     items: InventoryItemDto[] = [];
     products: any[] = [];
     totalCount = 0;
@@ -35,7 +46,6 @@ export class InventoryListComponent implements OnInit {
         includeRetired: true
     };
 
-    constructor(private inventoryService: InventoryServiceClient) { }
 
     ngOnInit(): void {
         this.loadProducts();
@@ -75,7 +85,51 @@ export class InventoryListComponent implements OnInit {
     }
 
     editItem(item: InventoryItemDto) {
-        // TODO: Implement navigation to edit form
-        console.log('Edit', item);
+        this.navigation.goTo(`/inventory/edit/${item.id}`);
+    }
+
+    getActionItems(item: InventoryItemDto) {
+        return [
+            {
+                label: 'Edit',
+                icon: 'pi pi-pencil',
+                command: () => this.editItem(item)
+
+            },
+            {
+                label: 'Delete',
+                icon: 'pi pi-trash',
+                command: () => this.toast.info('Delete action not implemented yet')
+            },
+            {
+                label: 'Print Barcode',
+                icon: 'pi pi-eye',
+                command: () => this.printBarcode(item)
+            }
+        ] as MenuItem[];
+    }
+
+    printBarcode(item: any) {
+        const printWindow = window.open('', '_blank', 'width=400,height=300');
+        if (printWindow) {
+            // Create the document structure
+            printWindow.document.title = 'Print Barcode';
+            const style = printWindow.document.createElement('style');
+            style.textContent = `
+      body { display: flex; align-items: center; justify-content: center; height: 100vh; margin: 0; }
+      img { max-width: 300px; max-height: 120px; }
+    `;
+            printWindow.document.head.appendChild(style);
+
+            const img = printWindow.document.createElement('img');
+            img.src = `data:image/png;base64,${item.barcodeImageBase64}`;
+            img.alt = 'Barcode';
+            printWindow.document.body.appendChild(img);
+
+            // Wait for image to load before printing
+            img.onload = () => printWindow.print();
+            // Fallback in case onload doesn't fire
+            setTimeout(() => printWindow.print(), 1000);
+        }
     }
 }

@@ -1,3 +1,5 @@
+import { generate } from "rxjs";
+
 export const AppMessages = {
   auth: {
     loginSuccess: 'You have successfully logged in.',
@@ -17,6 +19,10 @@ export const AppMessages = {
       updateFailed: 'Failed to update {0}. Please try again.',
       deleteFailed: 'Failed to delete {0}. Please try again.',
       deleteConfirmation: 'Are you sure you want to delete {0}?',
+      generateCodeConfirmation: 'Are you sure you want to generate codes for {0}?',
+      generateCodeSuccess: 'Codes generated successfully for {0}.',
+      generateCodeFailed: 'Failed to generate codes for {0}. Please try again.',
+      generateCodeConfirmationForAlreadyGenerated: 'Codes for {0} have already been generated. Do you want to regenerate them?'
     },
     errors: {
       http: {

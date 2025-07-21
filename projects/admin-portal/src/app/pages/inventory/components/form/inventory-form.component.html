@@ -1,12 +1,34 @@
+<saanjhi-ui-confirm-dialog #confirmDialog />
+
 <div class="surface-0 p-4">
-  <div>
-    <h3>Inventory Form</h3>
-    <p class="text-color-secondary mb-4">Fill in the details for the inventory item.</p>
-    <p class="text-red-500" *ngIf="!availableSizes.length || !availableColors.length">
-      <p-message severity="error">Make sure selected product has available sizes and colors.</p-message>
-    </p>
-    <hr class="mb-4" />
+  <div class="flex justify-content-between align-items-center">
+    <div>
+      <h3>Inventory Form <span *ngIf="isEditMode()"> - {{model?.serialNumber}}</span></h3>
+      <p class="text-color-secondary mb-4">Fill in the details for the inventory item.</p>
+      <p class="text-red-500" *ngIf="!availableSizes.length || !availableColors.length">
+        <p-message severity="error">Make sure selected product has available sizes and colors.</p-message>
+      </p>
+    </div>
+    <div *ngIf="isEditMode() && model" class="flex gap-2 justify-content-between align-items-center">
+      <div>
+        <p-image *ngIf="model.barcodeImageBase64" [src]="'data:image/png;base64,' + model.barcodeImageBase64"
+          alt="Barcode" width="40" [preview]="true" />
+        <span *ngIf="!model.barcodeImageBase64">Barcode not available</span>
+      </div>
+      <div>
+        <p-image *ngIf="model.qrCodeImageBase64" [src]="'data:image/png;base64,' + model.qrCodeImageBase64"
+          alt="QR Code" width="40" [preview]="true" />
+        <span *ngIf="!model.qrCodeImageBase64">QR Code not available</span>
+      </div>
+      <div>
+        <saanjhi-ui-button label="Generate Codes" severity="info" class="mb-4"
+          (click)="onGenerateCodes()"></saanjhi-ui-button>
+      </div>
+
+    </div>
   </div>
+  <hr class="mb-4" />
+
   <form [formGroup]="form" (ngSubmit)="onSubmit()">
     <div class="grid">
       <!-- Product Autocomplete -->
@@ -15,7 +37,8 @@
           <saanjhi-ui-product-select formControlName="productId"
             (productSelected)="onProductSelected($event)"></saanjhi-ui-product-select>
         </saanjhi-ui-form-control>
-        <a [routerLink]="['/products/edit/', form.get('productId')?.value]" pButton *ngIf="form.get('productId')?.value">
+        <a [routerLink]="['/products/edit/', form.get('productId')?.value]" pButton
+          *ngIf="form.get('productId')?.value">
           <span pButtonLabel>Edit Product</span>
         </a>
       </div>
@@ -74,31 +97,33 @@
         </saanjhi-ui-form-control>
       </div>
 
-      <div class="col-12 grid" *ngIf="isEditMode">
-        <!-- Is Retired -->
-        <div class="col-12 md:col-4">
-          <saanjhi-ui-form-control label="Is Retired" inputId="isRetired" [control]="form.get('isRetired')">
-            <p-checkbox formControlName="isRetired" inputId="isRetired" binary="true"
-              (onChange)="onIsRetiredChange($event)"></p-checkbox>
-          </saanjhi-ui-form-control>
-        </div>
+      <div class="col-12" *ngIf="isEditMode()">
+        <div class="grid">
+          <!-- Is Retired -->
+          <div class="col-12 md:col-4">
+            <saanjhi-ui-form-control label="Is Retired" inputId="isRetired" [control]="form.get('isRetired')">
+              <p-checkbox formControlName="isRetired" inputId="isRetired" binary="true"
+                (onChange)="onIsRetiredChange($event)"></p-checkbox>
+            </saanjhi-ui-form-control>
+          </div>
 
-        <!-- Retirement Reason -->
-        <div class="col-12 md:col-4" *ngIf="form.get('isRetired')?.value === true">
-          <saanjhi-ui-form-control label="Retirement Reason" inputId="retirementReason"
-            [control]="form.get('retirementReason')"
-            [errorMessages]="{retirementFieldRequired: 'Retirement reason is required when retired'}">
-            <saanjhi-ui-input formControlName="retirementReason" class="w-full" />
-          </saanjhi-ui-form-control>
-        </div>
+          <!-- Retirement Reason -->
+          <div class="col-12 md:col-4" *ngIf="form.get('isRetired')?.value === true">
+            <saanjhi-ui-form-control label="Retirement Reason" inputId="retirementReason"
+              [control]="form.get('retirementReason')"
+              [errorMessages]="{retirementFieldRequired: 'Retirement reason is required when retired'}">
+              <saanjhi-ui-input formControlName="retirementReason" class="w-full" />
+            </saanjhi-ui-form-control>
+          </div>
 
-        <!-- Retirement Date -->
-        <div class="col-12 md:col-4" *ngIf="form.get('isRetired')?.value === true">
-          <saanjhi-ui-form-control label="Retirement Date" inputId="retirementDate"
-            [control]="form.get('retirementDate')"
-            [errorMessages]="{retirementFieldRequired: 'Retirement date is required when retired'}">
-            <p-date-picker formControlName="retirementDate" [showIcon]="true" styleClass="w-full"></p-date-picker>
-          </saanjhi-ui-form-control>
+          <!-- Retirement Date -->
+          <div class="col-12 md:col-4" *ngIf="form.get('isRetired')?.value === true">
+            <saanjhi-ui-form-control label="Retirement Date" inputId="retirementDate"
+              [control]="form.get('retirementDate')"
+              [errorMessages]="{retirementFieldRequired: 'Retirement date is required when retired'}">
+              <p-date-picker formControlName="retirementDate" [showIcon]="true" styleClass="w-full"></p-date-picker>
+            </saanjhi-ui-form-control>
+          </div>
         </div>
       </div>
       <!-- Warehouse Location -->

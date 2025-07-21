@@ -48,4 +48,8 @@ export class InventoryServiceClient {
   search(command: SearchInventoryQuery): Promise<PaginatedResult<InventoryItemDto>> {
     return lastValueFrom(this.http.post<PaginatedResult<InventoryItemDto>>(`${this.baseUrl}/search`, command));
   }
+
+  generateCodes(inventoryItemId: string): Promise<void> {
+    return lastValueFrom(this.http.post<void>(`${this.baseUrl}/${inventoryItemId}/generate-codes`, {}));
+  }
 }

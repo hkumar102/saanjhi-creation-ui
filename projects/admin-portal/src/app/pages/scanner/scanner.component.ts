@@ -23,6 +23,7 @@ export class BarcodeScannerComponent {
     this.video.nativeElement.style.display = 'block';
     try {
       const result = await this.codeReader.decodeOnceFromVideoDevice(undefined, this.video.nativeElement);
+      console.log('Barcode scanned:', result.getText());
       this.barcode = result.getText();
     } catch (err) {
       this.barcode = 'Scan failed or cancelled';

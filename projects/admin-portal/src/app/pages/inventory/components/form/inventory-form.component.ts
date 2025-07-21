@@ -1,8 +1,8 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input, Output, EventEmitter, inject, AfterViewChecked } from '@angular/core';
+import { Component, Input, Output, EventEmitter, inject, AfterViewChecked, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { AddInventoryItemCommand, DEFAULT_INVENTORY_CONSTANTS, InventoryItemDto, InventoryServiceClient, itemConditionOptions, ProductDto, ProductServiceClient, UpdateInventoryItemCommand } from '@saanjhi-creation-ui/shared-common';
-import { ProductSelectComponent, UiAutocompleteComponent, UiFormControlComponent, UiTextareaComponent, UiInputNumberComponent, UiInputComponent, UiButtonComponent } from '@saanjhi-creation-ui/shared-ui';
+import { ProductSelectComponent, UiAutocompleteComponent, UiFormControlComponent, UiTextareaComponent, UiInputNumberComponent, UiInputComponent, UiButtonComponent, UiConfirmDialogComponent } from '@saanjhi-creation-ui/shared-ui';
 import { DropdownModule } from 'primeng/dropdown';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { DatePickerModule } from 'primeng/datepicker';
@@ -11,6 +11,7 @@ import { CheckboxChangeEvent, CheckboxModule } from 'primeng/checkbox';
 import { signal } from '@angular/core';
 import { colorAvailableValidator, retirementFieldRequiredValidator, sizeAvailableValidator } from './inventory-form.validators';
 import { MessageModule } from 'primeng/message';
+import { ImageModule } from 'primeng/image'
 
 
 @Component({
@@ -32,15 +33,22 @@ import { MessageModule } from 'primeng/message';
         UiButtonComponent,
         CheckboxModule,
         MessageModule,
-        RouterModule
+        RouterModule,
+        UiConfirmDialogComponent,
+        ImageModule
     ]
 })
 export class InventoryFormComponent extends AdminBaseComponent implements AfterViewChecked {
+
 
     private fb = inject(FormBuilder);
     private route = inject(ActivatedRoute);
     private inventoryService = inject(InventoryServiceClient);
     private productService = inject(ProductServiceClient);
+
+    @ViewChild('confirmDialog') confirmDialog!: UiConfirmDialogComponent;
+
+
     @Input() item?: InventoryItemDto;
     @Output() cancel = new EventEmitter<void>();
 
@@ -73,10 +81,14 @@ export class InventoryFormComponent extends AdminBaseComponent implements AfterV
         if (id) {
             this.model = await this.loadInventoryItemById(id);
             if (this.model) {
-                const product = await this.loadProductById(this.model.productId);
-                this.availableSizes = product?.availableSizes || [];
-                this.availableColors = product?.availableColors || [];
-                this.form.patchValue({ ...this.model, acquisitionDate: this.model.acquisitionDate ? new Date(this.model.acquisitionDate) : null });
+                this.availableSizes = this.model.availableSizes || [];
+                this.availableColors = this.model.availableColors || [];
+                this.form.patchValue(
+                    {
+                        ...this.model,
+                        retirementDate: this.model.retirementDate ? new Date(this.model.retirementDate) : null,
+                        acquisitionDate: this.model.acquisitionDate ? new Date(this.model.acquisitionDate) : null
+                    });
                 this.enableAllFields();
                 this.formGroup.markAllAsTouched();
                 this.formGroup.updateValueAndValidity();
@@ -172,14 +184,19 @@ export class InventoryFormComponent extends AdminBaseComponent implements AfterV
         this.form.get('retirementDate')?.updateValueAndValidity();
     }
 
-    private async loadProductById(productId: string): Promise<ProductDto | undefined> {
-        try {
-            // Assuming there's a service to fetch product details by ID
-            const product = await this.productService.getById(productId);
-            return product;
-        } catch (error) {
-            console.error('Error loading product:', error);
-            return undefined;
+    onGenerateCodes() {
+        if (this.isEditMode() && this.model?.id) {
+            this.confirmDialog.open({
+                message: this.formatter.format(this.model.qrCodeImageBase64 ? this.ConfirmationMessages.generateCodeConfirmationForAlreadyGenerated : this.ConfirmationMessages.generateCodeConfirmation, this.model?.serialNumber),
+                accept: async () => {
+                    try {
+                        await this.inventoryService.generateCodes(this.model!.id);
+                        this.toast.success(this.formatter.format(this.ConfirmationMessages.generateCodeConfirmation, this.model?.serialNumber));
+                    } catch (error) {
+                        this.toast.error(this.formatter.format(this.ConfirmationMessages.generateCodeFailed, this.model?.serialNumber));
+                    }
+                }
+            });
         }
     }
 
