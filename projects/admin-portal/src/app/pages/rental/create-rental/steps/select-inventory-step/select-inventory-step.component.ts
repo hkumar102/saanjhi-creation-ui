@@ -14,11 +14,8 @@ import { TableModule, TableRowSelectEvent } from 'primeng/table';
     imports: [
         CommonModule,
         UiFormControlComponent,
-        UiButtonComponent,
         TableModule,
-        CheckboxModule
-        // ...other shared UI modules, PrimeNG modules, pipes
-        ,
+        CheckboxModule,
         ItemConditionLabelPipe,
         InventoryStatusLabelPipe,
         ReactiveFormsModule
