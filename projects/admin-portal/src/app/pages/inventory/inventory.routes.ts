@@ -3,23 +3,32 @@
 import { Routes } from '@angular/router';
 import { InventoryFormComponent } from './components/form/inventory-form.component';
 import { InventoryListComponent } from './components/list/inventory-list.component';
-
+export const INVENTORY_PATH = {
+  LIST: 'list',
+  ADD: 'add',
+  EDIT: 'edit/:id',
+  DETAILS: 'details/:id'
+}
 export const INVENTORY_ROUTES: Routes = [
   {
     path: '',
-    redirectTo: 'list',
+    redirectTo: INVENTORY_PATH.LIST,
     pathMatch: 'full'
   },
   {
-    path: 'list',
+    path: INVENTORY_PATH.LIST,
     component: InventoryListComponent
   },
   {
-    path: 'add',
+    path: INVENTORY_PATH.ADD,
     component: InventoryFormComponent
   },
   {
-    path: 'edit/:id',
+    path: INVENTORY_PATH.EDIT,
     component: InventoryFormComponent
+  },
+  {
+    path: INVENTORY_PATH.DETAILS,
+    loadComponent: () => import('./components/details/inventory-details.component').then(m => m.InventoryDetailsComponent)
   }
 ];

@@ -7,10 +7,14 @@ export const RENTAL_ROUTES: Routes = [
     },
     {
         path: 'create',
-        loadComponent: () => import('./rental-form/rental-form.component').then(m => m.RentalFormComponent)
+        loadComponent: () => import('./create-rental/create-rental.component').then(m => m.CreateRentalComponent)
     },
     {
         path: 'edit/:id',
         loadComponent: () => import('./rental-form/rental-form.component').then(m => m.RentalFormComponent)
+    },
+    {
+        path: 'manage/:id',
+        loadComponent: () => import('./rental-management/rental-management.component').then(m => m.RentalManagementComponent)
     }
 ];

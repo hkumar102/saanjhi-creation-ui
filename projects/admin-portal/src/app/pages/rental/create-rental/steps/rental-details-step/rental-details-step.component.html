@@ -1,0 +1,150 @@
+<div *ngIf="rentalModel" class="p-3">
+    <!-- Show list of product and inventory details here, ProductName, ProductImage, SKU, SerialNumber, RentalPrice, SecurityDeposit, Size, Color -->
+    <!-- Customer Details with Shipping address -->
+    <div>
+        <h4>Customer Details</h4>
+        <div class="mb-2">
+            <strong>Name:</strong> {{ rentalModel.customer?.customer?.name }} <br />
+            <span>Phone: {{ rentalModel.customer?.customer?.phoneNumber }}</span><br />
+            <span>Email: {{ rentalModel.customer?.customer?.email }}</span>
+        </div>
+        <div>
+            <strong>Shipping Address:</strong>
+            <div>
+                {{ rentalModel.customer?.shippingAddress | addressFormat }}
+            </div>
+        </div>
+    </div>
+
+    <!-- List of Products with Inventory Details -->
+    <div>
+        <h4>Product Details</h4>
+        <div>
+            <p-table [value]="products" dataKey="id">
+                <ng-template #header>
+                    <tr>
+                        <th>SKU</th>
+                        <th>Serial #</th>
+                        <th>Name</th>
+                        <th>Image</th>
+                        <th>Category</th>
+                        <th>Rent</th>
+                        <th>Security</th>
+                        <th>Size</th>
+                        <th>Color</th>
+                        <th>Condition</th>
+                    </tr>
+                </ng-template>
+                <ng-template #body let-product>
+                    <tr>
+
+                        <td>{{ product.sku }}</td>
+                        <td>
+                            {{ product.inventoryItems[0]?.serialNumber || 'N/A' }}
+                        </td>
+                        <td>{{ product.name }}</td>
+                        <td>
+                            <img [src]="product.mainImage?.url ?? 'assets/images/default-product.svg'"
+                                [alt]=" product.name" width="50" class="shadow-lg" />
+                        </td>
+                        <td>{{ product.categoryName }}</td>
+                        <td>{{ product.rentalPrice | appCurrency }}</td>
+                        <td>{{ product.securityDeposit | appCurrency }}</td>
+                        <td>
+                            {{ product.inventoryItems[0]?.size || 'N/A' }}
+                        </td>
+                        <td>
+                            {{ product.inventoryItems[0]?.color || 'N/A' }}
+                        </td>
+                        <td>
+                            {{ (product.inventoryItems[0]?.condition | itemConditionLabel) || 'N/A' }}
+                        </td>
+                    </tr>
+                </ng-template>
+            </p-table>
+        </div>
+    </div>
+</div>
+<form [formGroup]="form" class="grid">
+    <div class="col-12">
+        <div class="grid gap-2">
+            <saanjhi-ui-form-control label="Start Date *" inputId="startDate" [control]="form.get('startDate')"
+                [errorMessages]="{ required: 'Start date is required' }" class="col-6">
+                <p-datepicker placeholder="Select Start Date" formControlName="startDate" inputId="startDate"
+                    dateFormat="yy-mm-dd"></p-datepicker>
+            </saanjhi-ui-form-control>
+            <saanjhi-ui-form-control label="End Date *" inputId="endDate" [control]="form.get('endDate')"
+                [errorMessages]="{ required: 'End date is required' }" class="col-6">
+                <p-datepicker placeholder="Select End Date" formControlName="endDate" inputId="endDate"
+                    dateFormat="yy-mm-dd"></p-datepicker>
+            </saanjhi-ui-form-control>
+            <saanjhi-ui-form-control label="Book Number" inputId="bookNumber" [control]="form.get('bookNumber')"
+                class="col-12">
+                <saanjhi-ui-input type="number" placeholder="Enter Book Number" formControlName="bookNumber"
+                    class="w-auto"></saanjhi-ui-input>
+            </saanjhi-ui-form-control>
+        </div>
+    </div>
+    <div class="col-12">
+        <div class="flex gap-2">
+            <saanjhi-ui-form-control label="Rental Price *" inputId="rentalPrice" [control]="form.get('rentalPrice')"
+                [errorMessages]="{ required: 'Rental price is required', min: 'Must be positive' }">
+                <saanjhi-ui-input-number inputId="rentalPrice" mode="currency" currency="INR" locale="en-IN"
+                    formControlName="rentalPrice" class="w-full"></saanjhi-ui-input-number>
+            </saanjhi-ui-form-control>
+            <saanjhi-ui-form-control label="Daily Rate" inputId="dailyRate" [control]="form.get('dailyRate')">
+                <saanjhi-ui-input-number inputId="dailyRate" mode="currency" currency="INR" locale="en-IN"
+                    formControlName="dailyRate" class="w-full"></saanjhi-ui-input-number>
+            </saanjhi-ui-form-control>
+            <saanjhi-ui-form-control label="Security Deposit" inputId="securityDeposit"
+                [control]="form.get('securityDeposit')">
+                <saanjhi-ui-input-number inputId="securityDeposit" mode="currency" currency="INR" locale="en-IN"
+                    formControlName="securityDeposit" class="w-full"></saanjhi-ui-input-number>
+            </saanjhi-ui-form-control>
+            <saanjhi-ui-form-control label="Late Fee" inputId="lateFee" [control]="form.get('lateFee')">
+                <saanjhi-ui-input-number inputId="lateFee" mode="currency" currency="INR" locale="en-IN"
+                    formControlName="lateFee" class="w-full"></saanjhi-ui-input-number>
+            </saanjhi-ui-form-control>
+            <saanjhi-ui-form-control label="Damage Fee" inputId="damageFee" [control]="form.get('damageFee')">
+                <saanjhi-ui-input-number inputId="damageFee" mode="currency" currency="INR" locale="en-IN"
+                    formControlName="damageFee" class="w-full"></saanjhi-ui-input-number>
+            </saanjhi-ui-form-control>
+        </div>
+
+    </div>
+    <div class="col-12">
+        <div class="grid gap-2">
+            <saanjhi-ui-form-control label="Height" inputId="height" [control]="form.get('height')">
+                <saanjhi-ui-input formControlName="height" placeholder="Enter Height" class="col"></saanjhi-ui-input>
+            </saanjhi-ui-form-control>
+            <saanjhi-ui-form-control label="Chest" inputId="chest" [control]="form.get('chest')">
+                <saanjhi-ui-input formControlName="chest" placeholder="Enter Chest" class="col"></saanjhi-ui-input>
+            </saanjhi-ui-form-control>
+            <saanjhi-ui-form-control label="Waist" inputId="waist" [control]="form.get('waist')">
+                <saanjhi-ui-input formControlName="waist" placeholder="Enter Waist" class="col"></saanjhi-ui-input>
+            </saanjhi-ui-form-control>
+            <saanjhi-ui-form-control label="Hip" inputId="hip" [control]="form.get('hip')">
+                <saanjhi-ui-input formControlName="hip" placeholder="Enter Hip" class="col"></saanjhi-ui-input>
+            </saanjhi-ui-form-control>
+            <saanjhi-ui-form-control label="Shoulder" inputId="shoulder" [control]="form.get('shoulder')">
+                <saanjhi-ui-input formControlName="shoulder" placeholder="Enter Shoulder"
+                    class="col"></saanjhi-ui-input>
+            </saanjhi-ui-form-control>
+            <saanjhi-ui-form-control label="Sleeve Length" inputId="sleeveLength" [control]="form.get('sleeveLength')">
+                <saanjhi-ui-input formControlName="sleeveLength" placeholder="Enter Sleeve Length"
+                    class="col"></saanjhi-ui-input>
+            </saanjhi-ui-form-control>
+            <saanjhi-ui-form-control label="Inseam" inputId="inseam" [control]="form.get('inseam')">
+                <saanjhi-ui-input formControlName="inseam" placeholder="Enter Inseam" class="col"></saanjhi-ui-input>
+            </saanjhi-ui-form-control>
+        </div>
+    </div>
+    <div class="col-12">
+        <saanjhi-ui-form-control label="Notes" inputId="notes" [control]="form.get('notes')">
+            <saanjhi-ui-textarea pInputTextarea formControlName="notes"></saanjhi-ui-textarea>
+        </saanjhi-ui-form-control>
+    </div>
+
+
+
+</form>

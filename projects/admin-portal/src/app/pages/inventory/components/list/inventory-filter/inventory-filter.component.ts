@@ -5,7 +5,7 @@ import { MultiSelectModule } from 'primeng/multiselect';
 import { InputTextModule } from 'primeng/inputtext';
 import { DropdownModule } from 'primeng/dropdown';
 import { ButtonModule } from 'primeng/button';
-import { AvailableColors, BaseComponent, InventoryStatus, inventoryStatusOptions } from '@saanjhi-creation-ui/shared-common';
+import { AvailableColors, BaseComponent, InventoryStatusOptions } from '@saanjhi-creation-ui/shared-common';
 import { UiAutocompleteComponent, UiFormControlComponent, ProductSelectComponent } from '@saanjhi-creation-ui/shared-ui';
 import { ColorMultiSelectComponent } from '../../../../../common/components/color-multi-select/color-multi-select.component';
 import { SizeMultiSelectComponent } from '../../../../../common/components/size-multi-select/size-multi-select.component';
@@ -35,7 +35,7 @@ export class InventoryFilterComponent extends BaseComponent implements OnInit {
   @Output() filtersChanged = new EventEmitter<any>();
 
   filterForm!: FormGroup;
-  colorOptions: string[] = AvailableColors.map(color => color.name); statusOptions = inventoryStatusOptions;
+  colorOptions: string[] = AvailableColors.map(color => color.name); statusOptions = InventoryStatusOptions;
   // retiredOptions = [
   //   { label: 'All', value: true },
   //   { label: 'Retired', value: true },

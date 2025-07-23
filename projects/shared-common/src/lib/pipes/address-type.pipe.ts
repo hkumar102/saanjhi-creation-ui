@@ -1,5 +1,5 @@
 import { Pipe, PipeTransform } from '@angular/core';
-import { AddressType } from '../models';
+import { AddressDto, AddressType } from '../models';
 
 @Pipe({
     name: 'addressTypeLabel',
@@ -15,5 +15,19 @@ export class AddressTypePipe implements PipeTransform {
             default:
                 return 'Unknown';
         }
+    }
+}
+
+// export a pipe address where we get AdddressDto and return the formatted address
+@Pipe({
+    name: 'addressFormat',
+    standalone: true,
+})
+export class AddressFormatPipe implements PipeTransform {
+    transform(address: AddressDto | null | undefined): string {
+        if (!address) {
+            return 'No address provided';
+        }
+        return `${address.line1}, ${address.line2}, ${address.city}, ${address.state} ${address.postalCode}, ${address.country} - ${address.phoneNumber || ''}`;
     }
 }

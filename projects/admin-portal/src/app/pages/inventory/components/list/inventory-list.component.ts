@@ -1,11 +1,11 @@
 import { CommonModule } from '@angular/common';
 import { Component, inject, OnInit, ViewChild } from '@angular/core';
-import { InventoryServiceClient, InventoryItemDto, SearchInventoryQuery } from '@saanjhi-creation-ui/shared-common';
+import { InventoryServiceClient, InventoryItemDto, SearchInventoryQuery, InventoryStatusLabelPipe } from '@saanjhi-creation-ui/shared-common';
 import { BadgeModule } from 'primeng/badge';
 import { Button, ButtonModule } from 'primeng/button';
 import { TableModule } from 'primeng/table';
 import { InventoryFilterComponent } from './inventory-filter/inventory-filter.component';
-import { UiConfirmDialogComponent } from "@saanjhi-creation-ui/shared-ui";
+import { UiConfirmDialogComponent, UiButtonComponent } from "@saanjhi-creation-ui/shared-ui";
 import { RouterModule } from '@angular/router';
 import { SpeedDialModule } from 'primeng/speeddial';
 import { AdminBaseComponent } from '../../../../common/components/base/admin-base.component';
@@ -16,16 +16,18 @@ import { ImageModule } from 'primeng/image'
     selector: 'app-inventory-list',
     standalone: true,
     imports: [
-        BadgeModule,
-        TableModule,
-        ButtonModule,
-        CommonModule,
-        InventoryFilterComponent,
-        UiConfirmDialogComponent,
-        RouterModule,
-        SpeedDialModule,
-        ImageModule
-    ],
+    BadgeModule,
+    TableModule,
+    ButtonModule,
+    CommonModule,
+    InventoryFilterComponent,
+    UiConfirmDialogComponent,
+    RouterModule,
+    SpeedDialModule,
+    ImageModule,
+    InventoryStatusLabelPipe,
+    UiButtonComponent
+],
     templateUrl: './inventory-list.component.html',
     styleUrls: ['./inventory-list.component.scss']
 })
@@ -132,4 +134,6 @@ export class InventoryListComponent extends AdminBaseComponent implements OnInit
             setTimeout(() => printWindow.print(), 1000);
         }
     }
+
+    onDeleteClicked(item: InventoryItemDto) {}
 }

@@ -8,7 +8,7 @@ import { DividerModule } from 'primeng/divider';
 import { DatePicker } from "primeng/datepicker";
 import { AutoCompleteModule } from 'primeng/autocomplete';
 import { AdminBaseComponent } from '../../../../../common/components/base/admin-base.component';
-import { inventoryStatusOptions, itemConditionOptions, AppCurrencyPipe } from '@saanjhi-creation-ui/shared-common';
+import { InventoryStatusOptions, itemConditionOptions, AppCurrencyPipe } from '@saanjhi-creation-ui/shared-common';
 import { Checkbox } from "primeng/checkbox";
 import { TableModule } from "primeng/table";
 import { BadgeModule } from 'primeng/badge';
@@ -51,7 +51,7 @@ export class InventorySetupStepComponent extends AdminBaseComponent implements O
   conditionOptions = itemConditionOptions
   availableSizes: string[] = [];
   availableColors: string[] = [];
-  availableStatuses = inventoryStatusOptions;
+  availableStatuses = InventoryStatusOptions;
   existingItems: InventoryItemData[] = [];
 
   ngOnInit(): void {

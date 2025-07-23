@@ -1,0 +1,110 @@
+<p-stepper [value]="stepIndex" class="basis-[50rem]" [linear]="true">
+    <p-step-list>
+        <p-step [value]="1">
+            <ng-template #content let-activateCallback="activateCallback">
+                <div class="flex flex-column justify-content-center gap-2 align-items-center">
+                    <saanjhi-ui-button [rounded]="true" [icon]="'fa-solid fa-user'" [size]="'large'" [rounded]="true"
+                        [text]="true" [raised]="true"
+                        [styleClass]="stepIndex === 1 ? 'text-primary-contrast border-2 border-primary' : ''"></saanjhi-ui-button>
+                    <div>
+                        <div class="ml-2 flex flex-column text-center gap-2">
+                            <span class="font-semibold">Customer</span>
+                        </div>
+                    </div>
+                </div>
+            </ng-template>
+        </p-step>
+        <p-step [value]="2">
+            <ng-template #content let-activateCallback="activateCallback">
+                <div class="flex flex-column justify-content-center gap-2 align-items-center">
+                    <saanjhi-ui-button [rounded]="true" [icon]="'fa-solid fa-shopping-bag'" [size]="'large'" [rounded]="true"
+                        [text]="true" [raised]="true"
+                        [styleClass]="stepIndex === 2 ? 'text-primary-contrast border-2 border-primary' : ''"></saanjhi-ui-button>
+                    <div>
+                        <div class="ml-2 flex flex-column text-center gap-2">
+                            <span class="font-semibold">Product</span>
+                        </div>
+                    </div>
+                </div>
+            </ng-template>
+        </p-step>
+        <p-step [value]="3">
+            <ng-template #content let-activateCallback="activateCallback">
+                <div class="flex flex-column justify-content-center gap-2 align-items-center">
+                    <saanjhi-ui-button [rounded]="true" [icon]="'fa-solid fa-shopping-cart'" [size]="'large'" [rounded]="true"
+                        [text]="true" [raised]="true"
+                        [styleClass]="stepIndex === 3 ? 'text-primary-contrast border-2 border-primary' : ''"></saanjhi-ui-button>
+                    <div>
+                        <div class="ml-2 flex flex-column text-center gap-2">
+                            <span class="font-semibold">Inventory</span>
+                        </div>
+                    </div>
+                </div>
+            </ng-template>
+        </p-step>
+         <p-step [value]="4">
+            <ng-template #content let-activateCallback="activateCallback">
+                <div class="flex flex-column justify-content-center gap-2 align-items-center">
+                    <saanjhi-ui-button [rounded]="true" [icon]="'fa-solid fa-credit-card'" [size]="'large'" [rounded]="true"
+                        [text]="true" [raised]="true"
+                        [styleClass]="stepIndex === 4 ? 'text-primary-contrast border-2 border-primary' : ''"></saanjhi-ui-button>
+                    <div>
+                        <div class="ml-2 flex flex-column text-center gap-2">
+                            <span class="font-semibold">Rental</span>
+                        </div>
+                    </div>
+                </div>
+            </ng-template>
+        </p-step>
+    </p-step-list>
+    <p-step-panels>
+        <p-step-panel [value]="1">
+            <ng-template #content let-activateCallback="activateCallback">
+                <app-rental-create-select-customer-step (customerSelected)="onCustomerSelected($event)"
+                    [selectedCustomer]="createRentalModel.customer"></app-rental-create-select-customer-step>
+                <div class="flex pt-6 justify-end">
+                    <saanjhi-ui-button label="Next" icon="fa-solid fa-arrow-right" iconPos="right"
+                        (onClick)="activateCallback(2)"
+                        [disabled]="!createRentalModel.customer?.customer || !createRentalModel.customer?.shippingAddress" />
+                </div>
+            </ng-template>
+        </p-step-panel>
+        <p-step-panel [value]="2">
+            <ng-template #content let-activateCallback="activateCallback">
+                <app-rental-create-select-product-step (productsSelected)="onProductsSelected($event)"
+                    [selectedProducts]="createRentalModel.products"></app-rental-create-select-product-step>
+                <div class="flex pt-6 gap-2 justify-between">
+                    <saanjhi-ui-button severity="info" label="Back" icon="fa-solid fa-arrow-left"
+                        (onClick)="activateCallback(1)" />
+                    <saanjhi-ui-button label="Next" icon="fa-solid fa-arrow-right" iconPos="right"
+                        (onClick)="activateCallback(3)" [disabled]="!createRentalModel.products?.length" />
+                </div>
+            </ng-template>
+        </p-step-panel>
+        <p-step-panel [value]="3">
+            <ng-template #content let-activateCallback="activateCallback">
+                <app-rental-create-select-inventory-step [selectedProducts]="createRentalModel.products!"
+                    (inventorySelected)="onInventorySelected($event)"></app-rental-create-select-inventory-step>
+                <div class="flex pt-6 gap-2 justify-between">
+                    <saanjhi-ui-button severity="info" label="Back" icon="fa-solid fa-arrow-left"
+                        (onClick)="activateCallback(2)" />
+                    <saanjhi-ui-button label="Next" icon="fa-solid fa-arrow-right" iconPos="right"
+                        (onClick)="activateCallback(4)" [disabled]="!createRentalModel.inventoryItems?.length" />
+                </div>
+            </ng-template>
+        </p-step-panel>
+        <p-step-panel [value]="4">
+            <ng-template #content let-activateCallback="activateCallback">
+                <app-create-rental-details-step [rentalDetails]="createRentalModel.rentalDetails"
+                    [rentalModel]="createRentalModel"
+                    (rentalDetailsChanged)="onRentalDetailsChanged($event)"></app-create-rental-details-step>
+                <div class="flex pt-6 gap-2 justify-between">
+                    <saanjhi-ui-button severity="info" label="Back" icon="fa-solid fa-arrow-left"
+                        (onClick)="activateCallback(2)" />
+                    <saanjhi-ui-button label="Submit" icon="fa-solid fa-arrow-right" iconPos="right"
+                        (onClick)="onSubmit()" [disabled]="!createRentalModel.rentalDetails" />
+                </div>
+            </ng-template>
+        </p-step-panel>
+    </p-step-panels>
+</p-stepper>

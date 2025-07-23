@@ -78,18 +78,7 @@ export class CustomerListComponent extends AdminBaseComponent implements OnInit 
         // Only add search filters if search term exists
         if (search && search.trim()) {
             const searchTerm = search.trim();
-            // Check if search term looks like an email
-            if (searchTerm.includes('@')) {
-                query.email = searchTerm;
-            }
-            // Check if search term looks like a phone number
-            else if (/^\d+$/.test(searchTerm)) {
-                query.phoneNumber = searchTerm;
-            }
-            // Otherwise search by name
-            else {
-                query.name = searchTerm;
-            }
+            query.search = searchTerm;
         }
 
         this.loading = true;

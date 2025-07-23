@@ -1,61 +1,80 @@
+// Rental API Models (generated from latest Swagger)
+export interface RentalDtoPaginatedResult {
+  items?: RentalDto[];
+  totalCount: number;
+  pageNumber: number;
+  pageSize: number;
+}
+
 export interface RentalDto {
   id: string;
+  productId: string;
+  inventoryItemId: string;
+  customerId: string;
+  inventoryItem: RentalInventoryItemDto;
   product: RentalProductDto;
   customer: RentalCustomerDto;
   shippingAddressId: string;
-  shippingAddress?: string | null;
+  shippingAddress?: string;
   startDate: string;
   endDate: string;
+  actualStartDate?: string;
+  actualReturnDate?: string;
   rentalPrice: number;
+  dailyRate: number;
   securityDeposit: number;
-  status?: string | null;
-  height?: string | null;
-  chest?: string | null;
-  waist?: string | null;
-  hip?: string | null;
-  shoulder?: string | null;
-  sleeveLength?: string | null;
-  inseam?: string | null;
-  notes?: string | null;
+  lateFee?: number;
+  damageFee?: number;
+  status: RentalStatus;
+  height?: string;
+  chest?: string;
+  waist?: string;
+  hip?: string;
+  shoulder?: string;
+  sleeveLength?: string;
+  inseam?: string;
+  bookNumber: number;
+  notes?: string;
+  returnConditionNotes?: string;
+  rentalDays: number;
+  isOverdue: boolean;
+  totalAmount: number;
+  rentalNumber: string;
+  timelines?: RentalTimelineDto[];
+  measurementNotes?: string;
 }
 
-export interface CreateRentalCommand {
-  productId: string;
-  customerId: string;
-  shippingAddressId: string;
-  startDate: string;
-  endDate: string;
-  rentalPrice: number;
-  securityDeposit: number;
-  height?: string | null;
-  chest?: string | null;
-  waist?: string | null;
-  hip?: string | null;
-  shoulder?: string | null;
-  sleeveLength?: string | null;
-  inseam?: string | null;
-  notes?: string | null;
-}
-
-export interface UpdateRentalCommand extends CreateRentalCommand {
-  id: string;
-}
-
-export interface RentalCustomerDto {
-  id: string;
-  userId?: string | null;
-  name?: string | null;
-  email?: string | null;
-  phoneNumber?: string | null;
-  addresses?: RentalCustomerAddressDto[];
+export enum RentalStatus {
+  Pending = 1,
+  Booked = 2,
+  PickedUp = 3,
+  Returned = 4,
+  Cancelled = 5,
+  Overdue = 6
 }
 
 export interface RentalProductDto {
   id: string;
-  name?: string | null;
-  description?: string | null;
-  categoryName?: string | null;
-  media?: RentalProductMediaDto[] | null;
+  name?: string;
+  description?: string;
+  categoryName?: string;
+  media?: RentalProductMediaDto[];
+  mainImage?: RentalProductMediaDto;
+  sku: string;
+}
+
+export interface RentalProductMediaDto {
+  id: string;
+  url?: string;
+}
+
+export interface RentalCustomerDto {
+  id: string;
+  userId?: string;
+  name?: string;
+  email?: string;
+  phoneNumber?: string;
+  addresses?: RentalCustomerAddressDto[];
 }
 
 export interface RentalCustomerAddressDto {
@@ -70,9 +89,58 @@ export interface RentalCustomerAddressDto {
   phoneNumber?: string;
 }
 
-export interface RentalProductMediaDto {
+export interface CreateRentalCommand {
+  productId: string;
+  inventoryItemId: string;
+  customerId: string;
+  startDate: string;
+  endDate: string;
+  rentalPrice: number;
+  dailyRate: number;
+  securityDeposit: number;
+  shippingAddressId: string;
+  bookNumber: number;
+  notes?: string;
+  height?: string;
+  chest?: string;
+  waist?: string;
+  hip?: string;
+  shoulder?: string;
+  sleeveLength?: string;
+  inseam?: string;
+  rentalNumber?: string;
+  actualStartDate?: Date;
+  actualReturnDate?: Date;
+  lateFee?: number;
+  damageFee?: number;
+  returnConditionNotes?: string;
+}
+
+export interface UpdateRentalCommand {
   id: string;
-  url?: string | null;
+  productId: string;
+  inventoryItemId: string;
+  customerId: string;
+  startDate: string;
+  endDate: string;
+  actualStartDate?: string;
+  actualReturnDate?: string;
+  rentalPrice: number;
+  dailyRate: number;
+  securityDeposit: number;
+  shippingAddressId: string;
+  bookNumber: number;
+  notes?: string;
+  height?: string;
+  chest?: string;
+  waist?: string;
+  hip?: string;
+  shoulder?: string;
+  sleeveLength?: string;
+  inseam?: string;
+  lateFee?: number;
+  damageFee?: number;
+  returnConditionNotes?: string;
 }
 
 export interface GetRentalsQuery {
@@ -82,6 +150,41 @@ export interface GetRentalsQuery {
   toDate?: string;
   sortBy?: string;
   descending?: boolean;
-  page?: number;
-  pageSize?: number;
+  page: number;
+  pageSize: number;
+  status?: RentalStatus;
+}
+
+export const RentalStatusOptions = [
+  { label: 'Pending', value: RentalStatus.Pending },
+  { label: 'Booked', value: RentalStatus.Booked },
+  { label: 'Picked Up / Delivered', value: RentalStatus.PickedUp },
+  { label: 'Returned', value: RentalStatus.Returned },
+  { label: 'Cancelled', value: RentalStatus.Cancelled },
+  { label: 'Overdue', value: RentalStatus.Overdue }
+];
+
+export interface UpdateRentalStatusCommand {
+  id: string;
+  status: RentalStatus;
+  notes?: string;
+  actualStartDate?: string;
+  actualReturnDate?: string;
+}
+
+export interface RentalInventoryItemDto {
+  size: string;
+  color: string;
+  barcodeImageBase64?: string;
+  qrCodeImageBase64?: string;
+  serialNumber?: string;
+}
+
+export interface RentalTimelineDto {
+  id: string;
+  rentalId: string;
+  changedAt: string; // ISO date string
+  status: number;
+  changedByUserId: string;
+  notes?: string;
 }

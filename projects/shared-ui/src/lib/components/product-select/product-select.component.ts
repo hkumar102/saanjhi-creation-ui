@@ -64,7 +64,13 @@ import { UiAutocompleteComponent } from '@saanjhi-creation-ui/shared-ui';
             (onUnselect)="handleAutoCompleteSelect($event)"
             [placeholder]="placeholder()"
             styleClass="w-full">
-            
+             <ng-template let-product #item>
+                <div class="flex items-center gap-2">
+                    <img [src]="product.mainImage ? product.mainImage.url : 'assets/images/default-product.svg'" style="width: 18px" />
+                    <div>{{ product.categoryName }}</div>
+                    <div>{{ product.name }}</div>
+                </div>
+            </ng-template>
         </saanjhi-ui-autocomplete>
     `,
     changeDetection: ChangeDetectionStrategy.OnPush,

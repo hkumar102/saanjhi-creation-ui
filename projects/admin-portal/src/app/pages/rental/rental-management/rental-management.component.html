@@ -1,0 +1,188 @@
+<saanjhi-ui-confirm-dialog #confirmDialog />
+<div class="flex flex-column gap-4 p-2" *ngIf="rental">
+    <!-- Header: Rental Summary Info -->
+    <div>
+        <div class="flex justify-content-between align-items-center p-3 saanjhi-border shadow-1">
+            <div class="flex align-items-center gap-3">
+                <span class="font-mono text-2xl font-bold">{{ rental.rentalNumber }}</span>
+                <p-badge [value]="rental.status | rentalStatusLabel" [severity]="getStatusSeverity(rental.status)"
+                    class="p-badge-pill text-base" />
+            </div>
+        </div>
+    </div>
+
+    <!-- Section 1: Customer Info Card -->
+    <div class="flex gap-3">
+        <div class="saanjhi-border p-3 flex-1 shadow-1">
+            <div class="grid">
+                <div class="col-6">
+                    <div class="font-bold">Name:</div>
+                    <div>{{ rental.customer.name }}</div>
+                </div>
+                <div class="col-6">
+                    <div class="font-bold">Email:</div>
+                    <a [href]="'mailto:' + rental.customer.email">{{ rental.customer.email }}</a>
+                </div>
+                <div class="col-6">
+                    <div class="font-bold">Phone:</div>
+                    <div>{{ rental.customer.phoneNumber }}</div>
+                </div>
+                <div class="col-12">
+                    <div class="font-bold">Address:</div>
+                    <div>{{ rental.customer.addresses?.[0]?.line1 }}<br />{{ rental.customer.addresses?.[0]?.line2
+                        }}<br />{{ rental.customer.addresses?.[0]?.city }}, {{ rental.customer.addresses?.[0]?.state
+                        }} {{ rental.customer.addresses?.[0]?.postalCode }}<br />{{
+                        rental.customer.addresses?.[0]?.country }}</div>
+                </div>
+                <div class="col-12" *ngIf="rental?.notes">
+                    <div class="font-bold">Notes:</div>
+                    <div>{{ rental.notes }}</div>
+                </div>
+            </div>
+
+        </div>
+        <div class="saanjhi-border p-3 flex-1 shadow-1">
+            <div class="grid">
+                <div class="col-12">
+                    <div class="font-bold">Address:</div>
+                    <div>{{ rental.shippingAddress }}</div>
+                </div>
+                <div class="col-12">
+                    <div class="font-bold">Method:</div>
+                    <div>Delivery / Pickup</div>
+                </div>
+                <div class="col-12">
+                    <div class="font-bold">Tracking #:</div>
+                    <div>
+                        <p-badge [value]="'Tracking is not implemented.'" [severity]="'info'" />
+                    </div>
+                </div>
+                <div class="col-12">
+                    <div class="font-bold">Estimated Delivery:</div>
+                    <div>
+                        <p-badge [value]="'Delivery date is not implemented.'" [severity]="'info'" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Section 3: Product Info Card -->
+    <div class="flex gap-3">
+        <div class="saanjhi-border p-3 flex-1 shadow-1">
+            <div class="flex gap-3">
+                <p-image [src]="rental.product.mainImage?.url || 'assets/images/default-product.svg'"
+                    alt="Product Image" width="80" preview="true" [preview]="true" />
+                <div>
+                    <div class="font-bold">{{ rental.product.name }}</div>
+                    <div>SKU: {{ rental.product.sku }}</div>
+                    <div *ngIf="rental.inventoryItem">
+                        <div>Serial #: {{ rental.inventoryItem.serialNumber }}</div>
+                        <div>Size: {{ rental.inventoryItem.size }}</div>
+                        <div>Color: {{ rental.inventoryItem.color }}</div>
+                    </div>
+
+                    <ul>
+                        <li>Waist: {{ rental.waist }}</li>
+                        <li>Chest: {{ rental.chest }}</li>
+                        <li>Inseam: {{ rental.inseam }}</li>
+                        <li>Height: {{ rental.height }}</li>
+                        <li>Hip: {{ rental.hip }}</li>
+                        <li>Shoulder: {{ rental.shoulder }}</li>
+                        <li>Sleeve Length: {{ rental.sleeveLength }}</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="saanjhi-border p-3 flex-1 shadow-1">
+            <!-- Section 4: Price & Payment Card -->
+            <div class="grid">
+                <div class="col-6">
+                    <div class="font-bold">Rental Price:</div>
+                    <div>{{ rental.rentalPrice | appCurrency }}</div>
+                </div>
+                <div class="col-6">
+                    <div class="font-bold">Daily Rate:</div>
+                    <div>{{ rental.dailyRate | appCurrency }}</div>
+                </div>
+                <div class="col-6">
+                    <div class="font-bold">Security Deposit:</div>
+                    <div>{{ rental.securityDeposit | appCurrency }}</div>
+                </div>
+                <div class="col-6">
+                    <div class="font-bold">Late Fee:</div>
+                    <div>{{ rental.lateFee | appCurrency }}</div>
+                </div>
+                <div class="col-6">
+                    <div class="font-bold">Damage Fee:</div>
+                    <div>{{ rental.damageFee | appCurrency }}</div>
+                </div>
+                <div class="col-6">
+                    <div class="font-bold">Payment Status:</div>
+                    <p-badge [value]="'Not Implemented'" [severity]="'info'" />
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+    <!-- Section 5: Workflow Actions -->
+    <div *ngIf="currentStatusWorkflows.length > 0">
+        <div class="saanjhi-border p-3 shadow-1">
+            <p-stepper [value]="activeStep" [linear]="true">
+                <p-step-list>
+                    <p-step *ngFor="let step of currentStatusWorkflows; let i = index"
+                        (click)="activeStep = i" [value]="step.value">
+                        <ng-template #content let-activateCallback="activateCallback" let-value="step">
+                            <div class="flex flex-column justify-content-center gap-2 align-items-center">
+                                <p-button [rounded]="true" [icon]="step.icon" [size]="'large'" [rounded]="true"
+                                    [text]="true" [raised]="true" (onClick)="activateCallback()"
+                                    [styleClass]="activeStep === step.value ? 'text-primary-contrast border-2 border-primary' : ''"></p-button>
+                                <div>
+                                    <div class="ml-2 flex flex-column text-center gap-2">
+                                        <span class="font-semibold">{{ step.label }}</span>
+                                        <span class="text-xs">{{ step.description }}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </ng-template>
+                    </p-step>
+                </p-step-list>
+                <p-step-panels>
+                    <p-step-panel *ngFor="let step of currentStatusWorkflows" [value]="step.value">
+                        <ng-template #content let-activateCallback="activateCallback">
+                            <ng-container [ngSwitch]="step.value">
+                                <app-rental-pending-step (bookingConfirmed)="onBookingConfirmed($event)"
+                                    (bookingCancelled)="onBookingCancelled($event)" *ngSwitchCase="1"
+                                    [rental]="rental"></app-rental-pending-step>
+                                <app-rental-booked-step (deliveryConfirmed)="onBookingConfirmed($event)"
+                                    (bookingCancelled)="onBookingCancelled($event)" *ngSwitchCase="2"
+                                    [rental]="rental"></app-rental-booked-step>
+                                <app-rental-pickedup-step (returnedConfirmed)="onReturnedConfirmed($event)"
+                                    [rental]="rental" *ngSwitchCase="3"></app-rental-pickedup-step>
+                            </ng-container>
+
+                        </ng-template>
+                    </p-step-panel>
+                </p-step-panels>
+            </p-stepper>
+        </div>
+    </div>
+
+    <!-- Section 6: Timeline / History -->
+    <div>
+        <div class="saanjhi-border p-3 shadow-1">
+            <h4 class="font-bold">Timeline / History</h4>
+            <p-timeline [value]="timeline" class="w-full" layout="horizontal">
+                <ng-template let-event pTemplate="content">
+                    <div class="flex flex-column gap-1">
+                        <span class="font-bold">{{ event.status | rentalStatusLabel }}</span>
+                        <span class="text-xs">{{ event.changedAt | date: 'short' }}</span>
+                        <span *ngIf="event.notes" class="text-600">{{ event.notes }}</span>
+                    </div>
+                </ng-template>
+            </p-timeline>
+        </div>
+    </div>
+</div>

@@ -40,11 +40,12 @@ import { AutoCompleteModule, AutoCompleteSelectEvent } from 'primeng/autocomplet
         [delay]="delay"
         [optionLabel]="optionLabel"
         [optionValue]="optionValue"
+        [showClear]="true"
         (ngModelChange)="readValueFromPrimeNg($event)"
         (completeMethod)="completeMethodHandler($event)"
         (onSelect)="selectMethodHandler($event)"
         (onBlur)="onTouched(); onBlur.emit($event)"
-        (onClear)="onClear.emit($event)"
+        (onClear)="onClearHandler($event)"
         (onUnselect)="onUnselectHandler($event)"
         [unique]="true"
         [styleClass]="styleClass"
@@ -153,6 +154,8 @@ export class UiAutocompleteComponent<T = any>
         }
 
         this.sendValueToPrimeNg(obj);
+        this.cdr.markForCheck();
+
     }
 
     sendValueToPrimeNg(obj: any): void {
@@ -266,6 +269,16 @@ export class UiAutocompleteComponent<T = any>
             }
         }
         this.onTouched();
+        this.onUnselect.emit(this.value);
+    }
+
+    onClearHandler(event: any): void {
+        this.value = null;
+        this.onChange(this.value);
+        this.onTouched();
+        this.onClear.emit(this.value);
+        this.primengValue = null;
+        this.cdr.markForCheck(); // Force change detection
         this.onUnselect.emit(this.value);
     }
 }

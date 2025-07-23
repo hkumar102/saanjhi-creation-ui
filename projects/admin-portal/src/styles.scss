@@ -2,16 +2,34 @@
 @use 'shared-ui/src/styles/form-control-styles' as *;
 @use './assets/styles/variable' as *;
 
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Lato:wght@400;700&family=Roboto:wght@400;500;700&display=swap');
+
 :root {
   --max-width: #{$max-width};
   --header-height: #{$header-height};
 }
 
-body {
-  margin: 0;
-  padding: 0;
-
+html {
+  height: 100%;
+  font-size: 14px
 }
+
+body {
+  font-weight: 400;
+  padding: 0;
+  margin: 0;
+  min-height: 100%;
+  background: var(--surface-ground);
+  color: var(--text-color);
+  font-family: 'Inter', 'Lato', 'Roboto', Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body a {
+  text-decoration: none
+}
+
 
 input.ng-invalid.ng-touched {
   border-color: red;
@@ -32,4 +50,22 @@ input.ng-invalid.ng-touched {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+.saanjhi-border {
+  border-color: var(--p-gray-200);
+  border-width: 1px !important;
+  border-style: solid;
+}
+
+.saanjhi-border-bottom {
+  border-bottom-color: var(--p-gray-200);
+  border-bottom-width: 1px !important;
+  border-bottom-style: solid;
+}
+
+.saanjhi-border-top {
+  border-top-color: var(--p-gray-200);
+  border-top-width: 1px !important;
+  border-top-style: solid;
 }

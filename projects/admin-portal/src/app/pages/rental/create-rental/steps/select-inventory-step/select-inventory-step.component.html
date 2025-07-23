@@ -1,0 +1,46 @@
+<form [formGroup]="form" class="flex flex-column gap-4">
+    <saanjhi-ui-form-control label="Select Inventory Item(s) *" inputId="inventoryItems"
+        [control]="form.get('inventoryItems')"
+        [errorMessages]="{ required: 'Please select at least one inventory item' }">
+        <p-table [value]="combinedInventoryItems" [selectionMode]="'single'"
+            (onRowSelect)="onInventoryRowSelected($event)" (onRowUnselect)="onInventoryRowUnselected($event)">
+            <ng-template pTemplate="header">
+                <tr>
+                    <th>Select</th>
+                    <th>Product</th>
+                    <th>Serial #</th>
+                    <th>Size</th>
+                    <th>Color</th>
+                    <th>Status</th>
+                    <th>Condition</th>
+                    <th>Location</th>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-item>
+                <tr>
+                    <td>
+                        <p-tableRadioButton [value]="item" [disabled]="item.status !== 1"></p-tableRadioButton>
+                    </td>
+                    <td>
+                        <div class="flex gap-1 text-left align-items-center">
+                            <img [alt]="item.productName" *ngIf="item.media?.length > 0"
+                                [src]="item.media[0]?.url ?? 'assets/images/default-product.svg '" width="32"
+                                style="vertical-align: middle" />
+                            <span class="w-15rem">{{ item.productName }}</span>
+                        </div>
+                    </td>
+                    <td>{{ item.serialNumber }}</td>
+                    <td>{{ item.size }}</td>
+                    <td>{{ item.color }}</td>
+                    <td>
+                        <span class="p-tag p-tag-info">{{ item.status | inventoryStatusLabel }}</span>
+                    </td>
+                    <td>
+                        <span class="p-tag p-tag-info">{{ item.condition | itemConditionLabel }}</span>
+                    </td>
+                    <td>{{ item.warehouseLocation }}</td>
+                </tr>
+            </ng-template>
+        </p-table>
+    </saanjhi-ui-form-control>
+</form>

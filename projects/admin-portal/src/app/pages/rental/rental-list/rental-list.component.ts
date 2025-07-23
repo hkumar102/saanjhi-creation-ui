@@ -8,13 +8,7 @@ import {
     OnInit
 } from '@angular/core';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import {
-    RentalServiceClient,
-    RentalDto,
-    PaginatedResult,
-    AppCurrencyPipe,
-    GetRentalsQuery
-} from '@saanjhi-creation-ui/shared-common';
+import { RentalServiceClient, RentalDto, PaginatedResult, AppCurrencyPipe, GetRentalsQuery, RentalStatusLabelPipe, RentalStatusOptions, RentalStatus } from '@saanjhi-creation-ui/shared-common';
 import { AdminBaseComponent } from '../../../common/components/base/admin-base.component';
 import {
     UiFormFieldComponent,
@@ -22,15 +16,21 @@ import {
     UiConfirmDialogComponent,
     CustomerSelectComponent,
     ProductSelectComponent,
+    UiAutocompleteComponent
 } from "@saanjhi-creation-ui/shared-ui";
-import { CommonModule, CurrencyPipe } from '@angular/common';
+import { CommonModule } from '@angular/common';
 import { TableLazyLoadEvent, TableModule } from 'primeng/table';
 import { DatePickerModule } from "primeng/datepicker";
-import { Card } from "primeng/card";
+import { Divider } from "primeng/divider";
+import { RouterModule } from '@angular/router';
+import { ButtonModule } from 'primeng/button';
+import { Menu } from 'primeng/menu';
+import { MenuItem } from 'primeng/api';
 
 @Component({
     selector: 'app-rental-list',
     templateUrl: './rental-list.component.html',
+    styleUrls: ['./rental-list.component.scss'],
     changeDetection: ChangeDetectionStrategy.OnPush,
     standalone: true,
     imports: [
@@ -45,7 +45,12 @@ import { Card } from "primeng/card";
         AppCurrencyPipe,
         CustomerSelectComponent,
         ProductSelectComponent,
-        Card
+        Divider,
+        RentalStatusLabelPipe,
+        RouterModule,
+        ButtonModule,
+        UiAutocompleteComponent,
+        Menu
     ],
 })
 export class RentalListComponent extends AdminBaseComponent implements OnInit {
@@ -56,8 +61,9 @@ export class RentalListComponent extends AdminBaseComponent implements OnInit {
 
     filtersForm: FormGroup = this.fb.group({
         customerIds: [null],
-        productIds: [['248bde43-013d-4c7f-ae32-aa2a28c74aae']],
-        dateRange: [null as Date[] | null]
+        productIds: [[]],
+        dateRange: [null as Date[] | null],
+        rentalStatus: [null]
     });
 
     // Data signals
@@ -69,6 +75,8 @@ export class RentalListComponent extends AdminBaseComponent implements OnInit {
     pageSize = 10;
     sortField = 'startDate';
     sortOrder: 1 | -1 = -1;
+    rentalStatuses = RentalStatusOptions;
+    rowMenuItems: MenuItem[] = [];
 
     async ngOnInit() {
         await this.loadRentals();
@@ -105,6 +113,7 @@ export class RentalListComponent extends AdminBaseComponent implements OnInit {
                 descending: this.sortOrder === -1,
                 fromDate,
                 toDate,
+                status: formValue.rentalStatus ? formValue.rentalStatus.value : undefined,
                 customerIds: formValue.customerIds?.length ? formValue.customerIds : undefined,
                 productIds: formValue.productIds?.length ? formValue.productIds : undefined
             };
@@ -144,5 +153,36 @@ export class RentalListComponent extends AdminBaseComponent implements OnInit {
     onResetFilters() {
         this.filtersForm.reset();
         this.loadRentals();
+    }
+
+    onRowActionClicked(menu: Menu, row: RentalDto, event: any) {
+        menu.toggle(event);    // Open at new position
+        this.rowMenuItems = this.getMenuItemsForRow(row);
+        event.stopPropagation();
+    }
+
+    private getMenuItemsForRow(row: RentalDto): MenuItem[] {
+        const result = [];
+        if (row.status === RentalStatus.Pending) {
+            result.push({
+                label: 'Edit',
+                icon: 'fa-solid fa-pencil',
+                command: () => this.onEdit(row)
+            });
+
+            result.push({
+                label: 'Delete',
+                icon: 'fa-solid fa-trash',
+                command: () => this.onDelete(row)
+            });
+        }
+
+        result.push({
+            label: 'Manage',
+            icon: 'fa-solid fa-tasks',
+            command: () => this.navigation.goTo(['rentals/manage', row.id])
+        });
+
+        return result;
     }
 }

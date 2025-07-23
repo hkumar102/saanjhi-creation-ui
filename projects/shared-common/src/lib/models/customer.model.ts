@@ -75,9 +75,7 @@ export interface GetAddressesByIdsQuery {
 }
 
 export interface GetCustomersQuery {
-  name?: string;
-  email?: string;
-  phoneNumber?: string;
+  search?: string;
   sortBy?: string;
   sortDesc?: boolean;
   page?: number;

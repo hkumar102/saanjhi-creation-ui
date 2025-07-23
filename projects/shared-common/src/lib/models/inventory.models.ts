@@ -1,3 +1,5 @@
+import { ProductMediaDto } from "./product.model";
+
 export interface InventoryItemDto {
   id: string;
   productId: string;
@@ -25,6 +27,7 @@ export interface InventoryItemDto {
   qrCodeImageBase64?: string;
   availableSizes?: string[];
   availableColors?: string[];
+  media?: ProductMediaDto[];
 }
 
 export enum InventoryStatus {
@@ -39,7 +42,7 @@ export enum InventoryStatus {
   BeingCleaned = 9
 }
 
-export const inventoryStatusOptions = [
+export const InventoryStatusOptions = [
   { label: 'Available', value: InventoryStatus.Available },
   { label: 'Rented', value: InventoryStatus.Rented },
   { label: 'Maintenance', value: InventoryStatus.Maintenance },

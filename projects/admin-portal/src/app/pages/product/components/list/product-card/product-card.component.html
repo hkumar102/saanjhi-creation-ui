@@ -20,6 +20,12 @@
                 class="p-button-rounded p-button-text" [routerLink]="['/products/edit', product.id]"
                 styleClass="bg-white" aria-label="Edit Product"></p-button>
         </div>
+        <!-- Details Button -->
+        <div class="absolute top-1 right-0 m-2 px-2 py-1" style="top:50px;">
+            <p-button icon="fa-solid fa-eye" severity="secondary" [rounded]="true" [outlined]="true"
+                class="p-button-rounded p-button-text" [routerLink]="['/products/details', product.id]"
+                styleClass="bg-white" aria-label="View Product Details"></p-button>
+        </div>
     </div>
 
     <!-- Product Info -->

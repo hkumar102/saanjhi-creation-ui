@@ -1,0 +1,80 @@
+<div *ngIf="!isLoading && item" class="flex flex-column md:flex-row gap-5 surface-0 p-4">
+    <!-- Left: Barcode & QR -->
+    <div class="flex flex-column align-items-center w-full md:w-5">
+        <div class="mb-2 align-self-start">
+            <span class="text-xs bg-gray-200 px-2 py-1 border-round">Serial #: {{ item.serialNumber }}</span>
+        </div>
+        <div *ngIf="inventoryImages.length > 0" class="mb-3">
+            <p-galleria [value]="inventoryImages" [showThumbnails]="true" [showIndicators]="false" [circular]="true"
+                [containerStyle]="{ 'max-width': '400px' }" [thumbnailsPosition]="'bottom'">
+                <ng-template pTemplate="item" let-item>
+                    <img [src]="item.itemImageSrc" [alt]="item.alt" class="w-full border-round"
+                        style="max-height:400px;object-fit:contain;" />
+                </ng-template>
+                <ng-template pTemplate="thumbnail" let-item>
+                    <img [src]="item.thumbnailImageSrc" [alt]="item.alt" class="w-4rem h-4rem border-round"
+                        style="object-fit:cover;" />
+                </ng-template>
+            </p-galleria>
+        </div>
+        <p-image *ngIf="item.qrCodeImageBase64" [src]="'data:image/png;base64,' + item.qrCodeImageBase64" alt="QR Code"
+            width="120" [preview]="true" class="mb-3" />
+        <p-image *ngIf="item.barcodeImageBase64" [src]="'data:image/png;base64,' + item.barcodeImageBase64"
+            alt="Barcode" width="120" [preview]="true" class="mb-3" />
+        <div class="text-xs mt-2 text-color-secondary">
+            {{ item.productBrand }} {{ item.productName }}
+        </div>
+    </div>
+
+    <!-- Right: Details -->
+    <div class="flex flex-column gap-3 w-full md:w-7">
+        <div>
+            <div class="text-2xl font-bold mb-2">{{ item.productName }}</div>
+            <div class="flex gap-2 mb-2">
+                <span class="text-sm">Size: <b>{{ item.size }}</b></span>
+                <span class="text-sm">Color: <b>{{ item.color }}</b></span>
+                <span class="text-sm">Location: <b>{{ item.warehouseLocation }}</b></span>
+            </div>
+            <div class="flex gap-2 mb-2">
+                <p-badge [value]="item.isRetired ? 'Retired' : 'Active'"
+                    [severity]="item.isRetired ? 'danger' : 'success'"></p-badge>
+                <p-badge [value]="item.status" severity="info"></p-badge>
+                <p-badge [value]="item.isAvailable ? 'Available' : 'Unavailable'"
+                    [severity]="item.isAvailable ? 'success' : 'warn'"></p-badge>
+            </div>
+        </div>
+
+        <div class="flex gap-2 mb-3">
+            <button pButton type="button" [routerLink]="['/inventory/edit', item.id]" icon="pi pi-pencil" label="Edit"
+                class="p-button-secondary"></button>           
+        </div>
+
+        <div>
+            <div class="text-sm font-bold mb-1">CONDITION</div>
+            <div class="text-sm mb-2">{{ item.condition | itemConditionLabel}} <span *ngIf="item.conditionNotes">- {{
+                    item.conditionNotes
+                    }}</span></div>
+        </div>
+
+        <div>
+            <div class="text-sm font-bold mb-1">ACQUISITION</div>
+            <div class="text-sm mb-2">Cost: {{ item.acquisitionCost | appCurrency }} | Date: {{ item.acquisitionDate |
+                date }}</div>
+            <div class="text-sm mb-2" *ngIf="item.storageNotes">Storage Notes: {{ item.storageNotes }}</div>
+        </div>
+
+        <div>
+            <div class="text-sm font-bold mb-1">RENTAL HISTORY</div>
+            <div class="text-sm mb-2">Times Rented: {{ item.timesRented }}</div>
+            <div class="text-sm mb-2" *ngIf="item.lastRentedDate">Last Rented: {{ item.lastRentedDate | date }}</div>
+            <div class="text-sm mb-2" *ngIf="item.daysSinceLastRented">Days Since Last Rented: {{
+                item.daysSinceLastRented }}</div>
+        </div>
+
+        <div *ngIf="item.isRetired">
+            <div class="text-sm font-bold mb-1">RETIREMENT</div>
+            <div class="text-sm mb-2">Date: {{ item.retirementDate | date }}</div>
+            <div class="text-sm mb-2">Reason: {{ item.retirementReason }}</div>
+        </div>
+    </div>
+</div>

@@ -6,7 +6,8 @@ import {
   RentalDto,
   PaginatedResult,
   UpdateRentalCommand,
-  GetRentalsQuery
+  GetRentalsQuery,
+  UpdateRentalStatusCommand
 } from '../models';
 import { APP_CONFIG, AppConfig } from '@saanjhi-creation-ui/shared-common';
 
@@ -41,5 +42,11 @@ export class RentalServiceClient {
 
   deleteRental(id: string): Promise<void> {
     return lastValueFrom(this.http.delete<void>(`${this.baseUrl}/rental/${id}`));
+  }
+
+  updateRentalStatus(id: string, payload: UpdateRentalStatusCommand): Promise<void> {
+    return lastValueFrom(
+      this.http.put<void>(`${this.baseUrl}/rental/${id}/status`, payload)
+    );
   }
 }

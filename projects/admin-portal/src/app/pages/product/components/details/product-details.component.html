@@ -1,0 +1,86 @@
+<div *ngIf="!isLoading && product" class="flex flex-column md:flex-row gap-5 surface-0 p-4">
+    <!-- Left: Images -->
+    <div class="flex flex-column align-items-center w-full md:w-6">
+        <div class="mb-2 align-self-start">
+            <p-badge severity="secondary" [value]="'Product Code: ' + (product.sku ?? '')"></p-badge>
+        </div>
+        <p-galleria [value]="images" [showThumbnails]="true" [showIndicators]="false" [circular]="true"
+            [containerStyle]="{ 'max-width': '400px' }" [thumbnailsPosition]="'bottom'">
+            <ng-template pTemplate="item" let-item>
+                <img [src]="item.itemImageSrc" [alt]="item.alt" class="w-full border-round"
+                    style="max-height:400px;object-fit:contain;" />
+            </ng-template>
+            <ng-template pTemplate="thumbnail" let-item>
+                <img [src]="item.thumbnailImageSrc" [alt]="item.alt" class="w-4rem h-4rem border-round"
+                    style="object-fit:cover;" />
+            </ng-template>
+        </p-galleria>
+    </div>
+
+    <!-- Right: Details -->
+    <div class="flex flex-column gap-3 w-full md:w-6">
+        <div>
+            <div class="text-xs text-primary font-bold mb-1">
+                <p-badge [value]="product.categoryName!"></p-badge>
+            </div>
+            <div>
+                <div class="text-xs font-bold mb-2">Stock:- {{ product.availableInventoryCount }} Left</div>
+            </div>
+            <div class="text-2xl font-bold mb-2">{{ product.name }}</div>
+            <div class="text-xl font-bold mb-2">Rental Price: {{ product.rentalPrice | appCurrency }}</div>
+            <div class="mb-1">Security Deposit: {{ product.securityDeposit | appCurrency }}</div>
+            <div class="mb-1">Purchase Price: {{ product.purchasePrice | appCurrency }}</div>
+            <div>Allowed Rental Days: {{ product.maxRentalDays }}</div>
+        </div>
+
+        <div>
+            <div class="text-sm font-bold mb-1">Available Sizes</div>
+            <div class="flex gap-2 mb-1">
+                <ng-container *ngFor="let size of product.availableSizes">
+                    <button pButton type="button" class="p-button-rounded p-button-outlined" [label]="size"></button>
+                </ng-container>
+            </div>
+            <div class="text-sm font-bold mb-1">Available Colors</div>
+            <div class="flex gap-2 mb-1">
+                <ng-container *ngFor="let color of product.availableColors">
+                    <button pButton type="button" class="p-button-rounded p-button-outlined" [label]="color"></button>
+                </ng-container>
+            </div>
+
+        </div>
+
+        <!-- <div class="flex gap-2 mb-3">
+            <button pButton type="button" icon="pi pi-heart" label="Wishlist" class="p-button-secondary"></button>
+            <button pButton type="button" icon="pi pi-shopping-cart" label="Add to Cart"
+                class="p-button-success"></button>
+        </div> -->
+
+        <div>
+            <div class="text-sm font-bold mb-1">Description</div>
+            <div class="text-sm mb-2">{{ product.description }}</div>
+        </div>
+        <div>
+            <div class="text-sm font-bold mb-1">Brand</div>
+            <div class="text-sm mb-2">{{ product.brand }}</div>
+        </div>
+        <div>
+            <div class="text-sm font-bold mb-1">Designer</div>
+            <div class="text-sm mb-2">{{ product.designer }}</div>
+        </div>
+
+        <div>
+            <div class="text-sm font-bold mb-1">MATERIAL & CARE</div>
+            <ul class="text-sm pl-3">
+                <li *ngIf="product.material">{{ product.material }}</li>
+                <li *ngIf="product.careInstructions">{{ product.careInstructions }}</li>
+            </ul>
+        </div>
+        <div>
+            <div class="text-sm font-bold mb-1">OCCASION & SEASON</div>
+            <ul class="text-sm pl-3">
+                <li *ngIf="product.occasion">{{ product.occasion.join(', ') }}</li>
+                <li *ngIf="product.season">{{ product.season }}</li>
+            </ul>
+        </div>
+    </div>
+</div>

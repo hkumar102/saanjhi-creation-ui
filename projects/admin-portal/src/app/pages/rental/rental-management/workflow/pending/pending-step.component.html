@@ -1,0 +1,19 @@
+<!-- We will only show forms when current status is Pending, else we will show the data of the current step -->
+<form [formGroup]="form" class="p-3 flex flex-column gap-3" (ngSubmit)="onConfirm()" *ngIf="rental.status === stepStatus">
+    <span class="font-bold">Rental is pending and awaiting confirmation.</span>
+    <div>
+        <saanjhi-ui-form-control label="Notes" [control]="form.get('notes')" styleClass="w-full">
+            <saanjhi-ui-textarea formControlName="notes" placeholder="Add admin note..."
+                styleClass="w-full"></saanjhi-ui-textarea>
+        </saanjhi-ui-form-control>
+    </div>
+    <div class="flex gap-2 mt-2">
+        <p-button label="Confirm Booking" icon="fa-solid fa-check" severity="success" type="submit" />
+        <p-button severity="danger" label="Cancel Booking" icon="fa-solid fa-ban" type="button" (click)="onCancel()" />
+    </div>
+</form>
+<div *ngIf="savedStepData && rental.status !== stepStatus" class="p-3 flex flex-column gap-3">
+    <p-badge value="Rental has been confirmed" severity="success"></p-badge>
+    <span>Updated On: {{ savedStepData.changedAt | date: 'shortDate' }}</span>
+    <span>Notes: {{ savedStepData.notes }}</span>
+</div>

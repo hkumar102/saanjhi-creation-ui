@@ -22,7 +22,10 @@ export const AppMessages = {
       generateCodeConfirmation: 'Are you sure you want to generate codes for {0}?',
       generateCodeSuccess: 'Codes generated successfully for {0}.',
       generateCodeFailed: 'Failed to generate codes for {0}. Please try again.',
-      generateCodeConfirmationForAlreadyGenerated: 'Codes for {0} have already been generated. Do you want to regenerate them?'
+      generateCodeConfirmationForAlreadyGenerated: 'Codes for {0} have already been generated. Do you want to regenerate them?',
+      genericConfirmation: 'Are you sure you want to proceed with this action?',
+      genericSuccess: 'Action completed successfully.',
+      genericFailed: 'Action failed. Please try again.'
     },
     errors: {
       http: {

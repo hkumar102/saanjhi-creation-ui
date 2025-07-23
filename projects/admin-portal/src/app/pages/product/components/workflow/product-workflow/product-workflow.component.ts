@@ -178,7 +178,7 @@ export class ProductWorkflowComponent extends BaseProductFlowComponent implement
 
   override ngOnInit(): void {
     super.ngOnInit();
-
+    this.workflowService.resetWorkflow();
     this.initializeWorkflow();
     this.subscribeToWorkflowEvents();
     this.updateNavigation();
