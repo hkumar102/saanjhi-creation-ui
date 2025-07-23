@@ -95,6 +95,7 @@ export interface UpdateInventoryItemCommand {
   isRetired?: boolean;
   retirementReason?: string;
   retirementDate?: Date;
+  status?: InventoryStatus;
 }
 
 export interface UpdateInventoryStatusCommand {

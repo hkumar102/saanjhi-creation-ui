@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, Input, Output, EventEmitter, inject, AfterViewChecked, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { AddInventoryItemCommand, DEFAULT_INVENTORY_CONSTANTS, InventoryItemDto, InventoryServiceClient, itemConditionOptions, ProductDto, ProductServiceClient, UpdateInventoryItemCommand } from '@saanjhi-creation-ui/shared-common';
+import { AddInventoryItemCommand, DEFAULT_INVENTORY_CONSTANTS, InventoryItemDto, InventoryServiceClient, InventoryStatus, InventoryStatusOptions, itemConditionOptions, ProductDto, ProductServiceClient, UpdateInventoryItemCommand } from '@saanjhi-creation-ui/shared-common';
 import { ProductSelectComponent, UiAutocompleteComponent, UiFormControlComponent, UiTextareaComponent, UiInputNumberComponent, UiInputComponent, UiButtonComponent, UiConfirmDialogComponent } from '@saanjhi-creation-ui/shared-ui';
 import { DropdownModule } from 'primeng/dropdown';
 import { ActivatedRoute, RouterModule } from '@angular/router';
@@ -56,6 +56,7 @@ export class InventoryFormComponent extends AdminBaseComponent implements AfterV
     availableSizes: string[] = [];
     availableColors: string[] = [];
     availableConditions = itemConditionOptions;
+    availableStatuses = InventoryStatusOptions;
     isEditMode = signal(false);
     model?: InventoryItemDto;
 
@@ -75,7 +76,8 @@ export class InventoryFormComponent extends AdminBaseComponent implements AfterV
             conditionNotes: [{ value: '', disabled: true }],
             isRetired: [false],
             retirementReason: [null, [retirementFieldRequiredValidator('retirementReason')]],
-            retirementDate: [null, [retirementFieldRequiredValidator('retirementDate')]]
+            retirementDate: [null, [retirementFieldRequiredValidator('retirementDate')]],
+            status: [{ value: null, disabled: false }, Validators.required],
         });
         const id = this.route.snapshot.paramMap.get('id');
         if (id) {
@@ -92,6 +94,9 @@ export class InventoryFormComponent extends AdminBaseComponent implements AfterV
                 this.enableAllFields();
                 this.formGroup.markAllAsTouched();
                 this.formGroup.updateValueAndValidity();
+                if (this.model.status === InventoryStatus.Rented) {
+                    this.form.get('status')?.disable();
+                }
             }
         } else if (this.item) {
             this.form.patchValue(this.item);
