@@ -52,130 +52,136 @@
         </div>
     </form>
     <p-divider></p-divider>
-    <!-- Responsive Rental Table -->
-    <p-table [value]="rentals()" [lazy]="true" [paginator]="true" [totalRecords]="totalRecords()" [loading]="loading()"
-        [rows]="pageSize" [rowsPerPageOptions]="[10, 20, 50]" (onLazyLoad)="loadRentals($event)" [sortField]="sortField"
-        [sortOrder]="sortOrder" dataKey="id" responsiveLayout="stack" [breakpoint]="'820px'"
-        styleClass="border-1 border-gray-200">
+    <div class="flex flex-column gap-2">
+        <div>
+            <div class="text-sm">Showing {{itemsShowing}}-{{totalRecords()}} results</div>
+        </div>
+        <!-- Responsive Rental Table -->
+        <p-table [value]="rentals()" [lazy]="true" [paginator]="true" [totalRecords]="totalRecords()"
+            [loading]="loading()" [rows]="pageSize" [rowsPerPageOptions]="[10, 20, 50]"
+            (onLazyLoad)="loadRentals($event)" [sortField]="sortField" [sortOrder]="sortOrder" dataKey="id"
+            responsiveLayout="stack" [breakpoint]="'820px'" styleClass="border-1 border-gray-200">
 
-        <ng-template pTemplate="header">
-            <tr>
-                <th>Order No</th>
-                <th>Reservation Date</th>
-                <th pSortableColumn="startDate">Delivered On <p-sortIcon field="startDate" /></th>
-                <th pSortableColumn="endDate">Returned On <p-sortIcon field="endDate" /></th>
-                <th>Customer</th>
-                <th class="w-20rem">Product</th>
-                <th>Status</th>
-                <th pSortableColumn="rentalPrice">Rent <p-sortIcon field="rentalPrice" /></th>
-                <th pSortableColumn="securityDeposit">Security <p-sortIcon field="securityDeposit" /></th>
-                <th style="width: 150px;">Actions</th>
-            </tr>
-        </ng-template>
+            <ng-template pTemplate="header">
+                <tr>
+                    <th>Order No</th>
+                    <th>Reservation Date</th>
+                    <th pSortableColumn="startDate">Delivered On <p-sortIcon field="startDate" /></th>
+                    <th pSortableColumn="endDate">Returned On <p-sortIcon field="endDate" /></th>
+                    <th>Customer</th>
+                    <th class="w-20rem">Product</th>
+                    <th>Status</th>
+                    <th pSortableColumn="rentalPrice">Rent <p-sortIcon field="rentalPrice" /></th>
+                    <th pSortableColumn="securityDeposit">Security <p-sortIcon field="securityDeposit" /></th>
+                    <th style="width: 150px;">Actions</th>
+                </tr>
+            </ng-template>
 
-        <ng-template pTemplate="body" let-rental>
-            <tr>
-                <td>
-                    <span class="p-column-title">Order No</span>
-                    <div class="flex items-center gap-2">
-                        <p-button link [routerLink]="['/rentals/manage', rental.id]">
-                            <div class="flex flex-column gap-1 text-left">
-                                <span class="font-semibold">{{ rental.rentalNumber }}</span>
-                            </div>
-                        </p-button>
-                    </div>
-                </td>
-                <td data-label="Reservation Date">
-                    <div>
-                        <div class="flex items-center gap-2 mb-1">
-                            <span>{{ rental.startDate | date: 'shortDate' }}</span>
-                            <span>-</span>
-                            <span>{{ rental.endDate | date: 'shortDate' }}</span>
+            <ng-template pTemplate="body" let-rental>
+                <tr>
+                    <td>
+                        <span class="p-column-title">Order No</span>
+                        <div class="flex items-center gap-2">
+                            <p-button link [routerLink]="['/rentals/manage', rental.id]">
+                                <div class="flex flex-column gap-1 text-left">
+                                    <span class="font-semibold">{{ rental.rentalNumber }}</span>
+                                </div>
+                            </p-button>
                         </div>
-                    </div>
-                </td>
-                <td data-label="Start Date">
-                    <span class="p-column-title">Start Date</span>
-                    <span>{{ rental.actualStartDate | date: 'shortDate' }}</span>
-                </td>
-                <td data-label="End Date">
-                    <span class="p-column-title">End Date</span>
-                    <span>{{ rental.actualReturnDate | date: 'shortDate' }}</span>
-                </td>
-                <td data-label="Customer">
-                    <span class="p-column-title">Customer</span>
-                    <div class="flex flex-column">
-                        <p-button link [routerLink]="['/customers']">
-                            <div class="flex flex-column gap-1 text-left">
-                                <span class="font-semibold">{{ rental.customer?.name }}</span>
-                                <small class="text-600">{{ rental.customer?.phoneNumber }}</small>
+                    </td>
+                    <td data-label="Reservation Date">
+                        <div>
+                            <div class="flex items-center gap-2 mb-1">
+                                <span>{{ rental.startDate | date: 'shortDate' }}</span>
+                                <span>-</span>
+                                <span>{{ rental.endDate | date: 'shortDate' }}</span>
                             </div>
-                        </p-button>
-                    </div>
-                </td>
-                <td data-label="Product">
-                    <span class="p-column-title">Product</span>
-                    <div class="flex items-center gap-2 w-10rem">
-                        <p-button link [routerLink]="['/products/details', rental.product.id]">
-                            <div class="flex gap-1 text-left align-items-center">
-                                <img [alt]="rental.product.name"
-                                    [src]="rental.product.mainImage?.url ?? 'assets/images/default-product.svg '"
-                                    width="32" style="vertical-align: middle" />
-                                <span class="w-15rem">{{ rental.product?.name }}</span>
-                            </div>
-                        </p-button>
+                        </div>
+                    </td>
+                    <td data-label="Start Date">
+                        <span class="p-column-title">Start Date</span>
+                        <span>{{ rental.actualStartDate | date: 'shortDate' }}</span>
+                    </td>
+                    <td data-label="End Date">
+                        <span class="p-column-title">End Date</span>
+                        <span>{{ rental.actualReturnDate | date: 'shortDate' }}</span>
+                    </td>
+                    <td data-label="Customer">
+                        <span class="p-column-title">Customer</span>
+                        <div class="flex flex-column">
+                            <p-button link [routerLink]="['/customers']">
+                                <div class="flex flex-column gap-1 text-left">
+                                    <span class="font-semibold">{{ rental.customer?.name }}</span>
+                                    <small class="text-600">{{ rental.customer?.phoneNumber }}</small>
+                                </div>
+                            </p-button>
+                        </div>
+                    </td>
+                    <td data-label="Product">
+                        <span class="p-column-title">Product</span>
+                        <div class="flex items-center gap-2 w-10rem">
+                            <p-button link [routerLink]="['/products/details', rental.product.id]">
+                                <div class="flex gap-1 text-left align-items-center">
+                                    <img [alt]="rental.product.name"
+                                        [src]="rental.product.mainImage?.url ?? 'assets/images/default-product.svg '"
+                                        width="32" style="vertical-align: middle" />
+                                    <span class="w-15rem">{{ rental.product?.name }}</span>
+                                </div>
+                            </p-button>
 
-                    </div>
-                </td>
-                <td data-label="Status">
-                    <span class="p-column-title">Status</span>
-                    <span>{{ rental.status | rentalStatusLabel }}</span>
-                </td>
-                <td data-label="Rent">
-                    <span class="p-column-title">Rent</span>
-                    <span>{{ rental.rentalPrice | appCurrency }}</span>
-                </td>
-                <td data-label="Security">
-                    <span class="p-column-title">Security</span>
-                    <span>{{ rental.securityDeposit | appCurrency }}</span>
-                </td>
-                <td data-label="Actions">
-                    <span class="p-column-title">Actions</span>
-                    <div class="flex gap-2">
-                        <!-- <saanjhi-ui-button icon="pi pi-pencil" size="small" pTooltip="Edit Rental" [rounded]="true"
+                        </div>
+                    </td>
+                    <td data-label="Status">
+                        <span class="p-column-title">Status</span>
+                        <span>{{ rental.status | rentalStatusLabel }}</span>
+                    </td>
+                    <td data-label="Rent">
+                        <span class="p-column-title">Rent</span>
+                        <span>{{ rental.rentalPrice | appCurrency }}</span>
+                    </td>
+                    <td data-label="Security">
+                        <span class="p-column-title">Security</span>
+                        <span>{{ rental.securityDeposit | appCurrency }}</span>
+                    </td>
+                    <td data-label="Actions">
+                        <span class="p-column-title">Actions</span>
+                        <div class="flex gap-2">
+                            <!-- <saanjhi-ui-button icon="pi pi-pencil" size="small" pTooltip="Edit Rental" [rounded]="true"
                             [outlined]="true" (click)="onEdit(rental)" />
                         <saanjhi-ui-button icon="pi pi-trash" size="small" severity="danger" pTooltip="Delete Rental"
                             [rounded]="true" [outlined]="true" (click)="onDelete(rental)" /> -->
 
-                        <button type="button" pButton icon="pi pi-ellipsis-v" class="p-button-text p-button-sm"
-                            (click)="onRowActionClicked(menu, rental, $event)">
-                        </button>
-                    </div>
-                </td>
-            </tr>
-        </ng-template>
+                            <button type="button" pButton icon="pi pi-ellipsis-v" class="p-button-text p-button-sm"
+                                (click)="onRowActionClicked(menu, rental, $event)">
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            </ng-template>
 
-        <ng-template pTemplate="emptymessage">
-            <tr>
-                <td colspan="7" class="text-center py-4">
-                    <div class="flex flex-column align-items-center gap-3">
-                        <i class="pi pi-calendar text-4xl text-400"></i>
-                        <span class="text-600">No rentals found</span>
-                        <saanjhi-ui-button label="Add First Rental" icon="pi pi-plus" (click)="onCreate()" />
-                    </div>
-                </td>
-            </tr>
-        </ng-template>
+            <ng-template pTemplate="emptymessage">
+                <tr>
+                    <td colspan="7" class="text-center py-4">
+                        <div class="flex flex-column align-items-center gap-3">
+                            <i class="pi pi-calendar text-4xl text-400"></i>
+                            <span class="text-600">No rentals found</span>
+                            <saanjhi-ui-button label="Add First Rental" icon="pi pi-plus" (click)="onCreate()" />
+                        </div>
+                    </td>
+                </tr>
+            </ng-template>
 
-        <ng-template pTemplate="loadingbody">
-            <tr>
-                <td colspan="7" class="text-center py-4">
-                    <div class="flex align-items-center justify-content-center gap-2">
-                        <i class="pi pi-spin pi-spinner text-2xl"></i>
-                        <span>Loading rentals...</span>
-                    </div>
-                </td>
-            </tr>
-        </ng-template>
-    </p-table>
+            <ng-template pTemplate="loadingbody">
+                <tr>
+                    <td colspan="7" class="text-center py-4">
+                        <div class="flex align-items-center justify-content-center gap-2">
+                            <i class="pi pi-spin pi-spinner text-2xl"></i>
+                            <span>Loading rentals...</span>
+                        </div>
+                    </td>
+                </tr>
+            </ng-template>
+        </p-table>
+    </div>
+
 </div>

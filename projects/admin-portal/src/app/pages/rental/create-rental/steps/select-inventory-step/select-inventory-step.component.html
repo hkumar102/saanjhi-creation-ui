@@ -33,7 +33,10 @@
                     <td>{{ item.size }}</td>
                     <td>{{ item.color }}</td>
                     <td>
-                        <span class="p-tag p-tag-info">{{ item.status | inventoryStatusLabel }}</span>
+                        <span class="p-tag p-tag-info">
+                            <p-badge [value]="item.status | inventoryStatusLabel"
+                                [severity]="item.status == 1 ? 'success' : 'danger'"></p-badge>
+                        </span>
                     </td>
                     <td>
                         <span class="p-tag p-tag-info">{{ item.condition | itemConditionLabel }}</span>

@@ -70,6 +70,7 @@ export class RentalListComponent extends AdminBaseComponent implements OnInit {
     rentals: WritableSignal<RentalDto[]> = signal([]);
     totalRecords = signal(0);
     loading = signal(false);
+    itemsShowing = 0;
 
     page = 1;
     pageSize = 10;
@@ -122,6 +123,7 @@ export class RentalListComponent extends AdminBaseComponent implements OnInit {
 
             this.rentals.set(result.items ?? []);
             this.totalRecords.set(result.totalCount ?? 0);
+            this.itemsShowing = this.rentals().length + ((this.page - 1) * this.pageSize);
         } finally {
             this.loading.set(false);
         }

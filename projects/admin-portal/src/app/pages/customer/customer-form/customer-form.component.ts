@@ -46,20 +46,19 @@ export class CustomerFormComponent extends AdminBaseComponent implements OnInit 
 
     this.form = this.fb.group({
       name: ['', Validators.required],
-      email: ['', [Validators.required, Validators.email]],
+      email: ['customer@saanjhicreation.com', [Validators.required, Validators.email]],
       phoneNumber: ['', Validators.required],
     });
 
     this.addressForm = this.fb.group({
       id: [null],
-      customerId: [this.customerId, Validators.required],
+      customerId: [this.customerId],
       line1: ['', Validators.required],
       line2: [''],
       city: ['Palam', Validators.required],
       state: ['Delhi', Validators.required],
       postalCode: [null, Validators.required],
       country: ['India', Validators.required],
-      phoneNumber: ['-', Validators.required],
       type: [0]
     });
 
@@ -92,6 +91,7 @@ export class CustomerFormComponent extends AdminBaseComponent implements OnInit 
     } else {
       try {
         const id = await this.customerClient.createCustomer(customerPayload as CreateCustomerCommand);
+        this.customerId = id;
         await this.saveAddress();
         this.toast.success(this.formatter.format(this.ConfirmationMessages.createSuccess, customerPayload.name!));
       } catch (error) {
@@ -142,11 +142,7 @@ export class CustomerFormComponent extends AdminBaseComponent implements OnInit 
       ...this.addressForm.value
     };
 
-    if (address.id) {
-      await this.customerClient.updateAddress(address.id, address as UpdateAddressCommand);
-    } else {
-      await this.customerClient.createAddress(address as CreateAddressCommand);
-    }
+
 
     if (this.editingAddressIndex != null) {
       this.addresses[this.editingAddressIndex] = address;

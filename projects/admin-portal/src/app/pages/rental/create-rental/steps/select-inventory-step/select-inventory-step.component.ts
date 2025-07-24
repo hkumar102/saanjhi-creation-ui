@@ -5,6 +5,7 @@ import { ProductDto, InventoryItemDto, InventoryServiceClient, ItemConditionLabe
 import { UiFormControlComponent, UiButtonComponent } from '@saanjhi-creation-ui/shared-ui';
 import { CheckboxModule } from 'primeng/checkbox';
 import { TableModule, TableRowSelectEvent } from 'primeng/table';
+import { Badge } from "primeng/badge";
 
 @Component({
     selector: 'app-rental-create-select-inventory-step',
@@ -12,14 +13,15 @@ import { TableModule, TableRowSelectEvent } from 'primeng/table';
     templateUrl: './select-inventory-step.component.html',
     styleUrls: ['./select-inventory-step.component.scss'],
     imports: [
-        CommonModule,
-        UiFormControlComponent,
-        TableModule,
-        CheckboxModule,
-        ItemConditionLabelPipe,
-        InventoryStatusLabelPipe,
-        ReactiveFormsModule
-    ]
+    CommonModule,
+    UiFormControlComponent,
+    TableModule,
+    CheckboxModule,
+    ItemConditionLabelPipe,
+    InventoryStatusLabelPipe,
+    ReactiveFormsModule,
+    Badge
+]
 })
 export class RentalCreateSelectInventoryStepComponent implements OnInit {
     @Input() selectedProducts: ProductDto[] = [];

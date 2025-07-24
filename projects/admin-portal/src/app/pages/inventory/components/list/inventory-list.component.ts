@@ -44,6 +44,7 @@ export class InventoryListComponent extends AdminBaseComponent implements OnInit
     isLoading = false;
     sortField = 'serialNumber';
     sortOrder = 1;
+    itemsShowing = 0;
     filters: any = {
         includeRetired: true
     };
@@ -79,6 +80,7 @@ export class InventoryListComponent extends AdminBaseComponent implements OnInit
         this.items = result.items || result;
         this.totalCount = result.totalCount || 0;
         this.isLoading = false;
+        this.itemsShowing = (this.items.length) + (page * query.pageSize!);
     }
 
     loadProducts() {

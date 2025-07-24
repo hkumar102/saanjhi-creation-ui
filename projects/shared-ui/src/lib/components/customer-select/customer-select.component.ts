@@ -90,7 +90,7 @@ export class CustomerSelectComponent implements ControlValueAccessor, OnInit {
 
     // Input properties
     multiple = input<boolean>(false);
-    placeholder = input<string>('Select product...');
+    placeholder = input<string>('Select customer...');
     showClear = input<boolean>(true);
     filter = input<boolean>(true);
     pageSize = input<number>(25);
