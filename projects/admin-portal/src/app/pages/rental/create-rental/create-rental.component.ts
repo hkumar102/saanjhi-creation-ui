@@ -87,6 +87,8 @@ export class CreateRentalComponent extends AdminBaseComponent {
             sleeveLength: this.createRentalModel.rentalDetails.sleeveLength, 
         }
 
-        await this.rentalClient.createRental(payload);
+        const rentalId = await this.rentalClient.createRental(payload);
+        this.navigation.goToRentalManage(rentalId);
+        this.toast.success('Rental created successfully!');
     }
 }

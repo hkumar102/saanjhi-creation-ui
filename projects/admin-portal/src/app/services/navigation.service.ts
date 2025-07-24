@@ -84,4 +84,7 @@ export class NavigationService {
     goToRentalEdit(id: string) {
         this.router.navigate(['/rentals/edit', id]);
     }
+    goToRentalManage(id: string) {
+        this.router.navigate(['/rentals/manage', id]);
+    }
 }
