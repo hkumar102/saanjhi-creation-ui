@@ -32,27 +32,58 @@ export interface InventoryItemDto {
 
 export enum InventoryStatus {
   Available = 1,
+
+  /// <summary>
+  /// Item is currently rented out
+  /// </summary>
   Rented = 2,
-  Maintenance = 3,
-  Damaged = 4,
-  Lost = 5,
-  Retired = 6,
-  Reserved = 7,
-  InTransit = 8,
-  BeingCleaned = 9
+
+  /// <summary>
+  /// Item is being cleaned after return
+  /// </summary>
+  Cleaning = 3,
+
+  /// <summary>
+  /// Item is under maintenance/repair
+  /// </summary>
+  Maintenance = 4,
+
+  /// <summary>
+  /// Item is damaged and cannot be rented
+  /// </summary>
+  Damaged = 5,
+
+  /// <summary>
+  /// Item is reserved for a future rental
+  /// </summary>
+  Reserved = 6,
+
+  /// <summary>
+  /// Item is in transit (shipping/receiving)
+  /// </summary>
+  InTransit = 7,
+
+  /// <summary>
+  /// Item is being inspected for quality
+  /// </summary>
+  Inspection = 8,
+
+  /// <summary>
+  /// Item is retired from service
+  /// </summary>
+  Retired = 9
 }
 
 export const InventoryStatusOptions = [
   { label: 'Available', value: InventoryStatus.Available },
   { label: 'Rented', value: InventoryStatus.Rented },
+  { label: 'Cleaning', value: InventoryStatus.Cleaning },
   { label: 'Maintenance', value: InventoryStatus.Maintenance },
   { label: 'Damaged', value: InventoryStatus.Damaged },
-  { label: 'Lost', value: InventoryStatus.Lost },
   { label: 'Retired', value: InventoryStatus.Retired },
   { label: 'Reserved', value: InventoryStatus.Reserved },
   { label: 'In Transit', value: InventoryStatus.InTransit },
-  { label: 'Being Cleaned', value: InventoryStatus.BeingCleaned }
-];
+  { label: 'Inspection', value: InventoryStatus.Inspection }];
 
 export enum ItemCondition {
   New = 1,
