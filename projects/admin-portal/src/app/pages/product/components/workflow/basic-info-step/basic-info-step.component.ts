@@ -40,7 +40,7 @@ import { BaseProductFlowComponent } from '../../base-product-flow.component';
     UiInputNumberComponent,
     TextareaModule,
     UiTextareaComponent
-],
+  ],
   templateUrl: './basic-info-step.component.html',
   styleUrls: ['./basic-info-step.component.scss']
 })
@@ -116,11 +116,11 @@ export class BasicInfoStepComponent extends BaseProductFlowComponent implements 
         takeUntil(this.destroy$)
       )
       .subscribe(value => {
-        this.updateWorkflowData(value);
+        this.updateWorkflowData();
       });
   }
 
-  private updateWorkflowData(formValue: any): void {
+  private updateWorkflowData(): void {
     const stepData: BasicInfoData = { ...this.form.value, isValid: this.form.valid };
 
     this.workflowService.updateStepData(WorkflowStep.BASIC_INFO, stepData);
@@ -166,8 +166,11 @@ export class BasicInfoStepComponent extends BaseProductFlowComponent implements 
   }
 
   onCategorySelected($event: CategoryDto | CategoryDto[] | null) {
-    this.form.get('categoryName')?.setValue($event ? ($event as CategoryDto).name : '');
-    this.form.get('categoryId')?.setValue($event ? ($event as CategoryDto).id : '');
-    this.updateWorkflowData(this.form.value);
+    const data = ($event as CategoryDto);
+    this.form.patchValue({
+      categoryName: data.name
+    }, { emitEvent: false });
+
+    this.updateWorkflowData();
   }
 }

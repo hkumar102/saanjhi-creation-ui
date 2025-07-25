@@ -132,7 +132,7 @@ export class ProductWorkflowComponent extends BaseProductFlowComponent implement
     categoryName: ['', [Validators.required]],
     purchasePrice: [null, [Validators.required, Validators.min(1)]],
     rentalPrice: [null, [Validators.required, Validators.min(1)]],
-    isActive: [false],
+    isActive: [true],
     isPurchasable: [true],
     isRentable: [true],
     securityDeposit: [null, [Validators.required, Validators.min(1), securityDepositValidator]],
@@ -337,4 +337,5 @@ export class ProductWorkflowComponent extends BaseProductFlowComponent implement
       this.router.navigate(['/products']);
     }
   }
+  
 }

@@ -27,7 +27,7 @@
     <div class="col-12 md:col-6">
       <!-- Is Purchasable -->
       <saanjhi-ui-form-control inputId="isPurchasable"
-        helpText="When checked, this product will be visible to customers and available for purchase.">
+        helpText="When checked, this product will be visible to customers and available for purchase." [control]="form.get('isPurchasable')">
         <div class="flex align-items-center gap-2">          
           <p-checkbox inputId="isPurchasable" formControlName="isPurchasable" [binary]="true">
           </p-checkbox>
@@ -50,7 +50,7 @@
     <div class="col-12 md:col-6">
       <!-- Is Rentable -->
       <saanjhi-ui-form-control inputId="isRentable"
-        helpText="When checked, this product will be visible to customers and available for rental.">
+        helpText="When checked, this product will be visible to customers and available for rental." [control]="form.get('isRentable')">
         <div class="flex align-items-center gap-2">
           <saanjhi-ui-checkbox inputId="isRentable" formControlName="isRentable" [binary]="true">
           </saanjhi-ui-checkbox>
@@ -98,7 +98,7 @@
 
   <!-- Product Status -->
   <saanjhi-ui-form-control inputId="isActive"
-    helpText="When checked, this product will be visible to customers and available for purchase/rental.">
+    helpText="When checked, this product will be visible to customers and available for purchase/rental." [control]="form.get('isActive')">
     <div class="flex align-items-center gap-2">
       <saanjhi-ui-checkbox inputId="isActive" formControlName="isActive" [binary]="true">
       </saanjhi-ui-checkbox>

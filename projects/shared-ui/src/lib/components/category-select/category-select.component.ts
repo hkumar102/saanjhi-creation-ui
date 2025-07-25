@@ -154,7 +154,7 @@ export class CategorySelectComponent implements ControlValueAccessor {
             if (this.multiple()) {
                 this.onChange((event as CategoryDto[]).map(p => p.id));
             } else {
-                this.onChange(event);
+                this.onChange((event as CategoryDto).id);
             }
         }
     }
