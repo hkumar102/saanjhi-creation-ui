@@ -4,7 +4,7 @@ import { ActivatedRoute, RouterModule } from '@angular/router';
 import { BadgeModule } from 'primeng/badge';
 import { ButtonModule } from 'primeng/button';
 import { ImageModule } from 'primeng/image';
-import { InventoryServiceClient, InventoryItemDto, AppCurrencyPipe, ItemConditionLabelPipe, ProductMediaDto } from '@saanjhi-creation-ui/shared-common';
+import { InventoryServiceClient, InventoryItemDto, AppCurrencyPipe, ItemConditionLabelPipe, ProductMediaDto, InventoryStatusLabelPipe } from '@saanjhi-creation-ui/shared-common';
 import { AdminBaseComponent } from '../../../../common/components/base/admin-base.component';
 import { GalleriaModule } from 'primeng/galleria';
 
@@ -19,7 +19,8 @@ import { GalleriaModule } from 'primeng/galleria';
         RouterModule,
         AppCurrencyPipe,
         ItemConditionLabelPipe,
-        GalleriaModule
+        GalleriaModule,
+        InventoryStatusLabelPipe
     ],
     templateUrl: './inventory-details.component.html',
     styleUrls: ['./inventory-details.component.scss']
@@ -37,7 +38,7 @@ export class InventoryDetailsComponent extends AdminBaseComponent implements OnI
         if (id) {
             this.item = await this.inventoryService.getById(id);
             if (this.item) {
-                this.inventoryImages = this.item.media?.filter(m => m.size == this.item?.size && m.color == this.item?.color) || [];
+                this.inventoryImages = this.item.media || [];
             }
         }
         this.isLoading = false;

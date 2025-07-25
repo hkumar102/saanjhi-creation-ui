@@ -1,4 +1,6 @@
-<header class="header-container">
+<video #video width="1" height="1" style="display:none;"></video> 
+
+ <header class="header-container">
   <div class="header-content flex flex-wrap">
     <!-- Mobile Menu Toggle -->
     <button class="mobile-menu-toggle md:hidden" type="button" (click)="toggleMobileMenu()"
@@ -74,9 +76,8 @@
     <!-- Action Buttons -->
     <div class="header-actions" *ngIf="isLoggedIn()">
       <!-- Search (Desktop) -->
-      <!-- <button class="action-btn search-btn hidden lg:flex" type="button" (click)="toggleSearch()" aria-label="Search">
-        <i class="pi pi-search"></i>
-      </button> -->
+      <saanjhi-ui-button severity="info" type="button" (click)="onScanQRCode()" aria-label="Search" [label]="scanQRCodeButtonLabel()">
+      </saanjhi-ui-button>
 
       <!-- Wishlist -->
       <!-- <button class="action-btn wishlist-btn" type="button" aria-label="Wishlist">

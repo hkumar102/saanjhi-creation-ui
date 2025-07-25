@@ -1,19 +1,22 @@
 <div *ngIf="!isLoading && item" class="flex flex-column md:flex-row gap-5 surface-0 p-4">
     <!-- Left: Barcode & QR -->
     <div class="flex flex-column align-items-center w-full md:w-5">
-        <div class="mb-2 align-self-start">
-            <span class="text-xs bg-gray-200 px-2 py-1 border-round">Serial #: {{ item.serialNumber }}</span>
+        <div class="mb-2">
+            <span class="font-bold bg-gray-200 px-2 py-1 border-round">Serial #: {{ item.serialNumber }}</span>
         </div>
         <div *ngIf="inventoryImages.length > 0" class="mb-3">
             <p-galleria [value]="inventoryImages" [showThumbnails]="true" [showIndicators]="false" [circular]="true"
                 [containerStyle]="{ 'max-width': '400px' }" [thumbnailsPosition]="'bottom'">
                 <ng-template pTemplate="item" let-item>
-                    <img [src]="item.itemImageSrc" [alt]="item.alt" class="w-full border-round"
+                    <img [src]="item.url" [alt]="item.alt" class="w-full border-round"
                         style="max-height:400px;object-fit:contain;" />
                 </ng-template>
                 <ng-template pTemplate="thumbnail" let-item>
-                    <img [src]="item.thumbnailImageSrc" [alt]="item.alt" class="w-4rem h-4rem border-round"
+                    <img [src]="item.url" [alt]="item.alt" class="w-4rem h-4rem border-round"
                         style="object-fit:cover;" />
+                </ng-template>
+                <ng-template #caption let-item>
+                    <div class="text-xl mb-2 font-bold">{{ item.color }}</div>
                 </ng-template>
             </p-galleria>
         </div>
@@ -38,7 +41,7 @@
             <div class="flex gap-2 mb-2">
                 <p-badge [value]="item.isRetired ? 'Retired' : 'Active'"
                     [severity]="item.isRetired ? 'danger' : 'success'"></p-badge>
-                <p-badge [value]="item.status" severity="info"></p-badge>
+                <p-badge [value]="item.status | inventoryStatusLabel" severity="info"></p-badge>
                 <p-badge [value]="item.isAvailable ? 'Available' : 'Unavailable'"
                     [severity]="item.isAvailable ? 'success' : 'warn'"></p-badge>
             </div>
@@ -46,7 +49,7 @@
 
         <div class="flex gap-2 mb-3">
             <button pButton type="button" [routerLink]="['/inventory/edit', item.id]" icon="pi pi-pencil" label="Edit"
-                class="p-button-secondary"></button>           
+                class="p-button-secondary"></button>
         </div>
 
         <div>
@@ -54,6 +57,21 @@
             <div class="text-sm mb-2">{{ item.condition | itemConditionLabel}} <span *ngIf="item.conditionNotes">- {{
                     item.conditionNotes
                     }}</span></div>
+        </div>
+
+        <div>
+            <div class="text-sm font-bold mb-1">Purchase Price</div>
+            <div class="text-sm mb-2">Cost: {{ item.purchasePrice | appCurrency }}</div>
+        </div>
+
+        <div>
+            <div class="text-sm font-bold mb-1">Rental Price</div>
+            <div class="text-sm mb-2">Cost: {{ item.rentalPrice | appCurrency }}</div>
+        </div>
+
+        <div>
+            <div class="text-sm font-bold mb-1">Security Deposit</div>
+            <div class="text-sm mb-2">Cost: {{ item.securityDeposit | appCurrency }}</div>
         </div>
 
         <div>

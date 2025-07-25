@@ -1,6 +1,6 @@
 <saanjhi-ui-confirm-dialog #confirmDialog />
 <p-menu #menu [model]="rowMenuItems" [popup]="true"></p-menu>
-<div class="rental-container p-4">
+<div class="p-4">
     <div class="flex justify-content-between">
         <h2 class="text-xl font-bold">Rental List</h2>
         <saanjhi-ui-button type="button" label="Add Rental" icon="pi pi-plus" severity="info" (click)="onCreate()" />
@@ -109,7 +109,7 @@
                     <td data-label="Customer">
                         <span class="p-column-title">Customer</span>
                         <div class="flex flex-column">
-                            <p-button link [routerLink]="['/customers']">
+                            <p-button link [routerLink]="['/customers/edit/', rental.customerId]">
                                 <div class="flex flex-column gap-1 text-left">
                                     <span class="font-semibold">{{ rental.customer?.name }}</span>
                                     <small class="text-600">{{ rental.customer?.phoneNumber }}</small>

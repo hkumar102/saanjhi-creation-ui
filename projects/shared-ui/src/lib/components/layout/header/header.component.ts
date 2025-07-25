@@ -1,8 +1,10 @@
-import { Component, OnInit, inject, signal, HostListener, Input, Signal } from '@angular/core';
+import { Component, OnInit, inject, signal, HostListener, Input, Signal, ElementRef, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
-import { EVENT_TYPES, EventEmitterService, UserContextService } from '@saanjhi-creation-ui/shared-common';
+import { EVENT_TYPES, EventEmitterService, ToastService, UserContextService } from '@saanjhi-creation-ui/shared-common';
+import { UiButtonComponent } from '@saanjhi-creation-ui/shared-ui';
+import { BrowserMultiFormatReader } from '@zxing/browser';
 
 export interface MenuItem {
   label: string;
@@ -15,15 +17,19 @@ export interface MenuItem {
 @Component({
   selector: 'saanjhi-ui-header',
   standalone: true,
-  imports: [CommonModule, RouterModule, FormsModule],
+  imports: [CommonModule, RouterModule, FormsModule, UiButtonComponent],
   templateUrl: './header.component.html',
   styleUrls: ['./header.component.scss']
 })
 export class HeaderComponent implements OnInit {
   private authService = inject(UserContextService);
   private eventEmitter = inject(EventEmitterService);
+  private toastService = inject(ToastService)
+  private codeReader = new BrowserMultiFormatReader();
 
   @Input() isLoggedIn!: Signal<boolean>;
+
+  @ViewChild('video') video!: ElementRef<HTMLVideoElement>;
 
   // State signals
   isMobileMenuOpen = signal<boolean>(false);
@@ -41,6 +47,8 @@ export class HeaderComponent implements OnInit {
 
   // Search
   searchQuery = signal<string>('');
+  scanQRCodeButtonLabel = signal<string>('Scan QR Code');
+  isScanning = signal<boolean>(false);
 
   // ✅ Navigation Menu Structure
   navigationMenu: MenuItem[] = [
@@ -216,5 +224,53 @@ export class HeaderComponent implements OnInit {
   @HostListener('window:scroll', [])
   onWindowScroll() {
     this.isScrolled = window.scrollY > 0;
+  }
+
+  onScanQRCode() {
+    if (this.isScanning()) {
+      this.cancelScan();
+      this.toastService.info('QR code scanned canceled');
+    } else {
+      this.startScan();
+    }
+  }
+
+  private cancelScan() {
+    this.isScanning.set(false);
+    this.scanQRCodeButtonLabel.set('Scan QR Code');
+    this.video.nativeElement.style.display = 'none';
+    const stream = this.video.nativeElement.srcObject as MediaStream | null;
+    if (stream) {
+      stream.getTracks().forEach(track => track.stop());
+      this.video.nativeElement.srcObject = null;
+    }
+  }
+
+  private startScan() {
+    this.isScanning.set(true);
+    this.scanQRCodeButtonLabel.set('Cancel Scan');
+    this.video.nativeElement.style.display = 'block';
+    try {
+      this.codeReader.decodeOnceFromVideoDevice(undefined, this.video.nativeElement)
+        .then(result => {
+
+          const code = result.getText();
+          if (!code) {
+            this.toastService.error('Failed to scan QR code');
+            return;
+          } else {
+            this.eventEmitter.emitEvent(EVENT_TYPES.SCANNED_QR_CODE, { code: code });
+            this.toastService.success('QR code scanned successfully');
+          }
+          this.cancelScan();
+        })
+        .catch(err => {
+          this.cancelScan();
+          this.toastService.error('Failed to scan QR code');
+        });
+    } catch (err) {
+      this.cancelScan();
+      this.toastService.error('Failed to start camera for QR code scanning');
+    }
   }
 }

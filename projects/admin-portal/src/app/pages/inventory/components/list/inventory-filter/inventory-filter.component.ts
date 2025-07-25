@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output, OnInit, inject } from '@angular/core';
+import { Component, EventEmitter, Input, Output, OnInit, inject, ViewChild, ElementRef } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { MultiSelectModule } from 'primeng/multiselect';
@@ -6,10 +6,11 @@ import { InputTextModule } from 'primeng/inputtext';
 import { DropdownModule } from 'primeng/dropdown';
 import { ButtonModule } from 'primeng/button';
 import { AvailableColors, BaseComponent, InventoryStatusOptions } from '@saanjhi-creation-ui/shared-common';
-import { UiAutocompleteComponent, UiFormControlComponent, ProductSelectComponent } from '@saanjhi-creation-ui/shared-ui';
+import { UiAutocompleteComponent, UiFormControlComponent, ProductSelectComponent, UiButtonComponent } from '@saanjhi-creation-ui/shared-ui';
 import { ColorMultiSelectComponent } from '../../../../../common/components/color-multi-select/color-multi-select.component';
 import { SizeMultiSelectComponent } from '../../../../../common/components/size-multi-select/size-multi-select.component';
 import { debounceTime, takeUntil } from 'rxjs';
+import { BrowserMultiFormatReader } from '@zxing/browser';
 
 @Component({
   selector: 'app-inventory-filter',
@@ -25,7 +26,8 @@ import { debounceTime, takeUntil } from 'rxjs';
     UiFormControlComponent,
     ColorMultiSelectComponent,
     SizeMultiSelectComponent,
-    ProductSelectComponent
+    ProductSelectComponent,
+    UiButtonComponent
 ],
   templateUrl: './inventory-filter.component.html',
   styleUrls: ['./inventory-filter.component.scss']
@@ -34,6 +36,10 @@ export class InventoryFilterComponent extends BaseComponent implements OnInit {
   @Input() products: any[] = [];
   @Output() filtersChanged = new EventEmitter<any>();
 
+  @ViewChild('video') video!: ElementRef<HTMLVideoElement>;
+
+  private codeReader = new BrowserMultiFormatReader();
+  
   filterForm!: FormGroup;
   colorOptions: string[] = AvailableColors.map(color => color.name); statusOptions = InventoryStatusOptions;
   // retiredOptions = [
@@ -61,5 +67,21 @@ export class InventoryFilterComponent extends BaseComponent implements OnInit {
 
   applyFilters() {
     this.filtersChanged.emit(this.filterForm.getRawValue());
+  }
+
+  onScanBarcode() {
+    // Implement barcode scanning logic here
+    this.startScan();
+  }
+
+  private async startScan() {
+    this.video.nativeElement.style.display = 'block';
+    try {
+      const result = await this.codeReader.decodeOnceFromVideoDevice(undefined, this.video.nativeElement);
+      this.filterForm.patchValue({ serialNumber: result.getText() });
+      console.log('Barcode scanned:', result.getText());
+    } catch (err) {
+    }
+    this.video.nativeElement.style.display = 'none';
   }
 }

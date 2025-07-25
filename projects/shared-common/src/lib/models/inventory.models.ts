@@ -28,6 +28,9 @@ export interface InventoryItemDto {
   availableSizes?: string[];
   availableColors?: string[];
   media?: ProductMediaDto[];
+  purchasePrice: number;
+  rentalPrice: number;
+  securityDeposit?: number;
 }
 
 export enum InventoryStatus {
@@ -149,6 +152,7 @@ export interface SearchInventoryQuery {
   productIds?: string[];
   acquisitionCostMin?: number;
   acquisitionCostMax?: number;
+  serialNumber?: string;
 }
 
 export const DEFAULT_INVENTORY_CONSTANTS = {

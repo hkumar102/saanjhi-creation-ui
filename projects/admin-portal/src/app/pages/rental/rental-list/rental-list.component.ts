@@ -26,6 +26,7 @@ import { RouterModule } from '@angular/router';
 import { ButtonModule } from 'primeng/button';
 import { Menu } from 'primeng/menu';
 import { MenuItem } from 'primeng/api';
+import { debounceTime, takeUntil } from 'rxjs';
 
 @Component({
     selector: 'app-rental-list',
@@ -81,6 +82,13 @@ export class RentalListComponent extends AdminBaseComponent implements OnInit {
 
     async ngOnInit() {
         await this.loadRentals();
+
+        this.filtersForm.valueChanges.pipe(
+            debounceTime(300),
+            takeUntil(this.destroy$)
+        ).subscribe(() => {
+            this.loadRentals();
+        });
     }
 
     async loadRentals(event?: TableLazyLoadEvent) {

@@ -1,4 +1,8 @@
+ <video #video width="300" height="200" style="display:none;"></video>
 <form [formGroup]="filterForm" class="flex flex-column gap-3">
+    <div>
+        <saanjhi-ui-button label="Scan QR Code" icon="fa-solid fa-qrcode" (click)="onScanBarcode()" styleClass="w-full"></saanjhi-ui-button>
+    </div>
     <saanjhi-ui-form-control label="Serial #" [control]="filterForm.get('serialNumber')">
         <input pInputText formControlName="serialNumber" class="w-full" />
     </saanjhi-ui-form-control>
@@ -13,10 +17,5 @@
         <saanjhi-ui-autocomplete formControlName="statuses" [suggestions]="statusOptions" [optionLabel]="'label'"
             [optionValue]="'value'" [multiple]="true" [dropdown]="true" styleClass="w-full" />
     </saanjhi-ui-form-control>
-    <!-- <saanjhi-ui-form-control label="Retired" [control]="filterForm.get('retired')">
-        <saanjhi-ui-autocomplete formControlName="retired" [suggestions]="retiredOptions" [optionLabel]="'label'"
-            [optionValue]="'value'" [dropdown]="true" styleClass="w-full" />
-    </saanjhi-ui-form-control> -->
-
     <button pButton label="Apply" (click)="applyFilters()" class="w-full"></button>
 </form>
