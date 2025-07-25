@@ -82,6 +82,11 @@ export class HeaderComponent implements OnInit {
       routerLink: '/rentals',
       icon: 'fa-solid fa-box-open'
     },
+    {
+      label: 'Calendar',
+      routerLink: '/calendar',
+      icon: 'fa-solid fa-calendar-days'
+    },
     // {
     //   label: 'Reports',
     //   icon: 'pi pi-chart-pie',

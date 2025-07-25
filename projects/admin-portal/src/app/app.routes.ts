@@ -66,5 +66,9 @@ export const routes: Routes = [
         path: '',
         pathMatch: 'full',
         redirectTo: '/products'
+    },
+    {
+        path: 'calendar',
+        loadComponent: () => import('./pages/rental/rental-calendar/rental-calendar.component').then(m => m.RentalCalendarComponent)
     }
 ];

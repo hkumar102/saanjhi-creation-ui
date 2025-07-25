@@ -59,11 +59,10 @@ export class RentalListComponent extends AdminBaseComponent implements OnInit {
     private fb = inject(FormBuilder);
 
     @ViewChild('confirmDialog') confirmDialog!: UiConfirmDialogComponent;
-
     filtersForm: FormGroup = this.fb.group({
         customerIds: [null],
         productIds: [[]],
-        dateRange: [null as Date[] | null],
+        dateRange: [[new Date(new Date().setDate(new Date().getDate() - 15)), new Date(new Date().setDate(new Date().getDate() + 15))]],
         rentalStatus: [null]
     });
 
