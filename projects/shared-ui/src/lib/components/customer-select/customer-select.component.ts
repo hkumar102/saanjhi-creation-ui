@@ -254,7 +254,7 @@ export class CustomerSelectComponent implements ControlValueAccessor, OnInit {
             if (this.multiple()) {
                 this.onChange((event as CustomerDto[]).map(c => c.id));
             } else {
-                this.onChange(event);
+                this.onChange((event as CustomerDto).id);
             }
         }
     }

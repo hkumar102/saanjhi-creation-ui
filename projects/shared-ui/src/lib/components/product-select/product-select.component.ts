@@ -262,7 +262,7 @@ export class ProductSelectComponent implements ControlValueAccessor, OnInit {
             if (this.multiple()) {
                 this.onChange((event as ProductDto[]).map(p => p.id));
             } else {
-                this.onChange(event);
+                this.onChange((event as ProductDto).id);
             }
         }
     }
