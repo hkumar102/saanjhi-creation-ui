@@ -7,7 +7,10 @@ import {
   PaginatedResult,
   UpdateRentalCommand,
   GetRentalsQuery,
-  UpdateRentalStatusCommand
+  UpdateRentalStatusCommand,
+  RentalRevenueReportDto,
+  RentalProfitReportDto,
+  RentalsActivityReportDto,
 } from '../models';
 import { APP_CONFIG, AppConfig } from '@saanjhi-creation-ui/shared-common';
 
@@ -21,7 +24,6 @@ export class RentalServiceClient {
    * Get rentals with search filters (POST method)
    */
   getRentals(query?: GetRentalsQuery): Promise<PaginatedResult<RentalDto>> {
-    // Use POST method to send query object in request body
     const payload = query || {};
     return lastValueFrom(
       this.http.post<PaginatedResult<RentalDto>>(`${this.baseUrl}/rental/search`, payload)
@@ -47,6 +49,35 @@ export class RentalServiceClient {
   updateRentalStatus(id: string, payload: UpdateRentalStatusCommand): Promise<void> {
     return lastValueFrom(
       this.http.put<void>(`${this.baseUrl}/rental/${id}/status`, payload)
+    );
+  }
+
+  // --- Reports Endpoints ---
+
+  getRentalRevenueReport(fromDate?: string, toDate?: string): Promise<RentalRevenueReportDto> {
+    const params: any = {};
+    if (fromDate) params.fromDate = fromDate;
+    if (toDate) params.toDate = toDate;
+    return lastValueFrom(
+      this.http.get<RentalRevenueReportDto>(`${this.baseUrl}/reports/rentals/revenue`, { params })
+    );
+  }
+
+  getRentalProfitReport(fromDate?: string, toDate?: string): Promise<RentalProfitReportDto> {
+    const params: any = {};
+    if (fromDate) params.fromDate = fromDate;
+    if (toDate) params.toDate = toDate;
+    return lastValueFrom(
+      this.http.get<RentalProfitReportDto>(`${this.baseUrl}/reports/rentals/profit`, { params })
+    );
+  }
+
+  getRentalsActivityReport(fromDate?: string, toDate?: string): Promise<RentalsActivityReportDto> {
+    const params: any = {};
+    if (fromDate) params.fromDate = fromDate;
+    if (toDate) params.toDate = toDate;
+    return lastValueFrom(
+      this.http.get<RentalsActivityReportDto>(`${this.baseUrl}/reports/rentals/activity`, { params })
     );
   }
 }

@@ -815,3 +815,12 @@
 .header-container.scrolled {
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
 }
+
+.fullscreen-video {
+  top: 0; left: 0; right: 0; bottom: 0;
+  width: 100vw !important;
+  height: 100vh !important;
+  object-fit: contain;
+  background: #000;
+  z-index: 9999;
+}

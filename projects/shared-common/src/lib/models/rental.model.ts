@@ -188,3 +188,28 @@ export interface RentalTimelineDto {
   changedByUserId: string;
   notes?: string;
 }
+
+export interface RentalRevenueReportDto {
+  totalRevenue: number;
+  revenueByCategory?: { [category: string]: number | null };
+  revenueByProduct?: { [product: string]: number | null };
+  rentalCount: number;
+}
+
+export interface RentalProfitReportDto {
+  totalProfit: number;
+  totalRevenue: number;
+  totalCost: number;
+  profitByCategory?: { [category: string]: number | null };
+  profitByProduct?: { [product: string]: number | null };
+}
+
+export interface RentalsActivityReportDto {
+  totalRentals: number;
+  activeRentals: number;
+  returnedRentals: number;
+  overdueRentals: number;
+  cancelledRentals: number;
+  rentalsByProduct?: { [product: string]: number | null };
+  rentalsByCustomer?: { [customer: string]: number | null };
+}

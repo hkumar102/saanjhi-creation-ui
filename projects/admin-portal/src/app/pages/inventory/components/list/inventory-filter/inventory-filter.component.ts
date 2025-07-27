@@ -10,7 +10,6 @@ import { UiAutocompleteComponent, UiFormControlComponent, ProductSelectComponent
 import { ColorMultiSelectComponent } from '../../../../../common/components/color-multi-select/color-multi-select.component';
 import { SizeMultiSelectComponent } from '../../../../../common/components/size-multi-select/size-multi-select.component';
 import { debounceTime, takeUntil } from 'rxjs';
-import { BrowserMultiFormatReader } from '@zxing/browser';
 
 @Component({
   selector: 'app-inventory-filter',
@@ -26,8 +25,7 @@ import { BrowserMultiFormatReader } from '@zxing/browser';
     UiFormControlComponent,
     ColorMultiSelectComponent,
     SizeMultiSelectComponent,
-    ProductSelectComponent,
-    UiButtonComponent
+    ProductSelectComponent
 ],
   templateUrl: './inventory-filter.component.html',
   styleUrls: ['./inventory-filter.component.scss']
@@ -38,7 +36,6 @@ export class InventoryFilterComponent extends BaseComponent implements OnInit {
 
   @ViewChild('video') video!: ElementRef<HTMLVideoElement>;
 
-  private codeReader = new BrowserMultiFormatReader();
   
   filterForm!: FormGroup;
   colorOptions: string[] = AvailableColors.map(color => color.name); statusOptions = InventoryStatusOptions;
@@ -67,21 +64,5 @@ export class InventoryFilterComponent extends BaseComponent implements OnInit {
 
   applyFilters() {
     this.filtersChanged.emit(this.filterForm.getRawValue());
-  }
-
-  onScanBarcode() {
-    // Implement barcode scanning logic here
-    this.startScan();
-  }
-
-  private async startScan() {
-    this.video.nativeElement.style.display = 'block';
-    try {
-      const result = await this.codeReader.decodeOnceFromVideoDevice(undefined, this.video.nativeElement);
-      this.filterForm.patchValue({ serialNumber: result.getText() });
-      console.log('Barcode scanned:', result.getText());
-    } catch (err) {
-    }
-    this.video.nativeElement.style.display = 'none';
   }
 }

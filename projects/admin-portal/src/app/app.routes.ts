@@ -58,11 +58,6 @@ export const routes: Routes = [
         canActivate: [AuthGuard]
     },
     {
-        path: 'scanner',
-        canActivate: [AuthGuard],
-        loadComponent: () => import('./pages/scanner/scanner.component').then(m => m.BarcodeScannerComponent)
-    },
-    {
         path: '',
         pathMatch: 'full',
         redirectTo: '/products'
