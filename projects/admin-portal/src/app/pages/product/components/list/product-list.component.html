@@ -7,10 +7,8 @@
     </div>
     <div class="px-3">
         <div class="flex gap-2 border-top-1 border-200">
-            <div class="p-2 w-15rem border-right-1 border-200 pr-4">
-                <app-product-filter (filtersChanged)="onFiltersChanged($event)" [categories]="categories"
+            <app-product-filter (filtersChanged)="onFiltersChanged($event)" [categories]="categories"
                     [colors]="colors" [sizes]="sizes"></app-product-filter>
-            </div>
             <div class="xl:w-9 flex-1">
                 <div class="flex flex-column gap-2 p-3">
                     <div class="flex justify-content-between align-items-center">

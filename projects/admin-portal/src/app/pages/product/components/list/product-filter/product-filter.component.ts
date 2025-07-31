@@ -14,7 +14,7 @@ import { SliderModule, SliderSlideEndEvent } from 'primeng/slider';
 import { ButtonModule } from 'primeng/button';
 import { PanelModule } from 'primeng/panel';
 import { BaseComponent, CategoryDto, ColorCodePipe, GetAllProductsQuery, ProductActiveFilter, ProductFilterEvent } from '@saanjhi-creation-ui/shared-common';
-import { SidebarModule } from 'primeng/sidebar';
+import { DrawerModule } from 'primeng/drawer';
 import { UiFormControlComponent } from "@saanjhi-creation-ui/shared-ui";
 import { trigger, transition, style, animate, state } from '@angular/animations';
 import { CheckboxModule } from "primeng/checkbox";
@@ -38,7 +38,7 @@ import { SizeMultiSelectComponent } from '../../../../../common/components/size-
         SliderModule,
         ButtonModule,
         PanelModule,
-        SidebarModule,
+        DrawerModule,
         UiFormControlComponent,
         CheckboxModule,
         ColorMultiSelectComponent,
@@ -51,7 +51,10 @@ import { SizeMultiSelectComponent } from '../../../../../common/components/size-
             transition('void => *', animate('300ms ease-out')),
             transition('* => void', animate('200ms ease-in')),
         ])
-    ]
+    ],
+    host: {
+        class: ''
+    }
 })
 export class ProductFilterComponent extends BaseComponent implements OnInit {
 

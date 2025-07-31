@@ -12,7 +12,7 @@ import { DropdownModule } from 'primeng/dropdown';
 import { FloatLabelModule } from 'primeng/floatlabel';
 import { DividerModule } from 'primeng/divider';
 import { UiInputComponent, UiTextareaComponent, UiFormControlComponent, UiDropdownComponent, UiCheckboxComponent, UiAutocompleteComponent } from '@saanjhi-creation-ui/shared-ui';
-import { AvailableColors, AvailableSizes } from '@saanjhi-creation-ui/shared-common';
+import { AvailableColors, AvailableSizes, ColorCodePipe } from '@saanjhi-creation-ui/shared-common';
 import { Checkbox } from "primeng/checkbox";
 import { ColorMultiSelectComponent } from "../../../../../common/components/color-multi-select/color-multi-select.component";
 
@@ -34,7 +34,8 @@ import { ColorMultiSelectComponent } from "../../../../../common/components/colo
     UiDropdownComponent,
     UiAutocompleteComponent,
     Checkbox,
-    ColorMultiSelectComponent
+    ColorMultiSelectComponent,
+    ColorCodePipe
 ],
     templateUrl: './product-details-step.component.html',
     styleUrls: ['./product-details-step.component.scss']
