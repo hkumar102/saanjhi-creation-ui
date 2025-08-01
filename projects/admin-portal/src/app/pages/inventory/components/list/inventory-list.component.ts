@@ -16,18 +16,18 @@ import { ImageModule } from 'primeng/image'
     selector: 'app-inventory-list',
     standalone: true,
     imports: [
-    BadgeModule,
-    TableModule,
-    ButtonModule,
-    CommonModule,
-    InventoryFilterComponent,
-    UiConfirmDialogComponent,
-    RouterModule,
-    SpeedDialModule,
-    ImageModule,
-    InventoryStatusLabelPipe,
-    UiButtonComponent
-],
+        BadgeModule,
+        TableModule,
+        ButtonModule,
+        CommonModule,
+        InventoryFilterComponent,
+        UiConfirmDialogComponent,
+        RouterModule,
+        SpeedDialModule,
+        ImageModule,
+        InventoryStatusLabelPipe,
+        UiButtonComponent
+    ],
     templateUrl: './inventory-list.component.html',
     styleUrls: ['./inventory-list.component.scss']
 })
@@ -137,5 +137,48 @@ export class InventoryListComponent extends AdminBaseComponent implements OnInit
         }
     }
 
-    onDeleteClicked(item: InventoryItemDto) {}
+    printAllQRCodes() {
+        const printWindow = window.open('', '_blank', 'width=800,height=600');
+        if (!printWindow) return;
+
+        printWindow.document.title = 'Print Inventory QR Codes';
+
+        // Add some print-friendly styles
+        printWindow.document.write(`
+      <style>
+        body { font-family: Arial, sans-serif; margin: 0; padding: 2rem; }
+        .qr-list { display: flex; flex-wrap: wrap; gap: 2rem; }
+        .qr-item {
+          border: 1px solid #ccc;
+          border-radius: 8px;
+          width: 220px;
+          padding: 1rem;
+          margin-bottom: 1rem;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          page-break-inside: avoid;
+        }
+        .serial { font-weight: bold; font-size: 1.1rem; margin-bottom: 0.5rem; }
+        .product { margin-top: 0.5rem; font-size: 1rem; text-align: center; }
+        img { margin: 0.5rem 0; }
+      </style>
+      <div class="qr-list">
+        ${this.items.map(item => `
+          <div class="qr-item">
+            <div class="serial">${item.serialNumber}</div>
+            <img src="data:image/png;base64,${item.qrCodeImageBase64}" alt="QR Code" width="120" height="120" />
+            <div class="product">${item.productName}</div>
+          </div>
+        `).join('')}
+      </div>
+      <script>
+        window.onload = function() { window.print(); }
+      </script>
+    `);
+
+        printWindow.document.close();
+    }
+
+    onDeleteClicked(item: InventoryItemDto) { }
 }
