@@ -66,7 +66,7 @@
                             </ng-template>
                         </p-table>
                         <saanjhi-ui-button label="Add Address" icon="pi pi-plus" class="mt-2"
-                            (click)="showAddressDialog = true" />
+                            (click)="addAddress()" />
                     </div>
                 </div>
 
@@ -110,6 +110,11 @@
                 <div class="col-12">
                     <saanjhi-ui-form-field label="Country" inputId="country">
                         <saanjhi-ui-input formControlName="country" inputId="country" />
+                    </saanjhi-ui-form-field>
+                </div>
+                <div class="col-12">
+                    <saanjhi-ui-form-field label="Phone Number" inputId="phoneNumber">
+                        <saanjhi-ui-input formControlName="phoneNumber" inputId="phoneNumber" />
                     </saanjhi-ui-form-field>
                 </div>
             </div>

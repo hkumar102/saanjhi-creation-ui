@@ -59,7 +59,8 @@ export class CustomerFormComponent extends AdminBaseComponent implements OnInit 
       state: ['Delhi', Validators.required],
       postalCode: [null, Validators.required],
       country: ['India', Validators.required],
-      type: [0]
+      type: [0],
+      phoneNumber: ['', Validators.required],
     });
 
     if (this.isEditMode) {
@@ -159,5 +160,17 @@ export class CustomerFormComponent extends AdminBaseComponent implements OnInit 
 
   goBack() {
     this.navigation.goToCustomers();
+  }
+
+  addAddress(): void {
+    this.editingAddressIndex = null;
+    this.addressForm.reset();
+    this.showAddressDialog = true;
+    if (this.addresses.length == 0) {
+      this.addressForm.patchValue({
+        phoneNumber: this.form.value.phoneNumber,
+        type: 0, // Default type
+      });
+    }
   }
 }
