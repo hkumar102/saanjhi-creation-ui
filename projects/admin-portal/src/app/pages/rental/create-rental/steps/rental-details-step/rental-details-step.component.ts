@@ -46,7 +46,7 @@ export class RentalCreateDetailsStepComponent extends BaseComponent implements O
                 customerId: [null, Validators.required],
                 shippingAddressId: [null, Validators.required],
                 startDate: [new Date(), Validators.required],
-                endDate: [new Date(new Date().getTime() + 3 * 24 * 60 * 60 * 1000), Validators.required],
+                endDate: [new Date(new Date().getTime() + 3 * 24 * 60 * 60 * 1000), Validators.required], // endDate should be greater than startDate
                 rentalPrice: [0, [Validators.required, Validators.min(0)]],
                 dailyRate: [0, [Validators.min(0)]],
                 securityDeposit: [0, [Validators.required, Validators.min(0)]],
@@ -80,6 +80,19 @@ export class RentalCreateDetailsStepComponent extends BaseComponent implements O
                 securityDeposit: this.rentalModel.products && this.rentalModel.products[0]?.securityDeposit || null,
             })
         }
+
+        // Add custom validator for endDate after form creation
+        this.form.get('endDate')?.addValidators([
+            (control) => {
+                const startDate = this.form.get('startDate')?.value;
+                const endDate = control.value;
+                if (startDate && endDate && endDate <= startDate) {
+                    return { endDateBeforeStartDate: true };
+                }
+                return null;
+            }
+        ]);
+        this.form.get('endDate')?.updateValueAndValidity();
 
         if (this.rentalDetails) {
             this.form.patchValue(this.rentalDetails);

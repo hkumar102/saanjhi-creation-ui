@@ -67,19 +67,22 @@
 </div>
 <form [formGroup]="form" class="grid">
     <div class="col-12">
-        <div class="grid gap-2">
-            <saanjhi-ui-form-control label="Start Date *" inputId="startDate" [control]="form.get('startDate')"
-                [errorMessages]="{ required: 'Start date is required' }" class="col-6">
-                <p-datepicker placeholder="Select Start Date" formControlName="startDate" inputId="startDate"
-                    dateFormat="yy-mm-dd"></p-datepicker>
-            </saanjhi-ui-form-control>
-            <saanjhi-ui-form-control label="End Date *" inputId="endDate" [control]="form.get('endDate')"
-                [errorMessages]="{ required: 'End date is required' }" class="col-6">
-                <p-datepicker placeholder="Select End Date" formControlName="endDate" inputId="endDate"
-                    dateFormat="yy-mm-dd"></p-datepicker>
-            </saanjhi-ui-form-control>
+        <div class="grid">
+            <div class="col-6 flex gap-2">
+                <saanjhi-ui-form-control label="Start Date *" inputId="startDate" [control]="form.get('startDate')"
+                    [errorMessages]="{ required: 'Start date is required' }">
+                    <p-datepicker placeholder="Select Start Date" formControlName="startDate" inputId="startDate"
+                        dateFormat="yy-mm-dd"></p-datepicker>
+                </saanjhi-ui-form-control>
+                <saanjhi-ui-form-control label="End Date *" inputId="endDate" [control]="form.get('endDate')"
+                    [errorMessages]="{ required: 'End date is required', endDateBeforeStartDate: 'End date must be after start date' }"
+                    >
+                    <p-datepicker placeholder="Select End Date" formControlName="endDate" inputId="endDate"
+                        dateFormat="yy-mm-dd"></p-datepicker>
+                </saanjhi-ui-form-control>
+            </div>
             <saanjhi-ui-form-control label="Book Number" inputId="bookNumber" [control]="form.get('bookNumber')"
-                class="col-12">
+                class="col-6">
                 <saanjhi-ui-input type="number" placeholder="Enter Book Number" formControlName="bookNumber"
                     class="w-auto"></saanjhi-ui-input>
             </saanjhi-ui-form-control>
