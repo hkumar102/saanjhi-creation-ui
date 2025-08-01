@@ -8,7 +8,7 @@ import {
 } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { RentalServiceClient, RentalDto, AppMessages } from '@saanjhi-creation-ui/shared-common';
+import { RentalServiceClient, RentalDto, AppMessages, RentalDashboardReportDto } from '@saanjhi-creation-ui/shared-common';
 import { AdminBaseComponent } from '../../../common/components/base/admin-base.component';
 import {
     UiFormFieldComponent,
@@ -98,10 +98,11 @@ export class RentalReportsComponent extends AdminBaseComponent implements OnInit
             const { startDate, endDate } = this.reportForm.value;
 
             // Fetch all rentals in the date range
-            const rentals = await this.fetchRentalsInRange(startDate, endDate);
+            //const rentals = await this.fetchRentalsInRange(startDate, endDate);
+            const dashboard = await this.rentalClient.getRentalReportsDashboard(startDate.toISOString(), endDate.toISOString());
 
             // Process data for reporting
-            const reportData = this.processRentalData(rentals, startDate, endDate);
+            const reportData = this.processRentalData(dashboard, startDate, endDate);
 
             this.reportData.set(reportData);
 
@@ -145,14 +146,14 @@ export class RentalReportsComponent extends AdminBaseComponent implements OnInit
         }
     }
 
-    private processRentalData(rentals: RentalDto[], startDate: Date, endDate: Date): ReportData {
+    private processRentalData(rentalDashboardData: RentalDashboardReportDto, startDate: Date, endDate: Date): ReportData {
         // Group rentals by date
         const dailyRentalEarnings = new Map<string, number>();
         const dailySecurityEarnings = new Map<string, number>();
 
         let totalRentalEarnings = 0;
         let totalSecurityEarnings = 0;
-
+        const rentals = rentalDashboardData.listOfRentals
         // Process each rental
         rentals.forEach(rental => {
             const rentalDate = new Date(rental.startDate).toISOString().split('T')[0]; // YYYY-MM-DD format
@@ -168,10 +169,12 @@ export class RentalReportsComponent extends AdminBaseComponent implements OnInit
                 (dailySecurityEarnings.get(rentalDate) || 0) + rental.securityDeposit
             );
 
-            // Accumulate totals
-            totalRentalEarnings += rental.rentalPrice;
-            totalSecurityEarnings += rental.securityDeposit;
+
         });
+
+        // Accumulate totals
+        totalRentalEarnings = rentalDashboardData.totalEarning;
+        totalSecurityEarnings = rentalDashboardData.totalSecurityDeposit;
 
         // Generate date range array and fill missing dates with 0
         const dateRange = this.generateDateRange(startDate, endDate);
@@ -189,13 +192,12 @@ export class RentalReportsComponent extends AdminBaseComponent implements OnInit
         // Process product analytics
         const productMap = new Map<string, { totalRental: number; rentalCount: number }>();
 
-        rentals.forEach(rental => {
-            const productName = rental.product?.name || 'Unknown Product';
-            const current = productMap.get(productName) || { totalRental: 0, rentalCount: 0 };
+        rentalDashboardData.listProductsGrouped.forEach(product => {
+            const productName = product.productName
 
             productMap.set(productName, {
-                totalRental: current.totalRental + rental.rentalPrice,
-                rentalCount: current.rentalCount + 1
+                totalRental: product.totalRentalAmount,
+                rentalCount: product.totalRentalAmount
             });
         });
 

@@ -213,3 +213,19 @@ export interface RentalsActivityReportDto {
   rentalsByProduct?: { [product: string]: number | null };
   rentalsByCustomer?: { [customer: string]: number | null };
 }
+
+export interface RentalDashboardReportDto {
+  totalEarning: number;
+  totalSecurityDeposit: number;
+  totalRentals: number;
+  averageRentalPrice: number;
+  listOfRentals: RentalDto[];
+  listProductsGrouped: ProductRentalSummaryDto[];
+}
+
+export interface ProductRentalSummaryDto {
+  productId: string;
+  productName: string;
+  totalRentalAmount: number;
+  totalRentalCount: number;
+}

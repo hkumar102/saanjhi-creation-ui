@@ -11,6 +11,7 @@ import {
   RentalRevenueReportDto,
   RentalProfitReportDto,
   RentalsActivityReportDto,
+  RentalDashboardReportDto,
 } from '../models';
 import { APP_CONFIG, AppConfig } from '@saanjhi-creation-ui/shared-common';
 
@@ -78,6 +79,15 @@ export class RentalServiceClient {
     if (toDate) params.toDate = toDate;
     return lastValueFrom(
       this.http.get<RentalsActivityReportDto>(`${this.baseUrl}/reports/rentals/activity`, { params })
+    );
+  }
+
+  getRentalReportsDashboard(fromDate?: string, toDate?: string): Promise<RentalDashboardReportDto> {
+    const params: any = {};
+    if (fromDate) params.fromDate = fromDate;
+    if (toDate) params.toDate = toDate;
+    return lastValueFrom(
+      this.http.get<RentalDashboardReportDto>(`${this.baseUrl}/reports/rentals/dashboard`, { params })
     );
   }
 }
