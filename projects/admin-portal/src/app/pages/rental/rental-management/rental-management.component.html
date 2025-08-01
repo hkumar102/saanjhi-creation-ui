@@ -8,6 +8,9 @@
                 <p-badge [value]="rental.status | rentalStatusLabel" [severity]="getStatusSeverity(rental.status)"
                     class="p-badge-pill text-base" />
             </div>
+            <div class="font-bold">
+                <span>{{ rental.startDate | date }}</span> - <span>{{ rental.endDate | date }}</span>
+            </div>
         </div>
     </div>
 

@@ -94,7 +94,8 @@ export class RentalCalendarComponent extends AdminBaseComponent implements OnIni
             ) {
                 events.push({
                     title: `${title}`,
-                    date: this.formatDate(item.startDate),
+                    start: this.formatDate(item.actualStartDate ?? item.startDate),
+                    end: this.formatDate(item.actualReturnDate ?? item.endDate),
                     color: 'blue',
                     extendedProps: { item }
                 });
@@ -106,7 +107,8 @@ export class RentalCalendarComponent extends AdminBaseComponent implements OnIni
             ) {
                 events.push({
                     title: `${title}`,
-                    date: this.formatDate(item.endDate),
+                    start: this.formatDate(item.actualStartDate ?? item.startDate),
+                    end: this.formatDate(item.actualReturnDate ?? item.endDate),
                     color: 'green',
                     extendedProps: { item }
                 });
@@ -118,7 +120,8 @@ export class RentalCalendarComponent extends AdminBaseComponent implements OnIni
             ) {
                 events.push({
                     title: `${title}`,
-                    date: this.formatDate(item.endDate),
+                    start: this.formatDate(item.actualStartDate ?? item.startDate),
+                    end: this.formatDate(item.actualReturnDate ?? item.endDate),
                     color: 'orange',
                     extendedProps: { item }
                 });
