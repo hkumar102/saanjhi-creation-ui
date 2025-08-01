@@ -92,19 +92,19 @@
                     <td data-label="Reservation Date">
                         <div>
                             <div class="flex items-center gap-2 mb-1">
-                                <span>{{ rental.startDate | date: 'shortDate' }}</span>
+                                <span>{{ rental.startDate | date }}</span>
                                 <span>-</span>
-                                <span>{{ rental.endDate | date: 'shortDate' }}</span>
+                                <span>{{ rental.endDate | date }}</span>
                             </div>
                         </div>
                     </td>
                     <td data-label="Start Date">
                         <span class="p-column-title">Start Date</span>
-                        <span>{{ rental.actualStartDate | date: 'shortDate' }}</span>
+                        <span>{{ rental.actualStartDate | date }}</span>
                     </td>
                     <td data-label="End Date">
                         <span class="p-column-title">End Date</span>
-                        <span>{{ rental.actualReturnDate | date: 'shortDate' }}</span>
+                        <span>{{ rental.actualReturnDate | date }}</span>
                     </td>
                     <td data-label="Customer">
                         <span class="p-column-title">Customer</span>

@@ -19,6 +19,7 @@ export class RentalCalendarComponent extends AdminBaseComponent implements OnIni
     private rentalServiceClient = inject(RentalServiceClient);
 
     calendarOptions: CalendarOptions = {
+        timeZone: 'UTC',
         plugins: [dayGridPlugin, interactionPlugin],
         initialView: 'dayGridMonth',
         events: [],
@@ -47,7 +48,7 @@ export class RentalCalendarComponent extends AdminBaseComponent implements OnIni
     };
 
     ngOnInit(): void {
-       
+
     }
 
     async loadCalendarEvents(start: Date, end: Date): Promise<void> {
@@ -79,15 +80,16 @@ export class RentalCalendarComponent extends AdminBaseComponent implements OnIni
             }
             const events: EventInput[] = [];
             const title = `${item.customer?.name ?? ''} ${item.customer?.phoneNumber ?? ''} (${item.product?.name ?? ''})`;
+            const startDate = item.actualStartDate ?? item.startDate;
+            const endDate = item.actualReturnDate ?? item.endDate;
             // Delivery (blue)
             if (
                 item.status === RentalStatus.Booked &&
-                item.startDate && this.isInRange(item.startDate, start, end)
+                startDate && this.isInRange(startDate, start, end)
             ) {
                 events.push({
                     title: `${title}`,
-                    start: this.formatDate(item.actualStartDate ?? item.startDate),
-                    end: this.formatDateExclusiveEnd(item.actualReturnDate ?? item.endDate),
+                    date: this.formatDate(startDate),
                     color: 'blue',
                     extendedProps: { item }
                 });
@@ -95,12 +97,12 @@ export class RentalCalendarComponent extends AdminBaseComponent implements OnIni
             // Return (green)
             if (
                 item.status === RentalStatus.PickedUp &&
-                item.endDate && this.isInRange(item.endDate, start, end)
+                endDate && this.isInRange(endDate, start, end)
             ) {
                 events.push({
                     title: `${title}`,
-                    start: this.formatDate(item.actualStartDate ?? item.startDate),
-                    end: this.formatDateExclusiveEnd(item.actualReturnDate ?? item.endDate),
+                    // start: this.formatDate(endDate),
+                    date: this.formatDate(endDate),
                     color: 'green',
                     extendedProps: { item }
                 });
@@ -108,12 +110,12 @@ export class RentalCalendarComponent extends AdminBaseComponent implements OnIni
             // Completed (orange)
             if (
                 item.status === RentalStatus.Returned &&
-                item.endDate && this.isInRange(item.actualReturnDate ?? item.endDate, start, end)
+                endDate && this.isInRange(endDate, start, end)
             ) {
                 events.push({
                     title: `${title}`,
-                    start: this.formatDate(item.actualStartDate ?? item.startDate),
-                    end: this.formatDateExclusiveEnd(item.actualReturnDate ?? item.endDate),
+                    start: this.formatDate(startDate),
+                    end: this.formatDateExclusiveEnd(endDate),
                     color: 'orange',
                     extendedProps: { item }
                 });
@@ -128,27 +130,18 @@ export class RentalCalendarComponent extends AdminBaseComponent implements OnIni
     }
 
     formatDate(date: string | Date): string | Date {
-
-        // If date is a string like "2025-07-11T00:00:00Z", remove Z from it
-        if (typeof date === 'string' && date.endsWith('Z')) {
-            const dateStr = date.substring(0, date.indexOf('Z'));
-            //console.log('[RentalCalendar] Formatted date:', dateStr);
-            return dateStr;
-        }
+        let dateStr = `${date}T00:00:00`; // FullCalendar uses 00:00:00 for exclusive end
+       
         // If it's a Date object, format as YYYY-MM-DD
-        const d = new Date(date);
+        const d = new Date(dateStr);
         return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
     }
 
-    formatDateExclusiveEnd(date: string | Date): string {
-        let dateStr = '';
-        if (typeof date === 'string' && date.endsWith('Z')) {
-            dateStr = date.substring(0, date.indexOf('Z'));
-        }
+    formatDateExclusiveEnd(date: string): string {
+        let dateStr = `${date}T00:00:00`; // FullCalendar uses 00:00:00 for exclusive end
+        
         // Parse date string or Date object
-        const d = typeof dateStr === 'string'
-            ? new Date(dateStr)
-            : new Date(dateStr);
+        const d = new Date(dateStr);
 
         // Add one day
         d.setDate(d.getDate() + 1);
@@ -157,11 +150,8 @@ export class RentalCalendarComponent extends AdminBaseComponent implements OnIni
         const yyyy = d.getFullYear();
         const mm = String(d.getMonth() + 1).padStart(2, '0');
         const dd = String(d.getDate()).padStart(2, '0');
-        const hh = String(d.getHours()).padStart(2, '0');
-        const min = String(d.getMinutes()).padStart(2, '0');
-        const ss = String(d.getSeconds()).padStart(2, '0');
 
-        return `${yyyy}-${mm}-${dd}T${hh}:${min}:${ss}`;
+        return `${yyyy}-${mm}-${dd}`;
     }
 
     handleEventClick(arg: any): void {
