@@ -197,7 +197,7 @@ export class RentalReportsComponent extends AdminBaseComponent implements OnInit
 
             productMap.set(productName, {
                 totalRental: product.totalRentalAmount,
-                rentalCount: product.totalRentalAmount
+                rentalCount: product.totalRentalCount
             });
         });
 
