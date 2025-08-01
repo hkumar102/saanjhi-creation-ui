@@ -14,7 +14,8 @@
       <div class="flex justify-content-between">
         <div class="text-sm">Showing {{itemsShowing}}-{{totalCount}} results</div>
         <div>
-          <saanjhi-ui-button label="Print All QR Codes" severity="info" (click)="printAllQRCodes()" class="mb-2"></saanjhi-ui-button>
+          <saanjhi-ui-button label="Print All QR Codes" severity="info" (click)="printAllQRCodes()"
+            class="mb-2"></saanjhi-ui-button>
         </div>
       </div>
       <p-table [value]="items" [paginator]="true" [rows]="pageSize" [totalRecords]="totalCount" [lazy]="true"
@@ -41,7 +42,17 @@
             <td><a [routerLink]="['/inventory/details', item.id]">
                 {{ item.serialNumber }}
               </a></td>
-            <td>{{ item.productName }}</td>
+            <td>
+              <div class="flex align-items-center gap-2">
+               <p-image [src]="item.media?.[0]?.url || 'assets/images/default-product.svg'" alt="{{ item.productName }}"
+                 width="50" class="shadow-lg" [preview]="true" />
+                <a [routerLink]="['/products/details', item.productId]">
+                  <div>
+                    <span> {{ item.productName }}</span>
+                  </div>
+                </a>
+              </div>
+            </td>
             <td>{{ item.size }}</td>
             <td>{{ item.color }}</td>
             <td>{{ item.status | inventoryStatusLabel }}</td>
