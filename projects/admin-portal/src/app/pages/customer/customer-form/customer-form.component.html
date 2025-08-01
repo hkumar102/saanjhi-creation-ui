@@ -121,7 +121,7 @@
         </form>
     </ng-template>
     <ng-template pTemplate="footer">
-        <saanjhi-ui-button label="Cancel" icon="pi pi-times" severity="secondary" (click)="showAddressDialog = false" />
+        <saanjhi-ui-button label="Cancel" icon="pi pi-times" severity="secondary" (click)="showAddressDialog = false; this.addressForm.reset();" />
         <saanjhi-ui-button label="Save" icon="pi pi-check" (click)="onSaveAddress()" [disabled]="addressForm.invalid" />
     </ng-template>
 </p-dialog>

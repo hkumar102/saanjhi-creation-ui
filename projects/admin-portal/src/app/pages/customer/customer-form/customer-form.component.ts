@@ -39,6 +39,18 @@ export class CustomerFormComponent extends AdminBaseComponent implements OnInit 
   showAddressDialog = false;
   addressForm!: FormGroup;
   editingAddressIndex: number | null = null;
+  addressFormDefaults: AddressDto = {
+    id: '',
+    customerId: '',
+    line1: '',
+    line2: '',
+    city: 'Delhi',
+    state: 'Delhi',
+    postalCode: '',
+    country: 'India',
+    phoneNumber: '',
+    type: 0, // Default to 'Home'
+  }
 
   ngOnInit(): void {
     this.customerId = this.route.snapshot.paramMap.get('id') ?? '';
@@ -152,6 +164,8 @@ export class CustomerFormComponent extends AdminBaseComponent implements OnInit 
     }
 
     this.showAddressDialog = false;
+    this.addressForm.reset();
+
   }
 
   deleteAddress(address: AddressDto): void {
@@ -164,12 +178,15 @@ export class CustomerFormComponent extends AdminBaseComponent implements OnInit 
 
   addAddress(): void {
     this.editingAddressIndex = null;
-    this.addressForm.reset();
     this.showAddressDialog = true;
     if (this.addresses.length == 0) {
       this.addressForm.patchValue({
-        phoneNumber: this.form.value.phoneNumber,
-        type: 0, // Default type
+        ...this.addressFormDefaults,
+        phoneNumber: this.form.value.phoneNumber
+      });
+    } else {
+      this.addressForm.patchValue({
+        ...this.addressFormDefaults,
       });
     }
   }

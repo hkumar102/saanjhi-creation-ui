@@ -62,14 +62,10 @@ export class RentalCalendarComponent extends AdminBaseComponent implements OnIni
             toDate: end.toISOString(),
         };
         try {
-            console.log('[RentalCalendar] Querying rentals:', query);
             const result = await this.rentalServiceClient.getRentals(query);
-            console.log('[RentalCalendar] Rentals API result:', result);
             const events = this.mapRentalsToEvents(result.items || [], start, end);
-            console.log('[RentalCalendar] Mapped events:', events);
             this.calendarOptions.events = events;
         } catch (err) {
-            console.error('[RentalCalendar] Error loading rentals:', err);
             this.calendarOptions.events = [];
         }
     }
@@ -95,7 +91,7 @@ export class RentalCalendarComponent extends AdminBaseComponent implements OnIni
                 events.push({
                     title: `${title}`,
                     start: this.formatDate(item.actualStartDate ?? item.startDate),
-                    end: this.formatDate(item.actualReturnDate ?? item.endDate),
+                    end: this.formatDateExclusiveEnd(item.actualReturnDate ?? item.endDate),
                     color: 'blue',
                     extendedProps: { item }
                 });
@@ -108,7 +104,7 @@ export class RentalCalendarComponent extends AdminBaseComponent implements OnIni
                 events.push({
                     title: `${title}`,
                     start: this.formatDate(item.actualStartDate ?? item.startDate),
-                    end: this.formatDate(item.actualReturnDate ?? item.endDate),
+                    end: this.formatDateExclusiveEnd(item.actualReturnDate ?? item.endDate),
                     color: 'green',
                     extendedProps: { item }
                 });
@@ -121,7 +117,7 @@ export class RentalCalendarComponent extends AdminBaseComponent implements OnIni
                 events.push({
                     title: `${title}`,
                     start: this.formatDate(item.actualStartDate ?? item.startDate),
-                    end: this.formatDate(item.actualReturnDate ?? item.endDate),
+                    end: this.formatDateExclusiveEnd(item.actualReturnDate ?? item.endDate),
                     color: 'orange',
                     extendedProps: { item }
                 });
@@ -135,8 +131,41 @@ export class RentalCalendarComponent extends AdminBaseComponent implements OnIni
         return d >= start && d <= end;
     }
 
-    formatDate(date: string | Date): string {
-        return new Date(date).toISOString().split('T')[0];
+    formatDate(date: string | Date): string | Date {
+
+        // If date is a string like "2025-07-11T00:00:00Z", remove Z from it
+        if (typeof date === 'string' && date.endsWith('Z')) {
+            const dateStr = date.substring(0, date.indexOf('Z'));
+            //console.log('[RentalCalendar] Formatted date:', dateStr);
+            return dateStr;
+        }
+        // If it's a Date object, format as YYYY-MM-DD
+        const d = new Date(date);
+        return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+    }
+
+    formatDateExclusiveEnd(date: string | Date): string {
+        let dateStr = '';
+        if (typeof date === 'string' && date.endsWith('Z')) {
+            dateStr = date.substring(0, date.indexOf('Z'));
+        }
+        // Parse date string or Date object
+        const d = typeof dateStr === 'string'
+            ? new Date(dateStr)
+            : new Date(dateStr);
+
+        // Add one day
+        d.setDate(d.getDate() + 1);
+
+        // Format as 'YYYY-MM-DDTHH:mm:ss'
+        const yyyy = d.getFullYear();
+        const mm = String(d.getMonth() + 1).padStart(2, '0');
+        const dd = String(d.getDate()).padStart(2, '0');
+        const hh = String(d.getHours()).padStart(2, '0');
+        const min = String(d.getMinutes()).padStart(2, '0');
+        const ss = String(d.getSeconds()).padStart(2, '0');
+
+        return `${yyyy}-${mm}-${dd}T${hh}:${min}:${ss}`;
     }
 
     handleEventClick(arg: any): void {
