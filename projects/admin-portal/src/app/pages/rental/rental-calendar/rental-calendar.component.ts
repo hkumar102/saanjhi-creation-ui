@@ -47,11 +47,7 @@ export class RentalCalendarComponent extends AdminBaseComponent implements OnIni
     };
 
     ngOnInit(): void {
-        // Load initial month
-        const now = new Date();
-        const nextMonth = new Date(now.getFullYear(), now.getMonth() + 1, 1);
-        const endOfNextMonth = new Date(now.getFullYear(), now.getMonth() + 2, 0);
-        this.loadCalendarEvents(nextMonth, endOfNextMonth);
+       
     }
 
     async loadCalendarEvents(start: Date, end: Date): Promise<void> {
