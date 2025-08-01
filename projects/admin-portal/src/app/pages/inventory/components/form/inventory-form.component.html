@@ -105,12 +105,6 @@
       </div>
 
       <div class="col-12" *ngIf="isEditMode()">
-        <div class="flex">
-          <saanjhi-ui-form-control label="Status" [control]="form.get('status')" class="w-full">
-            <saanjhi-ui-autocomplete formControlName="status" optionLabel="label" optionValue="value"
-              [suggestions]="availableStatuses" optionLabel="label" optionValue="value"></saanjhi-ui-autocomplete>
-          </saanjhi-ui-form-control>
-        </div>
         <div class="grid">
           <!-- Is Retired -->
           <div class="col-12 md:col-4">
