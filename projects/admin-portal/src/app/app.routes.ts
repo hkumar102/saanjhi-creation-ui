@@ -64,6 +64,7 @@ export const routes: Routes = [
     },
     {
         path: 'calendar',
-        loadComponent: () => import('./pages/rental/rental-calendar/rental-calendar.component').then(m => m.RentalCalendarComponent)
+        loadComponent: () => import('./pages/rental/rental-calendar/rental-calendar.component').then(m => m.RentalCalendarComponent),
+        canActivate: [AuthGuard]
     }
 ];
