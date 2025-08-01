@@ -34,9 +34,13 @@ export class App extends AdminBaseComponent implements OnInit, OnDestroy {
           console.log('QR Code scanned:', event.payload?.code);
           const inventoryResult = await this.inventoryServiceClient.search({ serialNumber: event.payload?.code });
           if (inventoryResult.totalCount > 0) {
-            const inventoryItem = inventoryResult.items[0];
-            this.navigation.goTo(`/inventory/details/${inventoryItem.id}`);
-          }else{
+            const inventoryItem = inventoryResult.items.find(item => item.serialNumber === event.payload?.code);
+            if (inventoryItem) {
+              this.navigation.goTo(`/inventory/details/${inventoryItem.id}`);
+            } else {
+              this.toast.error(`No inventory item found for the scanned QR code ${event.payload?.code}`);
+            }
+          } else {
             this.toast.error(`No inventory item found for the scanned QR code ${event.payload?.code}`);
           }
           // You can add logic to handle the scanned QR code here
