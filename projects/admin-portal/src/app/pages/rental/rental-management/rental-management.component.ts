@@ -20,33 +20,35 @@ import { AdminBaseComponent } from '../../../common/components/base/admin-base.c
 import { RentalBookingRequest, RentalDeliveredRequest, RentalReturnedRequest, RentalStatusRequest } from './models/rental-workflow.model';
 import { RentalBookedStepComponent } from './workflow/booked/booked-step.component';
 import { RentalPickedUpStepComponent } from "./workflow/picked-up/picked-up-step.component";
+import { RentalOverdueStepComponent } from "./workflow/overdue/overdue-step.component";
 
 @Component({
     selector: 'app-rental-management',
     standalone: true,
     imports: [
-        CommonModule,
-        CardModule,
-        BadgeModule,
-        DropdownModule,
-        StepsModule,
-        TimelineModule,
-        ButtonModule,
-        TextareaModule,
-        ImageModule,
-        RentalStatusLabelPipe,
-        FormsModule,
-        AppCurrencyPipe,
-        Stepper,
-        StepList,
-        Step,
-        StepPanels,
-        StepPanel,
-        RentalPendingStepComponent,
-        UiConfirmDialogComponent,
-        RentalBookedStepComponent,
-        RentalPickedUpStepComponent
-    ],
+    CommonModule,
+    CardModule,
+    BadgeModule,
+    DropdownModule,
+    StepsModule,
+    TimelineModule,
+    ButtonModule,
+    TextareaModule,
+    ImageModule,
+    RentalStatusLabelPipe,
+    FormsModule,
+    AppCurrencyPipe,
+    Stepper,
+    StepList,
+    Step,
+    StepPanels,
+    StepPanel,
+    RentalPendingStepComponent,
+    UiConfirmDialogComponent,
+    RentalBookedStepComponent,
+    RentalPickedUpStepComponent,
+    RentalOverdueStepComponent
+],
     templateUrl: './rental-management.component.html',
     styleUrls: ['./rental-management.component.scss']
 })
@@ -185,7 +187,7 @@ export class RentalManagementComponent extends AdminBaseComponent implements OnI
                 this.currentStatusWorkflows = []; // No further steps after cancelled
                 break;
             case RentalStatus.Overdue:
-                this.currentStatusWorkflows = []; // No further steps after overdue
+                this.currentStatusWorkflows = this.workflowSteps.filter(step => step.value === RentalStatus.Overdue); // No further steps after overdue
                 break;
             default:
                 this.currentStatusWorkflows = []; // Default case, no steps

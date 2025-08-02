@@ -47,7 +47,7 @@ export class HeaderComponent implements OnInit {
 
   // Search
   searchQuery = signal<string>('');
-  scanQRCodeButtonLabel = signal<string>('Scan QR Code');
+  scanQRCodeButtonLabel = signal<string>('Scan');
   isScanning = signal<boolean>(false);
 
   // ✅ Navigation Menu Structure

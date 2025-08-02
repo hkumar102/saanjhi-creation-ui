@@ -164,6 +164,8 @@
                                     [rental]="rental"></app-rental-booked-step>
                                 <app-rental-pickedup-step (returnedConfirmed)="onReturnedConfirmed($event)"
                                     [rental]="rental" *ngSwitchCase="3"></app-rental-pickedup-step>
+                                <app-rental-overdue-step (returnedConfirmed)="onReturnedConfirmed($event)"
+                                    [rental]="rental" *ngSwitchCase="6"></app-rental-overdue-step>
                             </ng-container>
 
                         </ng-template>

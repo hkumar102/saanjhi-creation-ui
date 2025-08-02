@@ -1,7 +1,7 @@
 <div class="rental-calendar-container">
-    <div class="flex align-items-center gap-4 mb-3">
+    <div class="flex flex-column md:flex-row justify-content-start md:align-items-center gap-4 mb-3">
         <span class="flex align-items-center gap-2">
-            <span class="legend-dot bg-blue-400"></span>
+            <span class="legend-dot bg-blue-600"></span>
             <span class="text-color-secondary font-medium">Delivery</span>
         </span>
         <span class="flex align-items-center gap-2">
@@ -9,8 +9,12 @@
             <span class="text-color-secondary font-medium">Return</span>
         </span>
         <span class="flex align-items-center gap-2">
-            <span class="legend-dot bg-orange-400"></span>
+            <span class="legend-dot bg-orange-600"></span>
             <span class="text-color-secondary font-medium">Completed</span>
+        </span>
+         <span class="flex align-items-center gap-2">
+            <span class="legend-dot bg-red-600"></span>
+            <span class="text-color-secondary font-medium">Overdue</span>
         </span>
     </div>
     <full-calendar [options]="calendarOptions" class="rental-calendar"></full-calendar>

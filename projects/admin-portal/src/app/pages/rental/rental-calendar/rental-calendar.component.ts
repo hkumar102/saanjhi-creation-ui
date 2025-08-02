@@ -120,6 +120,20 @@ export class RentalCalendarComponent extends AdminBaseComponent implements OnIni
                     extendedProps: { item }
                 });
             }
+
+            // Overdue (Red)
+            if (
+                item.status === RentalStatus.Overdue &&
+                endDate && this.isInRange(endDate, start, end)
+            ) {
+                events.push({
+                    title: `${title}`,
+                    start: this.formatDate(startDate),
+                    end: this.formatDateExclusiveEnd(endDate),
+                    color: 'red',
+                    extendedProps: { item }
+                });
+            }
             return events;
         });
     }
