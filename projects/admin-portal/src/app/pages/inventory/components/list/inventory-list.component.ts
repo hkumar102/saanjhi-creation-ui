@@ -51,7 +51,6 @@ export class InventoryListComponent extends AdminBaseComponent implements OnInit
 
 
     ngOnInit(): void {
-        this.loadProducts();
         this.loadItems();
     }
 
@@ -67,26 +66,29 @@ export class InventoryListComponent extends AdminBaseComponent implements OnInit
         this.loadItems(event.first / event.rows);
     }
 
-    async loadItems(page: number = 0) {
+    async loadItems(page: number = 0, pageSize: number = this.pageSize) {
+        this.isLoading = true;
+        const result = await this.getItems(page, pageSize);
+        this.items = result.items || result;
+        this.totalCount = result.totalCount || 0;
+        this.isLoading = false;
+        this.itemsShowing = (this.items.length) + (page * pageSize);
+    }
+
+    async getItems(page: number = 0, pageSize: number = this.pageSize) {
         this.isLoading = true;
         const query: SearchInventoryQuery = {
             ...this.filters,
             page: page + 1,
-            pageSize: this.pageSize,
+            pageSize: pageSize,
             sortBy: this.sortField,
             sortDesc: this.sortOrder === -1
         };
         const result = await this.inventoryService.search(query);
-        this.items = result.items || result;
-        this.totalCount = result.totalCount || 0;
         this.isLoading = false;
-        this.itemsShowing = (this.items.length) + (page * query.pageSize!);
+        return result;
     }
 
-    loadProducts() {
-        // TODO: Load product list for filter dropdown (implement as needed)
-        this.products = [];
-    }
 
     editItem(item: InventoryItemDto) {
         this.navigation.goTo(`/inventory/edit/${item.id}`);
@@ -137,7 +139,8 @@ export class InventoryListComponent extends AdminBaseComponent implements OnInit
         }
     }
 
-    printAllQRCodes() {
+    async printAllQRCodes() {
+        const allItems = await this.getItems(0, this.totalCount);
         const printWindow = window.open('', '_blank', 'width=800,height=600');
         if (!printWindow) return;
 
@@ -164,7 +167,7 @@ export class InventoryListComponent extends AdminBaseComponent implements OnInit
         img { margin: 0.5rem 0; }
       </style>
       <div class="qr-list">
-        ${this.items.map(item => `
+        ${allItems.items.map(item => `
           <div class="qr-item">
             <div class="serial">${item.serialNumber}</div>
             <img src="data:image/png;base64,${item.qrCodeImageBase64}" alt="QR Code" width="120" height="120" />
