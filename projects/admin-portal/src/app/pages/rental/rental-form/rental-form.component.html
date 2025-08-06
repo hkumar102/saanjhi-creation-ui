@@ -1,71 +1,110 @@
+<h3 *ngIf="isEditMode"> Rental - {{editingRental?.rentalNumber}}</h3>
 <form [formGroup]="form" (ngSubmit)="save()" class="grid gap-3" *ngIf="!isLoading">
-    <div class="col-12 md:col-6">
-        <!-- Product Dropdown -->
-        <saanjhi-ui-form-field label="Product" for="productId">
-            <saanjhi-ui-product-select 
-                inputId="productId" 
-                formControlName="productId" 
-                [multiple]="false"
-                placeholder="Select product..."
-                [showClear]="true"
-                [filter]="true"
-                [pageSize]="25"
-                (productSelected)="onProductChange($event)">
-            </saanjhi-ui-product-select>
+
+    <div class="col-12">
+        <div class="flex gap-3">
+            <div class="flex-1">
+                <!-- Customer Dropdown -->
+                <saanjhi-ui-form-field label="Customer" for="customerId">
+                    <saanjhi-ui-customer-select inputId="customerId" formControlName="customerId" [multiple]="false"
+                        placeholder="Select customer..." [showClear]="true" [filter]="true" [pageSize]="25"
+                        (customerSelected)="onCustomerChange($event)">
+                    </saanjhi-ui-customer-select>
+                </saanjhi-ui-form-field>
+            </div>
+
+            <div class="flex-1">
+                <saanjhi-ui-form-field label="Customer Address" for="shippingAddressId">
+                    <saanjhi-ui-autocomplete inputId="shippingAddressId" formControlName="shippingAddressId"
+                        [suggestions]="shippingAddresses" optionLabel="line1" optionValue="id"
+                        placeholder="Select Address" styleClass="w-full" />
+                </saanjhi-ui-form-field>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-12">
+        <div class="flex gap-3">
+            <div class="flex-1">
+                <!-- Product Dropdown -->
+                <saanjhi-ui-form-field label="Product" for="productId">
+                    <saanjhi-ui-product-select inputId="productId" formControlName="productId" [multiple]="false"
+                        placeholder="Select product..." [showClear]="true" [filter]="true" [pageSize]="25"
+                        (productSelected)="onProductChange($event)">
+                    </saanjhi-ui-product-select>
+                </saanjhi-ui-form-field>
+            </div>
+
+            <div class="flex flex-1 gap-3">
+                <div class="flex-1">
+                    <saanjhi-ui-form-field label="Rental Price" for="rentalPrice">
+                        <saanjhi-ui-input formControlName="rentalPrice" inputId="rentalPrice" type="number" />
+                    </saanjhi-ui-form-field>
+                </div>
+
+                <div class="flex-1">
+                    <saanjhi-ui-form-field label="Security Deposit" for="securityDeposit">
+                        <saanjhi-ui-input formControlName="securityDeposit" inputId="securityDeposit" type="number" />
+                    </saanjhi-ui-form-field>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="col-12">
+        <div class="flex gap-3">
+            <div>
+                <saanjhi-ui-form-field label="Booking Date" for="bookingDate">
+                    <p-datePicker formControlName="bookingDate" inputId="bookingDate" dateFormat="yy-mm-dd" />
+                </saanjhi-ui-form-field>
+            </div>
+
+            <div>
+                <saanjhi-ui-form-field label="Start Date" for="startDate">
+                    <p-datePicker formControlName="startDate" inputId="startDate" dateFormat="yy-mm-dd" />
+                </saanjhi-ui-form-field>
+            </div>
+
+            <div>
+                <saanjhi-ui-form-field label="End Date" for="endDate">
+                    <p-datePicker formControlName="endDate" inputId="endDate" dateFormat="yy-mm-dd" />
+                </saanjhi-ui-form-field>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-12">
+        <div class="flex flex-column md:flex-row gap-2">
+            <saanjhi-ui-form-field label="Height" for="height">
+                <saanjhi-ui-input type="number" formControlName="height" inputId="height" placeholder="Enter height" />
+            </saanjhi-ui-form-field>
+            <saanjhi-ui-form-field label="Chest" for="chest">
+                <saanjhi-ui-input type="number" formControlName="chest" inputId="chest" placeholder="Enter chest" />
+            </saanjhi-ui-form-field>
+            <saanjhi-ui-form-field label="Waist" for="waist">
+                <saanjhi-ui-input type="number" formControlName="waist" inputId="waist" placeholder="Enter waist" />
+            </saanjhi-ui-form-field>
+            <saanjhi-ui-form-field label="Hips" for="hip">
+                <saanjhi-ui-input type="number" formControlName="hip" inputId="hip" placeholder="Enter hip" />
+            </saanjhi-ui-form-field>
+            <saanjhi-ui-form-field label="Sleeve Length" for="sleeveLength">
+                <saanjhi-ui-input type="number" formControlName="sleeveLength" inputId="sleeveLength" placeholder="Enter sleeve length" />
+            </saanjhi-ui-form-field>
+            <saanjhi-ui-form-field label="Inseam" for="inseam">
+                <saanjhi-ui-input type="number" formControlName="inseam" inputId="inseam" placeholder="Enter inseam length" />
+            </saanjhi-ui-form-field>
+        </div>
+    </div>
+
+    <div class="col-12">
+        <saanjhi-ui-form-field label="Status" for="status">
+            <saanjhi-ui-autocomplete formControlName="status" optionLabel="label" optionValue="value"
+                [suggestions]="rentalStatuses" optionLabel="label" optionValue="value"></saanjhi-ui-autocomplete>
         </saanjhi-ui-form-field>
     </div>
 
-    <div class="col-12 md:col-6">
-        <!-- Customer Dropdown -->
-        <saanjhi-ui-form-field label="Customer" for="customerId">
-            <saanjhi-ui-customer-select 
-                inputId="customerId"
-                formControlName="customerId" 
-                [multiple]="false"
-                placeholder="Select customer..."
-                [showClear]="true"
-                [filter]="true"
-                [pageSize]="25"
-                (customerSelected)="onCustomerChange($event)">
-            </saanjhi-ui-customer-select>
-        </saanjhi-ui-form-field>
-    </div>
 
-    <div class="col-12 md:col-6">
-        <saanjhi-ui-form-field label="Customer Address" for="shippingAddressId">
-            <saanjhi-ui-dropdown 
-                inputId="shippingAddressId" 
-                formControlName="shippingAddressId"
-                [options]="shippingAddresses" 
-                optionLabel="line1" 
-                optionValue="id" 
-                placeholder="Select Address" />
-        </saanjhi-ui-form-field>
-    </div>
-
-    <div class="col-12 md:col-6">
-        <saanjhi-ui-form-field label="Start Date" for="startDate">
-            <p-datePicker formControlName="startDate" inputId="startDate" dateFormat="yy-mm-dd" />
-        </saanjhi-ui-form-field>
-    </div>
-
-    <div class="col-12 md:col-6">
-        <saanjhi-ui-form-field label="End Date" for="endDate">
-            <p-datePicker formControlName="endDate" inputId="endDate" dateFormat="yy-mm-dd" />
-        </saanjhi-ui-form-field>
-    </div>
-
-    <div class="col-12 md:col-6">
-        <saanjhi-ui-form-field label="Rental Price" for="rentalPrice">
-            <saanjhi-ui-input formControlName="rentalPrice" inputId="rentalPrice" type="number" />
-        </saanjhi-ui-form-field>
-    </div>
-
-    <div class="col-12 md:col-6">
-        <saanjhi-ui-form-field label="Security Deposit" for="securityDeposit">
-            <saanjhi-ui-input formControlName="securityDeposit" inputId="securityDeposit" type="number" />
-        </saanjhi-ui-form-field>
-    </div>
 
     <div class="col-12">
         <saanjhi-ui-form-field label="Notes" for="notes">

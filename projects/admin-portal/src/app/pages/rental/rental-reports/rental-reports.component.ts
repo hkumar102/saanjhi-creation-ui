@@ -208,7 +208,7 @@ export class RentalReportsComponent extends AdminBaseComponent implements OnInit
                 rentalCount: data.rentalCount
             }))
             .sort((a, b) => b.totalRental - a.totalRental) // Sort by total rental descending
-            .slice(0, 10); // Top 10 products
+            .slice(0, 20); // Top 10 products
 
         return {
             dailyRentalEarnings: dailyRentalArray,

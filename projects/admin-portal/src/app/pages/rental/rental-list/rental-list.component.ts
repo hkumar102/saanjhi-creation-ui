@@ -26,7 +26,7 @@ import { RouterModule } from '@angular/router';
 import { ButtonModule } from 'primeng/button';
 import { Menu } from 'primeng/menu';
 import { MenuItem } from 'primeng/api';
-import { debounceTime, takeUntil } from 'rxjs';
+import { debounceTime, takeUntil } from 'rxjs';   
 
 @Component({
     selector: 'app-rental-list',
@@ -62,8 +62,9 @@ export class RentalListComponent extends AdminBaseComponent implements OnInit {
     filtersForm: FormGroup = this.fb.group({
         customerIds: [null],
         productIds: [[]],
-        dateRange: [[new Date(new Date().setDate(new Date().getDate() - 15)), new Date(new Date().setDate(new Date().getDate() + 15))]],
-        rentalStatus: [null]
+        dateRange: [[null, null]],
+        rentalStatus: [null],
+        bookingDateRange: [[new Date(new Date().setDate(new Date().getDate() - 30)), new Date()]]
     });
 
     // Data signals
@@ -104,27 +105,33 @@ export class RentalListComponent extends AdminBaseComponent implements OnInit {
 
         try {
             const formValue = this.filtersForm.value;
-            // ✅ Extract date range
-            let fromDate: string | undefined;
-            let toDate: string | undefined;
-
-            if (formValue.dateRange && Array.isArray(formValue.dateRange)) {
-                const [start, end] = formValue.dateRange;
-                fromDate = start.toISOString() || undefined;
-                toDate = end.toISOString() || undefined;
-            }
 
             const filter: GetRentalsQuery = {
                 page: this.page,
                 pageSize: this.pageSize,
                 sortBy: this.sortField,
                 descending: this.sortOrder === -1,
-                fromDate,
-                toDate,
                 status: formValue.rentalStatus ? formValue.rentalStatus.value : undefined,
                 customerIds: formValue.customerIds?.length ? formValue.customerIds : undefined,
                 productIds: formValue.productIds?.length ? formValue.productIds : undefined
             };
+            // ✅ Extract date range
+
+            if (formValue.dateRange && Array.isArray(formValue.dateRange)) {
+                const [start, end] = formValue.dateRange;
+                filter.fromDate = start?.toDateOnlyString() || undefined;
+                filter.toDate = end?.toDateOnlyString() || undefined;
+            }
+
+            if (formValue.bookingDateRange && Array.isArray(formValue.bookingDateRange)) {
+                const [bookingStart, bookingEnd] = formValue.bookingDateRange;
+                if (bookingStart) {
+                    filter.bookingFromDate = bookingStart.toISOString();
+                }
+                if (bookingEnd) {
+                    filter.bookingToDate = bookingEnd.toISOString();
+                }
+            }
 
             const result: PaginatedResult<RentalDto> = await this.rentalClient.getRentals(filter);
 

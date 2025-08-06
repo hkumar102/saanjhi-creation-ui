@@ -2,9 +2,9 @@ import { Component, inject, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { AdminBaseComponent } from '../../../common/components/base/admin-base.component';
-import { UiFormFieldComponent, UiInputComponent, UiButtonComponent, UiDropdownComponent, CustomerSelectComponent, ProductSelectComponent } from "@saanjhi-creation-ui/shared-ui";
+import { UiFormFieldComponent, UiInputComponent, UiButtonComponent, CustomerSelectComponent, ProductSelectComponent, UiAutocompleteComponent } from "@saanjhi-creation-ui/shared-ui";
 import { CommonModule } from '@angular/common';
-import { AddressDto, CreateRentalCommand, CustomerDto, CustomerServiceClient, ProductDto, ProductServiceClient, RentalDto, RentalServiceClient, UpdateRentalCommand } from '@saanjhi-creation-ui/shared-common';
+import { AddressDto, CreateRentalCommand, CustomerDto, ProductDto, RentalDto, RentalServiceClient, RentalStatusOptions, UpdateRentalCommand } from '@saanjhi-creation-ui/shared-common';
 import { DatePickerModule } from 'primeng/datepicker';
 import { AutoCompleteModule } from 'primeng/autocomplete';
 
@@ -20,9 +20,10 @@ import { AutoCompleteModule } from 'primeng/autocomplete';
         UiButtonComponent,
         DatePickerModule,
         AutoCompleteModule,
-        UiDropdownComponent,
+        UiAutocompleteComponent,
         ProductSelectComponent,
         CustomerSelectComponent,
+        UiAutocompleteComponent
     ],
 })
 export class RentalFormComponent extends AdminBaseComponent implements OnInit {
@@ -37,6 +38,7 @@ export class RentalFormComponent extends AdminBaseComponent implements OnInit {
     shippingAddresses: AddressDto[] = [];
     editingRental?: RentalDto;
     isLoading = false;
+    rentalStatuses = RentalStatusOptions;
 
     get isEditMode(): boolean {
         return !!this.rentalId;
@@ -49,6 +51,7 @@ export class RentalFormComponent extends AdminBaseComponent implements OnInit {
             productId: [null, Validators.required],
             customerId: [null, Validators.required],
             shippingAddressId: [null, Validators.required],
+            bookingDate: [null, Validators.required],
             startDate: [null, Validators.required],
             endDate: [null, Validators.required],
             rentalPrice: [null, Validators.required],
@@ -61,6 +64,7 @@ export class RentalFormComponent extends AdminBaseComponent implements OnInit {
             sleeveLength: [],
             inseam: [],
             notes: [],
+            status: [1, Validators.required],
         });
 
         this.rentalId = this.route.snapshot.paramMap.get('id') || '';
@@ -80,6 +84,7 @@ export class RentalFormComponent extends AdminBaseComponent implements OnInit {
             endDate: rental.endDate ? new Date(rental.endDate) : null,
             productId: rental.product?.id || null,
             customerId: rental.customer?.id || null,
+            bookingDate: rental.bookingDate ? new Date(rental.bookingDate) : null,
         });
 
         this.form.updateValueAndValidity();
@@ -98,12 +103,14 @@ export class RentalFormComponent extends AdminBaseComponent implements OnInit {
             const command: UpdateRentalCommand = value as UpdateRentalCommand;
             command.startDate = value.startDate ? value.startDate.toISOString() : null;
             command.endDate = value.endDate ? value.endDate.toISOString() : null;
+            command.bookingDate = value.bookingDate ? value.bookingDate.toISOString() : null;
             await this.rentalService.updateRental(value.id!, command);
             this.toast.success('Rental updated successfully');
         } else {
             const command: CreateRentalCommand = value as CreateRentalCommand;
             command.startDate = value.startDate ? value.startDate.toISOString() : null;
             command.endDate = value.endDate ? value.endDate.toISOString() : null;
+            command.bookingDate = value.bookingDate ? value.bookingDate.toISOString() : null;
             await this.rentalService.createRental(command);
             this.toast.success('Rental created successfully');
         }

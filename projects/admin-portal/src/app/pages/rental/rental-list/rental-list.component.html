@@ -9,16 +9,24 @@
     <form [formGroup]="filtersForm" (ngSubmit)="loadRentals()" class="flex flex-column gap-3">
         <div class="grid">
             <!-- Date Range Filter -->
-            <div class="col-12 md:col-3">
-                <saanjhi-ui-form-field label="Date Range" inputId="dateRange">
+            <div class="col-12 md:col-6">
+                <saanjhi-ui-form-field label="Booking Date" inputId="bookingDateRange">
+                    <p-datePicker formControlName="bookingDateRange" inputId="bookingDateRange"
+                        [selectionMode]="'range'" dateFormat="dd MM yy" [showIcon]="true" [readonlyInput]="true"
+                        placeholder="Select date range..." styleClass="w-full" [showClear]="true" />
+                </saanjhi-ui-form-field>
+            </div>
+            <!-- Date Range Filter -->
+            <div class="col-12 md:col-6">
+                <saanjhi-ui-form-field label="Start Date - End Date" inputId="dateRange">
                     <p-datePicker formControlName="dateRange" inputId="dateRange" [selectionMode]="'range'"
-                        dateFormat="yy-mm-dd" [showIcon]="true" [readonlyInput]="true"
+                        dateFormat="dd MM yy" [showIcon]="true" [readonlyInput]="true"
                         placeholder="Select date range..." styleClass="w-full" [showClear]="true" />
                 </saanjhi-ui-form-field>
             </div>
 
             <!-- Customer Multi-Select -->
-            <div class="col-12 md:col-3">
+            <div class="col-12 md:col-6">
                 <saanjhi-ui-form-field label="Customers" inputId="customerIds">
                     <saanjhi-ui-customer-select formControlName="customerIds" placeholder="Select customers..."
                         selectedItemsLabel="{0} customers selected" [pageSize]="25" [multiple]="true">
@@ -27,7 +35,7 @@
             </div>
 
             <!-- Product Multi-Select -->
-            <div class="col-12 md:col-3">
+            <div class="col-12 md:col-6">
                 <saanjhi-ui-form-field label="Products" inputId="productIds">
                     <saanjhi-ui-product-select formControlName="productIds" placeholder="Select products..."
                         selectedItemsLabel="{0} products selected" [pageSize]="25" [multiple]="true">
@@ -89,22 +97,18 @@
                             </p-button>
                         </div>
                     </td>
-                    <td data-label="Reservation Date">
+                    <td data-label="Booking Date">
                         <div>
-                            <div class="flex items-center gap-2 mb-1">
-                                <span>{{ rental.startDate | date }}</span>
-                                <span>-</span>
-                                <span>{{ rental.endDate | date }}</span>
-                            </div>
+                            <span>{{ rental.bookingDate | date }}</span>
                         </div>
                     </td>
                     <td data-label="Start Date">
                         <span class="p-column-title">Start Date</span>
-                        <span>{{ rental.actualStartDate | date }}</span>
+                        <span>{{ rental.actualStartDate ?? rental.startDate | date }}</span>
                     </td>
                     <td data-label="End Date">
                         <span class="p-column-title">End Date</span>
-                        <span>{{ rental.actualReturnDate | date }}</span>
+                        <span>{{ rental.actualReturnDate ?? rental.endDate | date }}</span>
                     </td>
                     <td data-label="Customer">
                         <span class="p-column-title">Customer</span>

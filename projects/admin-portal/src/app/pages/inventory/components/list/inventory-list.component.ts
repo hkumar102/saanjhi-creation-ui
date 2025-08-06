@@ -172,6 +172,9 @@ export class InventoryListComponent extends AdminBaseComponent implements OnInit
             <div class="serial">${item.serialNumber}</div>
             <img src="data:image/png;base64,${item.qrCodeImageBase64}" alt="QR Code" width="120" height="120" />
             <div class="product">${item.productName}</div>
+            ${item.media?.[0]?.url ? `
+              <img src="${item.media[0].url}" alt="Media" width="120" height="120" />
+            ` : ''}
           </div>
         `).join('')}
       </div>
@@ -179,7 +182,7 @@ export class InventoryListComponent extends AdminBaseComponent implements OnInit
         window.onload = function() { window.print(); }
       </script>
     `);
-
+                //url is not showing up in the print page
         printWindow.document.close();
     }
 

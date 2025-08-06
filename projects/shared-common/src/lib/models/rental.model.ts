@@ -42,6 +42,7 @@ export interface RentalDto {
   rentalNumber: string;
   timelines?: RentalTimelineDto[];
   measurementNotes?: string;
+  bookingDate?: string;
 }
 
 export enum RentalStatus {
@@ -114,6 +115,8 @@ export interface CreateRentalCommand {
   lateFee?: number;
   damageFee?: number;
   returnConditionNotes?: string;
+  bookingDate?: string;
+  status?: RentalStatus;
 }
 
 export interface UpdateRentalCommand {
@@ -141,6 +144,8 @@ export interface UpdateRentalCommand {
   lateFee?: number;
   damageFee?: number;
   returnConditionNotes?: string;
+  bookingDate?: string;
+  status: RentalStatus;
 }
 
 export interface GetRentalsQuery {
@@ -153,6 +158,8 @@ export interface GetRentalsQuery {
   page: number;
   pageSize: number;
   status?: RentalStatus;
+  bookingFromDate?: string;
+  bookingToDate?: string;
 }
 
 export const RentalStatusOptions = [
