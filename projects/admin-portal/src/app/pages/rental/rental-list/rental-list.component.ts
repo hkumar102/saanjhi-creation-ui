@@ -26,7 +26,7 @@ import { RouterModule } from '@angular/router';
 import { ButtonModule } from 'primeng/button';
 import { Menu } from 'primeng/menu';
 import { MenuItem } from 'primeng/api';
-import { debounceTime, takeUntil } from 'rxjs';   
+import { debounceTime, takeUntil } from 'rxjs';
 
 @Component({
     selector: 'app-rental-list',
@@ -179,20 +179,24 @@ export class RentalListComponent extends AdminBaseComponent implements OnInit {
 
     private getMenuItemsForRow(row: RentalDto): MenuItem[] {
         const result = [];
-        if (row.status === RentalStatus.Pending) {
-            result.push({
-                label: 'Edit',
-                icon: 'fa-solid fa-pencil',
-                command: () => this.onEdit(row)
-            });
+        // if (row.status === RentalStatus.Pending) {
+        //     result.push({
+        //         label: 'Edit',
+        //         icon: 'fa-solid fa-pencil',
+        //         command: () => this.onEdit(row)
+        //     });
 
-            result.push({
-                label: 'Delete',
-                icon: 'fa-solid fa-trash',
-                command: () => this.onDelete(row)
-            });
-        }
-
+        //     result.push({
+        //         label: 'Delete',
+        //         icon: 'fa-solid fa-trash',
+        //         command: () => this.onDelete(row)
+        //     });
+        // }
+        result.push({
+            label: 'Edit',
+            icon: 'fa-solid fa-pencil',
+            command: () => this.onEdit(row)
+        });
         result.push({
             label: 'Manage',
             icon: 'fa-solid fa-tasks',

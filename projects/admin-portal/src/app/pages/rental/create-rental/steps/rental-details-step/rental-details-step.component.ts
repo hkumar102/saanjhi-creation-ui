@@ -61,7 +61,8 @@ export class RentalCreateDetailsStepComponent extends BaseComponent implements O
                 inseam: ['-'],
                 bookNumber: [null, Validators.required],
                 notes: [''],
-                measurementNotes: ['']
+                measurementNotes: [''],
+                bookingDate: [new Date()],
             });
         }
 

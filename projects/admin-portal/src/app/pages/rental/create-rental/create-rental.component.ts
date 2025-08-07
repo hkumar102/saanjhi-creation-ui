@@ -84,7 +84,8 @@ export class CreateRentalComponent extends AdminBaseComponent {
             waist: this.createRentalModel.rentalDetails.waist,
             hip: this.createRentalModel.rentalDetails.hip,
             shoulder: this.createRentalModel.rentalDetails.shoulder,
-            sleeveLength: this.createRentalModel.rentalDetails.sleeveLength, 
+            sleeveLength: this.createRentalModel.rentalDetails.sleeveLength,
+            bookingDate: this.createRentalModel.rentalDetails.bookingDate, 
         }
 
         const rentalId = await this.rentalClient.createRental(payload);

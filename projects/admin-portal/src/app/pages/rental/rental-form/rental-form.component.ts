@@ -65,6 +65,7 @@ export class RentalFormComponent extends AdminBaseComponent implements OnInit {
             inseam: [],
             notes: [],
             status: [1, Validators.required],
+            bookNumber: [null, Validators.required],
         });
 
         this.rentalId = this.route.snapshot.paramMap.get('id') || '';
