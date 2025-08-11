@@ -68,14 +68,12 @@
         <p-table [value]="rentals()" [lazy]="true" [paginator]="true" [totalRecords]="totalRecords()"
             [loading]="loading()" [rows]="pageSize" [rowsPerPageOptions]="[10, 20, 50]"
             (onLazyLoad)="loadRentals($event)" [sortField]="sortField" [sortOrder]="sortOrder" dataKey="id"
-            responsiveLayout="stack" [breakpoint]="'820px'" styleClass="border-1 border-gray-200">
+            responsiveLayout="stack" [breakpoint]="'820px'" styleClass="border-1 border-gray-200"
+            [expandedRowKeys]="expandedRows">
 
             <ng-template pTemplate="header">
                 <tr>
-                    <th>Order No</th>
-                    <th>Reservation Date</th>
-                    <th pSortableColumn="startDate">Delivered On <p-sortIcon field="startDate" /></th>
-                    <th pSortableColumn="endDate">Returned On <p-sortIcon field="endDate" /></th>
+                    <th>Book No</th>
                     <th>Customer</th>
                     <th class="w-20rem">Product</th>
                     <th>Status</th>
@@ -85,30 +83,19 @@
                 </tr>
             </ng-template>
 
-            <ng-template pTemplate="body" let-rental>
+            <ng-template pTemplate="body" let-rental let-expanded="expanded">
                 <tr>
+                    
                     <td>
-                        <span class="p-column-title">Order No</span>
+                        <span class="p-column-title">Book No</span>
                         <div class="flex items-center gap-2">
+                            <p-image *ngIf="rental.receiptDocumentUrl" [src]="rental.receiptDocumentUrl" width="32" height="32" [preview]="true"></p-image>
                             <p-button link [routerLink]="['/rentals/manage', rental.id]">
                                 <div class="flex flex-column gap-1 text-left">
-                                    <span class="font-semibold">{{ rental.rentalNumber }}</span>
+                                    <span class="font-semibold">{{ rental.bookNumber }}</span>
                                 </div>
                             </p-button>
                         </div>
-                    </td>
-                    <td data-label="Booking Date">
-                        <div>
-                            <span>{{ rental.bookingDate | date }}</span>
-                        </div>
-                    </td>
-                    <td data-label="Start Date">
-                        <span class="p-column-title">Start Date</span>
-                        <span>{{ rental.actualStartDate ?? rental.startDate | date }}</span>
-                    </td>
-                    <td data-label="End Date">
-                        <span class="p-column-title">End Date</span>
-                        <span>{{ rental.actualReturnDate ?? rental.endDate | date }}</span>
                     </td>
                     <td data-label="Customer">
                         <span class="p-column-title">Customer</span>
@@ -158,7 +145,27 @@
                             <button type="button" pButton icon="pi pi-ellipsis-v" class="p-button-text p-button-sm"
                                 (click)="onRowActionClicked(menu, rental, $event)">
                             </button>
-                            
+
+                        </div>
+                    </td>
+                </tr>
+            </ng-template>
+
+            <ng-template #expandedrow let-rental>
+                <tr>
+                    <td data-label="Booking Date" colspan="2">
+                        <div class="flex flex-column gap-1">
+                            <span>Booking Date - {{ rental.bookingDate | date }}</span>
+                        </div>
+                    </td>
+                    <td data-label="Start Date" colspan="2">
+                        <div class="flex flex-column gap-1">
+                            <span>Delivery Date - {{ rental.actualStartDate ?? rental.startDate | date }}</span>
+                        </div>
+                    </td>
+                    <td data-label="End Date" colspan="3">
+                        <div class="flex flex-column gap-1">
+                            <span>Returned Date - {{ rental.actualReturnDate ?? rental.endDate | date }}</span>
                         </div>
                     </td>
                 </tr>

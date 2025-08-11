@@ -27,6 +27,7 @@ import { ButtonModule } from 'primeng/button';
 import { Menu } from 'primeng/menu';
 import { MenuItem } from 'primeng/api';
 import { debounceTime, takeUntil } from 'rxjs';
+import { Image } from "primeng/image";
 
 @Component({
     selector: 'app-rental-list',
@@ -35,24 +36,25 @@ import { debounceTime, takeUntil } from 'rxjs';
     changeDetection: ChangeDetectionStrategy.OnPush,
     standalone: true,
     imports: [
-        FormsModule,
-        UiFormFieldComponent,
-        CommonModule,
-        ReactiveFormsModule,
-        UiButtonComponent,
-        TableModule,
-        UiConfirmDialogComponent,
-        DatePickerModule,
-        AppCurrencyPipe,
-        CustomerSelectComponent,
-        ProductSelectComponent,
-        Divider,
-        RentalStatusLabelPipe,
-        RouterModule,
-        ButtonModule,
-        UiAutocompleteComponent,
-        Menu
-    ],
+    FormsModule,
+    UiFormFieldComponent,
+    CommonModule,
+    ReactiveFormsModule,
+    UiButtonComponent,
+    TableModule,
+    UiConfirmDialogComponent,
+    DatePickerModule,
+    AppCurrencyPipe,
+    CustomerSelectComponent,
+    ProductSelectComponent,
+    Divider,
+    RentalStatusLabelPipe,
+    RouterModule,
+    ButtonModule,
+    UiAutocompleteComponent,
+    Menu,
+    Image
+],
 })
 export class RentalListComponent extends AdminBaseComponent implements OnInit {
     private rentalClient = inject(RentalServiceClient);
@@ -79,6 +81,7 @@ export class RentalListComponent extends AdminBaseComponent implements OnInit {
     sortOrder: 1 | -1 = -1;
     rentalStatuses = RentalStatusOptions;
     rowMenuItems: MenuItem[] = [];
+    expandedRows: { [s: string]: boolean; } = {};
 
     async ngOnInit() {
         await this.loadRentals();
@@ -138,6 +141,10 @@ export class RentalListComponent extends AdminBaseComponent implements OnInit {
             this.rentals.set(result.items ?? []);
             this.totalRecords.set(result.totalCount ?? 0);
             this.itemsShowing = this.rentals().length + ((this.page - 1) * this.pageSize);
+
+            this.rentals().forEach(rental => {
+                this.expandedRows[rental.id] = true; // 'id' is the dataKey
+            });
         } finally {
             this.loading.set(false);
         }
