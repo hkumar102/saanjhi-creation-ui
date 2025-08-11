@@ -43,6 +43,11 @@ export interface RentalDto {
   timelines?: RentalTimelineDto[];
   measurementNotes?: string;
   bookingDate?: string;
+  receiptDocumentUrl?: string;
+}
+
+export interface RentalCreateModel extends RentalDto {
+  receiptDocument: File | null;
 }
 
 export enum RentalStatus {
@@ -117,6 +122,7 @@ export interface CreateRentalCommand {
   returnConditionNotes?: string;
   bookingDate?: string;
   status?: RentalStatus;
+  receiptDocumentUrl?: string;
 }
 
 export interface UpdateRentalCommand {
@@ -146,6 +152,7 @@ export interface UpdateRentalCommand {
   returnConditionNotes?: string;
   bookingDate?: string;
   status: RentalStatus;
+  receiptDocumentUrl?: string;
 }
 
 export interface GetRentalsQuery {

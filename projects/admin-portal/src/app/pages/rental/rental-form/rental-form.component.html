@@ -94,10 +94,12 @@
                 <saanjhi-ui-input type="number" formControlName="hip" inputId="hip" placeholder="Enter hip" />
             </saanjhi-ui-form-field>
             <saanjhi-ui-form-field label="Sleeve Length" for="sleeveLength">
-                <saanjhi-ui-input type="number" formControlName="sleeveLength" inputId="sleeveLength" placeholder="Enter sleeve length" />
+                <saanjhi-ui-input type="number" formControlName="sleeveLength" inputId="sleeveLength"
+                    placeholder="Enter sleeve length" />
             </saanjhi-ui-form-field>
             <saanjhi-ui-form-field label="Inseam" for="inseam">
-                <saanjhi-ui-input type="number" formControlName="inseam" inputId="inseam" placeholder="Enter inseam length" />
+                <saanjhi-ui-input type="number" formControlName="inseam" inputId="inseam"
+                    placeholder="Enter inseam length" />
             </saanjhi-ui-form-field>
         </div>
     </div>
@@ -107,6 +109,17 @@
             <saanjhi-ui-autocomplete formControlName="status" optionLabel="label" optionValue="value"
                 [suggestions]="rentalStatuses" optionLabel="label" optionValue="value"></saanjhi-ui-autocomplete>
         </saanjhi-ui-form-field>
+    </div>
+
+    <div class="col-12">
+        <p-fileUpload name="files" mode="advanced" accept="image/*" [multiple]="false"
+            (onSelect)="onFileSelect($event)" [showCancelButton]="false" (onRemove)="removeFile()">
+
+        </p-fileUpload>
+        <div class="flex flex-wrap gap-2" *ngIf="editingRental?.receiptDocumentUrl">
+            <p-image [src]="editingRental?.receiptDocumentUrl" [preview]="true" [width]="'200px'"></p-image>            
+            <saanjhi-ui-button type="button" severity="danger" icon="pi pi-trash" class="mt-2" (click)="removeFile()" />
+        </div>
     </div>
 
 

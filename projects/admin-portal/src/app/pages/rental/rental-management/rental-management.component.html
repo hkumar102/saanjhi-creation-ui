@@ -2,20 +2,31 @@
 <div class="flex flex-column gap-4 p-2" *ngIf="rental">
     <!-- Header: Rental Summary Info -->
     <div>
-        <div class="flex justify-content-between align-items-center p-3 saanjhi-border shadow-1">
-            <div class="flex align-items-center gap-3">
-                <span class="font-mono text-2xl font-bold">{{ rental.rentalNumber }}</span>
-                <p-badge [value]="rental.status | rentalStatusLabel" [severity]="getStatusSeverity(rental.status)"
-                    class="p-badge-pill text-base" />
+        <div
+            class="flex flex-column md:flex-row justify-content-between align-items-center p-3 saanjhi-border shadow-1">
+            <div class="flex flex-column md:flex-row align-items-center text-center gap-3 w-full md:w-auto">
+                <div class="w-full md:w-auto text-left">
+                    <span class="font-mono text-2xl font-bold">{{ rental.rentalNumber }}</span>
+                </div>
+                <div class="w-full md:w-auto text-left">
+                    <p-badge [value]="rental.status | rentalStatusLabel" [severity]="getStatusSeverity(rental.status)"
+                        class="p-badge-pill text-base" />
+                </div>
             </div>
-            <div class="font-bold">
+            <div class="font-bold mt-3 md:mt-0 text-left w-full md:w-auto">
                 <span>{{ rental.startDate | date }}</span> - <span>{{ rental.endDate | date }}</span>
             </div>
         </div>
     </div>
+    <div *ngIf="rental.receiptDocumentUrl" class="flex flex-column justify-content-start">
+        <div>
+            <h3>Receipt</h3>
+        </div>
+        <p-image [src]="rental.receiptDocumentUrl" alt="Receipt Document" width="100" preview="true" [preview]="true" />
+    </div>
 
     <!-- Section 1: Customer Info Card -->
-    <div class="flex gap-3">
+    <div class="flex gap-3 flex-column md:flex-row">
         <div class="saanjhi-border p-3 flex-1 shadow-1">
             <div class="grid">
                 <div class="col-6">
@@ -71,7 +82,7 @@
     </div>
 
     <!-- Section 3: Product Info Card -->
-    <div class="flex gap-3">
+    <div class="flex gap-3 flex-column md:flex-row">
         <div class="saanjhi-border p-3 flex-1 shadow-1">
             <div class="flex gap-3">
                 <p-image [src]="rental.product.mainImage?.url || 'assets/images/default-product.svg'"
@@ -135,8 +146,8 @@
         <div class="saanjhi-border p-3 shadow-1">
             <p-stepper [value]="activeStep" [linear]="true">
                 <p-step-list>
-                    <p-step *ngFor="let step of currentStatusWorkflows; let i = index"
-                        (click)="activeStep = i" [value]="step.value">
+                    <p-step *ngFor="let step of currentStatusWorkflows; let i = index" (click)="activeStep = i"
+                        [value]="step.value">
                         <ng-template #content let-activateCallback="activateCallback" let-value="step">
                             <div class="flex flex-column justify-content-center gap-2 align-items-center">
                                 <p-button [rounded]="true" [icon]="step.icon" [size]="'large'" [rounded]="true"

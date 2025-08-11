@@ -151,7 +151,12 @@
             <saanjhi-ui-textarea pInputTextarea formControlName="notes"></saanjhi-ui-textarea>
         </saanjhi-ui-form-control>
     </div>
-
-
-
+    <div class="col-12">
+        <saanjhi-ui-form-control label="Receipt Document" inputId="receiptDocument"
+            [control]="form.get('receiptDocument')">
+            <p-fileUpload name="files" mode="advanced" accept="image/*" [multiple]="false"
+                (onSelect)="onFileSelect($event)" [showCancelButton]="false" (onRemove)="removeFile()">
+            </p-fileUpload>
+        </saanjhi-ui-form-control>
+    </div>
 </form>

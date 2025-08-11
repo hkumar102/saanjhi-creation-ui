@@ -3,7 +3,7 @@ import { StepperModule } from 'primeng/stepper';
 import { CommonModule } from '@angular/common';
 import { RentalCreateSelectCustomerStepComponent } from './steps/select-customer-step/select-customer-step.component';
 import { UiButtonComponent } from '@saanjhi-creation-ui/shared-ui';
-import { CreateRentalCommand, CustomerDto, InventoryItemDto, ProductDto, RentalDto, RentalServiceClient } from '@saanjhi-creation-ui/shared-common';
+import { CreateRentalCommand, CustomerDto, InventoryItemDto, MediaServiceClient, ProductDto, RentalCreateModel, RentalDto, RentalServiceClient } from '@saanjhi-creation-ui/shared-common';
 import { RentalCreateSelectProductStepComponent } from './steps/select-product-step/select-product-step.component';
 import { RentalCreateSelectInventoryStepComponent } from './steps/select-inventory-step/select-inventory-step.component';
 import { CreateRentalModel, RentalCreateCustomerModel } from './models/create-rental.model';
@@ -26,6 +26,7 @@ import { AdminBaseComponent } from '../../../common/components/base/admin-base.c
 })
 export class CreateRentalComponent extends AdminBaseComponent {
     private rentalClient = inject(RentalServiceClient);
+    private mediaClient = inject(MediaServiceClient);
 
     stepIndex = 1;
     createRentalModel: CreateRentalModel = {
@@ -53,7 +54,7 @@ export class CreateRentalComponent extends AdminBaseComponent {
         console.log('Selected Inventory Items:', inventoryItems);
     }
 
-    onRentalDetailsChanged(rentalDetails: RentalDto): void {
+    onRentalDetailsChanged(rentalDetails: RentalCreateModel): void {
         this.createRentalModel.rentalDetails = rentalDetails;
         // Handle rental details changes here
         console.log('Rental Details Changed:', rentalDetails);
@@ -67,8 +68,13 @@ export class CreateRentalComponent extends AdminBaseComponent {
             return;
         }
 
+        if (this.createRentalModel.rentalDetails.receiptDocument) {
+            const uploadedFile = await this.mediaClient.upload('BookingReceipts', this.createRentalModel.rentalDetails.receiptDocument);
+            this.createRentalModel.rentalDetails.receiptDocumentUrl = uploadedFile.url;
+        }
+
         const payload: CreateRentalCommand = {
-            productId : this.createRentalModel.rentalDetails.productId, // Assuming single product for simplicity
+            productId: this.createRentalModel.rentalDetails.productId, // Assuming single product for simplicity
             inventoryItemId: this.createRentalModel.rentalDetails.inventoryItemId, // Assuming single inventory item for simplicity
             customerId: this.createRentalModel.rentalDetails.customerId,
             startDate: this.createRentalModel.rentalDetails.startDate,
@@ -85,7 +91,8 @@ export class CreateRentalComponent extends AdminBaseComponent {
             hip: this.createRentalModel.rentalDetails.hip,
             shoulder: this.createRentalModel.rentalDetails.shoulder,
             sleeveLength: this.createRentalModel.rentalDetails.sleeveLength,
-            bookingDate: this.createRentalModel.rentalDetails.bookingDate, 
+            bookingDate: this.createRentalModel.rentalDetails.bookingDate,
+            receiptDocumentUrl: this.createRentalModel.rentalDetails.receiptDocumentUrl || undefined
         }
 
         const rentalId = await this.rentalClient.createRental(payload);

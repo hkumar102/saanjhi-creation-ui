@@ -4,9 +4,12 @@ import { ActivatedRoute } from '@angular/router';
 import { AdminBaseComponent } from '../../../common/components/base/admin-base.component';
 import { UiFormFieldComponent, UiInputComponent, UiButtonComponent, CustomerSelectComponent, ProductSelectComponent, UiAutocompleteComponent } from "@saanjhi-creation-ui/shared-ui";
 import { CommonModule } from '@angular/common';
-import { AddressDto, CreateRentalCommand, CustomerDto, ProductDto, RentalDto, RentalServiceClient, RentalStatusOptions, UpdateRentalCommand } from '@saanjhi-creation-ui/shared-common';
+import { AddressDto, CreateRentalCommand, CustomerDto, MediaServiceClient, ProductDto, RentalDto, RentalServiceClient, RentalStatusOptions, UpdateRentalCommand } from '@saanjhi-creation-ui/shared-common';
 import { DatePickerModule } from 'primeng/datepicker';
 import { AutoCompleteModule } from 'primeng/autocomplete';
+import { FileUploadModule, FileUpload, FileSelectEvent } from 'primeng/fileupload';
+import { Image } from "primeng/image";
+
 
 @Component({
     selector: 'app-rental-form',
@@ -23,13 +26,16 @@ import { AutoCompleteModule } from 'primeng/autocomplete';
         UiAutocompleteComponent,
         ProductSelectComponent,
         CustomerSelectComponent,
-        UiAutocompleteComponent
+        UiAutocompleteComponent,
+        FileUpload,
+        Image
     ],
 })
 export class RentalFormComponent extends AdminBaseComponent implements OnInit {
     private fb = inject(FormBuilder);
     private route = inject(ActivatedRoute);
     private rentalService = inject(RentalServiceClient);
+    private mediaService = inject(MediaServiceClient);
 
     form!: FormGroup;
     rentalId!: string;
@@ -39,6 +45,7 @@ export class RentalFormComponent extends AdminBaseComponent implements OnInit {
     editingRental?: RentalDto;
     isLoading = false;
     rentalStatuses = RentalStatusOptions;
+    receiptDocument: File | null = null;
 
     get isEditMode(): boolean {
         return !!this.rentalId;
@@ -66,6 +73,7 @@ export class RentalFormComponent extends AdminBaseComponent implements OnInit {
             notes: [],
             status: [1, Validators.required],
             bookNumber: [null, Validators.required],
+            receiptDocumentUrl: [null],
         });
 
         this.rentalId = this.route.snapshot.paramMap.get('id') || '';
@@ -98,7 +106,22 @@ export class RentalFormComponent extends AdminBaseComponent implements OnInit {
             return;
         }
 
+
+        if (this.receiptDocument) {
+            var fileResult = await this.mediaService.upload('BookingReceipts', this.receiptDocument);
+            this.form.patchValue({
+                receiptDocumentUrl: fileResult.url
+            });
+
+            if (this.editingRental) {
+                this.editingRental.receiptDocumentUrl = fileResult.url;
+            }
+
+            this.toast.success('File uploaded successfully');
+        }
+
         const value = this.form.value;
+
 
         if (this.isEditMode) {
             const command: UpdateRentalCommand = value as UpdateRentalCommand;
@@ -135,5 +158,25 @@ export class RentalFormComponent extends AdminBaseComponent implements OnInit {
                 securityDeposit: product.securityDeposit,
             });
         }
+    }
+
+    async onFileSelect(event: FileSelectEvent): Promise<void> {
+        const files = event.files;
+        for (const file of files) {
+            this.receiptDocument = file;
+            break; // Assuming only one file is uploaded at a time
+        }
+    }
+
+    removeFile() {
+        this.form.patchValue({
+            receiptDocumentUrl: null
+        });
+
+        if (this.editingRental) {
+            this.editingRental.receiptDocumentUrl = undefined;
+        }
+
+        this.receiptDocument = null;
     }
 }

@@ -8,6 +8,10 @@ import { AdminBaseComponent } from '../../../../../common/components/base/admin-
 import { DatePicker } from "primeng/datepicker";
 import { CreateRentalModel } from '../../models/create-rental.model';
 import { TableModule } from "primeng/table";
+import { FileSelectEvent, FileUploadModule } from "primeng/fileupload";
+import { ImageModule } from "primeng/image";
+
+
 
 @Component({
     selector: 'app-create-rental-details-step',
@@ -15,18 +19,20 @@ import { TableModule } from "primeng/table";
     templateUrl: './rental-details-step.component.html',
     styleUrls: ['./rental-details-step.component.scss'],
     imports: [
-    CommonModule,
-    UiFormControlComponent,
-    UiInputComponent,
-    ReactiveFormsModule,
-    DatePicker,
-    UiInputNumberComponent,
-    AddressFormatPipe,
-    ItemConditionLabelPipe,
-    AppCurrencyPipe,
-    TableModule,
-    UiTextareaComponent
-]
+        CommonModule,
+        UiFormControlComponent,
+        UiInputComponent,
+        ReactiveFormsModule,
+        DatePicker,
+        UiInputNumberComponent,
+        AddressFormatPipe,
+        ItemConditionLabelPipe,
+        AppCurrencyPipe,
+        TableModule,
+        UiTextareaComponent,
+        FileUploadModule,
+        ImageModule
+    ]
 })
 export class RentalCreateDetailsStepComponent extends BaseComponent implements OnInit {
     @Input() rentalDetails: RentalDto | null = null;
@@ -37,7 +43,7 @@ export class RentalCreateDetailsStepComponent extends BaseComponent implements O
     form!: FormGroup;
     products: ProductDto[] = [];
     expandedRows = {};
-
+    receiptDocument: File | null = null;
     ngOnInit(): void {
         if (!this.form) {
             this.form = this.fb.group({
@@ -63,6 +69,7 @@ export class RentalCreateDetailsStepComponent extends BaseComponent implements O
                 notes: [''],
                 measurementNotes: [''],
                 bookingDate: [new Date()],
+                receiptDocument: [null]
             });
         }
 
@@ -116,5 +123,21 @@ export class RentalCreateDetailsStepComponent extends BaseComponent implements O
 
     getProductInventoryItems(product: ProductDto): InventoryItemDto[] {
         return this.rentalModel?.inventoryItems?.filter(item => item.productId === product.id) || [];
+    }
+
+    async onFileSelect(event: FileSelectEvent): Promise<void> {
+        const files = event.files;
+        for (const file of files) {
+            this.form.patchValue({
+                receiptDocument: file
+            });
+            break; // Assuming only one file is uploaded at a time
+        }
+    }
+
+    removeFile() {
+        this.form.patchValue({
+            receiptDocumentUrl: null
+        });
     }
 }

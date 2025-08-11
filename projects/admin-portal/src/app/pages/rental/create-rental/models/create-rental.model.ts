@@ -1,4 +1,4 @@
-import { AddressDto, CustomerDto, InventoryItemDto, ProductDto, RentalDto } from "@saanjhi-creation-ui/shared-common";
+import { AddressDto, CustomerDto, InventoryItemDto, ProductDto, RentalCreateModel, RentalDto } from "@saanjhi-creation-ui/shared-common";
 
 export interface RentalCreateCustomerModel {
     customer: CustomerDto | null, shippingAddress: AddressDto | null
@@ -6,7 +6,7 @@ export interface RentalCreateCustomerModel {
 
 export interface CreateRentalModel {
     customer: RentalCreateCustomerModel | null,
-    rentalDetails: RentalDto | null,
+    rentalDetails: RentalCreateModel | null,
     products: ProductDto[] | null,
     inventoryItems: InventoryItemDto[] | null
 }
