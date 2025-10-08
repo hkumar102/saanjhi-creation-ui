@@ -10,14 +10,7 @@ import {
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RentalServiceClient, RentalDto, PaginatedResult, AppCurrencyPipe, GetRentalsQuery, RentalStatusLabelPipe, RentalStatusOptions, RentalStatus } from '@saanjhi-creation-ui/shared-common';
 import { AdminBaseComponent } from '../../../common/components/base/admin-base.component';
-import {
-    UiFormFieldComponent,
-    UiButtonComponent,
-    UiConfirmDialogComponent,
-    CustomerSelectComponent,
-    ProductSelectComponent,
-    UiAutocompleteComponent
-} from "@saanjhi-creation-ui/shared-ui";
+import { UiFormFieldComponent, UiButtonComponent, UiConfirmDialogComponent, CustomerSelectComponent, ProductSelectComponent, UiAutocompleteComponent, UiInputComponent, UiInputNumberComponent } from "@saanjhi-creation-ui/shared-ui";
 import { CommonModule } from '@angular/common';
 import { TableLazyLoadEvent, TableModule } from 'primeng/table';
 import { DatePickerModule } from "primeng/datepicker";
@@ -53,7 +46,9 @@ import { Image } from "primeng/image";
     ButtonModule,
     UiAutocompleteComponent,
     Menu,
-    Image
+    Image,
+    UiInputNumberComponent,
+    UiInputNumberComponent
 ],
 })
 export class RentalListComponent extends AdminBaseComponent implements OnInit {
@@ -66,7 +61,8 @@ export class RentalListComponent extends AdminBaseComponent implements OnInit {
         productIds: [[]],
         dateRange: [[null, null]],
         rentalStatus: [null],
-        bookingDateRange: [[new Date(new Date().setDate(new Date().getDate() - 30)), new Date()]]
+        bookingDateRange: [[new Date(new Date().setDate(new Date().getDate() - 30)), new Date()]],
+        bookNumber: [null]
     });
 
     // Data signals
@@ -116,7 +112,8 @@ export class RentalListComponent extends AdminBaseComponent implements OnInit {
                 descending: this.sortOrder === -1,
                 status: formValue.rentalStatus ? formValue.rentalStatus.value : undefined,
                 customerIds: formValue.customerIds?.length ? formValue.customerIds : undefined,
-                productIds: formValue.productIds?.length ? formValue.productIds : undefined
+                productIds: formValue.productIds?.length ? formValue.productIds : undefined,
+                bookNumber: formValue.bookNumber || undefined
             };
             // ✅ Extract date range
 
