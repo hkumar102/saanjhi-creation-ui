@@ -100,7 +100,7 @@ export class RentalListComponent extends AdminBaseComponent implements OnInit {
         if (event) {
             this.page = (event.first ?? 0) / (event.rows ?? 10) + 1;
             this.pageSize = event.rows ?? 10;
-            this.sortField = Array.isArray(event.sortField) ? event.sortField[0] : 'startDate';
+            this.sortField = Array.isArray(event.sortField) ? event.sortField[0] : event.sortField as string;
             this.sortOrder = event.sortOrder === 1 ? 1 : -1;
         }
 

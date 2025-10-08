@@ -73,23 +73,24 @@
 
             <ng-template pTemplate="header">
                 <tr>
-                    <th>Book No</th>
+                    <th pSortableColumn="BookNumber">Book No <p-sortIcon field="BookNumber" /></th>
                     <th>Customer</th>
                     <th class="w-20rem">Product</th>
                     <th>Status</th>
-                    <th pSortableColumn="rentalPrice">Rent <p-sortIcon field="rentalPrice" /></th>
-                    <th pSortableColumn="securityDeposit">Security <p-sortIcon field="securityDeposit" /></th>
+                    <th pSortableColumn="RentalPrice">Rent <p-sortIcon field="RentalPrice" /></th>
+                    <th pSortableColumn="SecurityDeposit">Security <p-sortIcon field="SecurityDeposit" /></th>
                     <th style="width: 150px;">Actions</th>
                 </tr>
             </ng-template>
 
             <ng-template pTemplate="body" let-rental let-expanded="expanded">
                 <tr>
-                    
+
                     <td>
                         <span class="p-column-title">Book No</span>
                         <div class="flex items-center gap-2">
-                            <p-image *ngIf="rental.receiptDocumentUrl" [src]="rental.receiptDocumentUrl" width="32" height="32" [preview]="true"></p-image>
+                            <p-image *ngIf="rental.receiptDocumentUrl" [src]="rental.receiptDocumentUrl" width="32"
+                                height="32" [preview]="true"></p-image>
                             <p-button link [routerLink]="['/rentals/manage', rental.id]">
                                 <div class="flex flex-column gap-1 text-left">
                                     <span class="font-semibold">{{ rental.bookNumber }}</span>
