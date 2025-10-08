@@ -74,6 +74,7 @@ export class RentalFormComponent extends AdminBaseComponent implements OnInit {
             status: [1, Validators.required],
             bookNumber: [null, Validators.required],
             receiptDocumentUrl: [null],
+            inventoryItemId: [null],
         });
 
         this.rentalId = this.route.snapshot.paramMap.get('id') || '';
@@ -91,8 +92,6 @@ export class RentalFormComponent extends AdminBaseComponent implements OnInit {
             ...rental,
             startDate: rental.startDate ? new Date(rental.startDate) : null,
             endDate: rental.endDate ? new Date(rental.endDate) : null,
-            productId: rental.product?.id || null,
-            customerId: rental.customer?.id || null,
             bookingDate: rental.bookingDate ? new Date(rental.bookingDate) : null,
         });
 
