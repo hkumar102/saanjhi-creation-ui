@@ -167,6 +167,7 @@ export interface GetRentalsQuery {
   status?: RentalStatus;
   bookingFromDate?: string;
   bookingToDate?: string;
+  bookNumber?: number;
 }
 
 export const RentalStatusOptions = [
