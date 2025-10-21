@@ -13,7 +13,9 @@
     "watch": "npx ng build --watch --configuration development",
     "test": "npx ng test",
     "render-build-admin": "yarn install && npx ng build admin-portal --configuration=production",
-    "render-build-public": "yarn install && npx ng build public-portal --configuration=production"
+    "render-build-public": "yarn install && npx ng build public-portal --configuration=production",
+    "shared-common-build": "npx ng build shared-common",
+    "shared-ui-build": "npx ng build shared-ui"
   },
   "private": true,
   "dependencies": {

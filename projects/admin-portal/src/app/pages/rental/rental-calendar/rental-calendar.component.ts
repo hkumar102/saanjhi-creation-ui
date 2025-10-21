@@ -80,8 +80,8 @@ export class RentalCalendarComponent extends AdminBaseComponent implements OnIni
             }
             const events: EventInput[] = [];
             const title = `${item.customer?.name ?? ''} ${item.customer?.phoneNumber ?? ''} (${item.product?.name ?? ''})`;
-            const startDate = item.actualStartDate ?? item.startDate;
-            const endDate = item.actualReturnDate ?? item.endDate;
+            const startDate = item.actualStartDate?.toDateOnly() ?? item.startDate.toDateOnly();
+            const endDate = item.actualReturnDate?.toDateOnly() ?? item.endDate.toDateOnly();
             // Delivery (blue)
             if (
                 item.status === RentalStatus.Booked &&
@@ -89,7 +89,7 @@ export class RentalCalendarComponent extends AdminBaseComponent implements OnIni
             ) {
                 events.push({
                     title: `${title}`,
-                    date: this.formatDate(startDate),
+                    date: startDate,
                     color: 'blue',
                     extendedProps: { item }
                 });
@@ -102,7 +102,7 @@ export class RentalCalendarComponent extends AdminBaseComponent implements OnIni
                 events.push({
                     title: `${title}`,
                     // start: this.formatDate(endDate),
-                    date: this.formatDate(endDate),
+                    date: endDate,
                     color: 'green',
                     extendedProps: { item }
                 });
@@ -114,7 +114,7 @@ export class RentalCalendarComponent extends AdminBaseComponent implements OnIni
             ) {
                 events.push({
                     title: `${title}`,
-                    start: this.formatDate(startDate),
+                    start: startDate,
                     end: this.formatDateExclusiveEnd(endDate),
                     color: 'orange',
                     extendedProps: { item }
@@ -128,7 +128,7 @@ export class RentalCalendarComponent extends AdminBaseComponent implements OnIni
             ) {
                 events.push({
                     title: `${title}`,
-                    start: this.formatDate(startDate),
+                    start: startDate,
                     end: this.formatDateExclusiveEnd(endDate),
                     color: 'red',
                     extendedProps: { item }

@@ -46,8 +46,11 @@ export interface RentalDto {
   receiptDocumentUrl?: string;
 }
 
-export interface RentalCreateModel extends RentalDto {
+export interface RentalCreateModel extends Omit<RentalDto, 'startDate' | 'endDate' | 'bookingDate'> {
   receiptDocument: File | null;
+  bookingDate?: Date;
+  startDate: Date;
+  endDate: Date;
 }
 
 export enum RentalStatus {

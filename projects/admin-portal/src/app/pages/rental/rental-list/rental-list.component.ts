@@ -59,7 +59,7 @@ export class RentalListComponent extends AdminBaseComponent implements OnInit {
     filtersForm: FormGroup = this.fb.group({
         customerIds: [null],
         productIds: [[]],
-        dateRange: [[null, null]],
+        dateRange: [[]],
         rentalStatus: [null],
         bookingDateRange: [[new Date(new Date().setDate(new Date().getDate() - 30)), new Date()]],
         bookNumber: [null]
@@ -119,8 +119,8 @@ export class RentalListComponent extends AdminBaseComponent implements OnInit {
 
             if (formValue.dateRange && Array.isArray(formValue.dateRange)) {
                 const [start, end] = formValue.dateRange;
-                filter.fromDate = start?.toDateOnlyString() || undefined;
-                filter.toDate = end?.toDateOnlyString() || undefined;
+                filter.fromDate = start?.toISOString() || undefined;
+                filter.toDate = end?.toISOString() || undefined;
             }
 
             if (formValue.bookingDateRange && Array.isArray(formValue.bookingDateRange)) {
@@ -183,19 +183,6 @@ export class RentalListComponent extends AdminBaseComponent implements OnInit {
 
     private getMenuItemsForRow(row: RentalDto): MenuItem[] {
         const result = [];
-        // if (row.status === RentalStatus.Pending) {
-        //     result.push({
-        //         label: 'Edit',
-        //         icon: 'fa-solid fa-pencil',
-        //         command: () => this.onEdit(row)
-        //     });
-
-        //     result.push({
-        //         label: 'Delete',
-        //         icon: 'fa-solid fa-trash',
-        //         command: () => this.onDelete(row)
-        //     });
-        // }
         result.push({
             label: 'Edit',
             icon: 'fa-solid fa-pencil',

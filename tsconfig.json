@@ -17,6 +17,9 @@
       ],
       "@saanjhi-creation-ui/shared-ui": [
         "./projects/shared-ui/src/public-api"
+      ],
+      "@saanjhi-creation-ui/shared-common/*": [
+        "./projects/shared-common/src/*"
       ]
     },
     "importHelpers": true,

@@ -6,7 +6,7 @@ import {
     computed,
     OnInit
 } from '@angular/core';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { RentalServiceClient, RentalDto, AppMessages, RentalDashboardReportDto } from '@saanjhi-creation-ui/shared-common';
 import { AdminBaseComponent } from '../../../common/components/base/admin-base.component';
@@ -53,9 +53,9 @@ export class RentalReportsComponent extends AdminBaseComponent implements OnInit
     protected readonly ReportMessages = this.Messages.reports;
 
     // Form for date range selection
-    reportForm: FormGroup = this.fb.group({
-        startDate: [this.getDefaultStartDate(), Validators.required],
-        endDate: [this.getDefaultEndDate(), Validators.required]
+    reportForm = this.fb.group({
+        startDate: new FormControl<Date>(this.getDefaultStartDate(), { nonNullable: true, validators: [Validators.required] }),
+        endDate: new FormControl<Date>(this.getDefaultEndDate(), { nonNullable: true, validators: [Validators.required] }),
     });
 
     // Signals for state management
@@ -99,7 +99,7 @@ export class RentalReportsComponent extends AdminBaseComponent implements OnInit
 
             // Fetch all rentals in the date range
             //const rentals = await this.fetchRentalsInRange(startDate, endDate);
-            const dashboard = await this.rentalClient.getRentalReportsDashboard(startDate.toISOString(), endDate.toISOString());
+            const dashboard = await this.rentalClient.getRentalReportsDashboard(startDate?.toISOString(), endDate?.toISOString());
 
             // Process data for reporting
             const reportData = this.processRentalData(dashboard, startDate, endDate);
@@ -146,7 +146,7 @@ export class RentalReportsComponent extends AdminBaseComponent implements OnInit
         }
     }
 
-    private processRentalData(rentalDashboardData: RentalDashboardReportDto, startDate: Date, endDate: Date): ReportData {
+    private processRentalData(rentalDashboardData: RentalDashboardReportDto, startDate?: Date, endDate?: Date): ReportData {
         // Group rentals by date
         const dailyRentalEarnings = new Map<string, number>();
         const dailySecurityEarnings = new Map<string, number>();
@@ -156,7 +156,8 @@ export class RentalReportsComponent extends AdminBaseComponent implements OnInit
         const rentals = rentalDashboardData.listOfRentals
         // Process each rental
         rentals.forEach(rental => {
-            const rentalDate = new Date(rental.startDate).toISOString().split('T')[0]; // YYYY-MM-DD format
+            if(!rental.bookingDate) return;
+            const rentalDate = rental.bookingDate.toDateOnly() // YYYY-MM-DD format
 
             // Accumulate daily earnings
             dailyRentalEarnings.set(
@@ -207,8 +208,7 @@ export class RentalReportsComponent extends AdminBaseComponent implements OnInit
                 totalRental: data.totalRental,
                 rentalCount: data.rentalCount
             }))
-            .sort((a, b) => b.totalRental - a.totalRental) // Sort by total rental descending
-            .slice(0, 20); // Top 10 products
+            .sort((a, b) => b.totalRental - a.totalRental)
 
         return {
             dailyRentalEarnings: dailyRentalArray,
@@ -222,11 +222,11 @@ export class RentalReportsComponent extends AdminBaseComponent implements OnInit
         };
     }
 
-    private generateDateRange(startDate: Date, endDate: Date): string[] {
+    private generateDateRange(startDate?: Date, endDate?: Date): string[] {
         const dates: string[] = [];
-        const currentDate = new Date(startDate);
+        const currentDate = new Date(startDate?.toDateOnlyString() || '');
 
-        while (currentDate <= endDate) {
+        while (currentDate <= new Date(endDate?.toDateOnlyString() || '')) {
             dates.push(currentDate.toISOString().split('T')[0]);
             currentDate.setDate(currentDate.getDate() + 1);
         }

@@ -77,8 +77,8 @@ export class CreateRentalComponent extends AdminBaseComponent {
             productId: this.createRentalModel.rentalDetails.productId, // Assuming single product for simplicity
             inventoryItemId: this.createRentalModel.rentalDetails.inventoryItemId, // Assuming single inventory item for simplicity
             customerId: this.createRentalModel.rentalDetails.customerId,
-            startDate: this.createRentalModel.rentalDetails.startDate,
-            endDate: this.createRentalModel.rentalDetails.endDate,
+            startDate: this.createRentalModel.rentalDetails.startDate.toISOString(),
+            endDate: this.createRentalModel.rentalDetails.endDate.toISOString(),
             rentalPrice: this.createRentalModel.rentalDetails.rentalPrice,
             dailyRate: this.createRentalModel.rentalDetails.dailyRate,
             securityDeposit: this.createRentalModel.rentalDetails.securityDeposit,
@@ -91,7 +91,7 @@ export class CreateRentalComponent extends AdminBaseComponent {
             hip: this.createRentalModel.rentalDetails.hip,
             shoulder: this.createRentalModel.rentalDetails.shoulder,
             sleeveLength: this.createRentalModel.rentalDetails.sleeveLength,
-            bookingDate: this.createRentalModel.rentalDetails.bookingDate,
+            bookingDate: this.createRentalModel.rentalDetails.bookingDate?.toISOString(),
             receiptDocumentUrl: this.createRentalModel.rentalDetails.receiptDocumentUrl || undefined
         }
 

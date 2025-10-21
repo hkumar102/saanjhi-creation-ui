@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, Output, Input, OnInit, ChangeDetectionStrategy, inject } from '@angular/core';
 import { FormGroup, FormBuilder, Validators, ReactiveFormsModule } from '@angular/forms';
-import { AddressFormatPipe, BaseComponent, InventoryItemDto, ProductDto, RentalDto, ItemConditionLabelPipe, AppCurrencyPipe } from '@saanjhi-creation-ui/shared-common';
+import { AddressFormatPipe, BaseComponent, InventoryItemDto, ProductDto, RentalDto, ItemConditionLabelPipe, AppCurrencyPipe, RentalCreateModel } from '@saanjhi-creation-ui/shared-common';
 import { UiFormControlComponent, UiButtonComponent, UiInputNumberComponent, UiInputComponent, UiTextareaComponent } from '@saanjhi-creation-ui/shared-ui';
 import { debounceTime, takeUntil } from 'rxjs';
 import { AdminBaseComponent } from '../../../../../common/components/base/admin-base.component';
@@ -35,7 +35,7 @@ import { ImageModule } from "primeng/image";
     ]
 })
 export class RentalCreateDetailsStepComponent extends BaseComponent implements OnInit {
-    @Input() rentalDetails: RentalDto | null = null;
+    @Input() rentalDetails: RentalCreateModel | null = null;
     @Input() rentalModel: CreateRentalModel | null = null;
     @Output() rentalDetailsChanged = new EventEmitter<any>();
     private fb = inject(FormBuilder);
@@ -51,8 +51,8 @@ export class RentalCreateDetailsStepComponent extends BaseComponent implements O
                 inventoryItemId: [null, Validators.required],
                 customerId: [null, Validators.required],
                 shippingAddressId: [null, Validators.required],
-                startDate: [new Date(), Validators.required],
-                endDate: [new Date(new Date().getTime() + 3 * 24 * 60 * 60 * 1000), Validators.required], // endDate should be greater than startDate
+                startDate: [null, Validators.required],
+                endDate: [null, Validators.required], // endDate should be greater than startDate
                 rentalPrice: [0, [Validators.required, Validators.min(0)]],
                 dailyRate: [0, [Validators.min(0)]],
                 securityDeposit: [0, [Validators.required, Validators.min(0)]],
@@ -68,7 +68,7 @@ export class RentalCreateDetailsStepComponent extends BaseComponent implements O
                 bookNumber: [null, Validators.required],
                 notes: [''],
                 measurementNotes: [''],
-                bookingDate: [new Date()],
+                bookingDate: [null, Validators.required],
                 receiptDocument: [null]
             });
         }
@@ -107,10 +107,11 @@ export class RentalCreateDetailsStepComponent extends BaseComponent implements O
         }
 
 
-
-
         this.form.valueChanges.pipe(debounceTime(300), takeUntil(this.destroy$)).subscribe(() => {
             this.onDetailsChanged();
+            this.form.markAllAsTouched({ emitEvent: false });
+            this.form.markAsDirty({ emitEvent: false });
+            this.form.updateValueAndValidity({ emitEvent: false });
         });
 
     }

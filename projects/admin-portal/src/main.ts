@@ -5,7 +5,7 @@ import localeEn from '@angular/common/locales/en';
 import localeEnIN from '@angular/common/locales/en-IN';
 import { App } from './app/app';
 import { AuthService } from '@saanjhi-creation-ui/shared-common';
-import '@saanjhi-creation-ui/shared-common';
+import '@saanjhi-creation-ui/shared-common/lib/utils/extensions';
 
 registerLocaleData(localeEn);
 registerLocaleData(localeEnIN);
