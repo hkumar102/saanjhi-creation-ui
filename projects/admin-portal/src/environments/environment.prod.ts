@@ -10,12 +10,12 @@ export const environment = {
         measurementId: "G-8BKKGXNJHV"
     },
     services: {
-        userServiceBaseUrl: 'https://user-service-lfm6.onrender.com/api',
-        mediaServiceBaseUrl: 'https://media-service-wxbi.onrender.com/api',
-        categoryServiceBaseUrl: 'https://category-service-lrtc.onrender.com/api',
-        productServiceBaseUrl: 'https://product-service-kox4.onrender.com/api',
-        customerServiceBaseUrl: 'https://customer-service-5ats.onrender.com/api',
-        rentalServiceBaseUrl: 'https://rental-service-52dz.onrender.com/api',
+        userServiceBaseUrl: 'https://user-service.saanjhicreation.com/api',
+        mediaServiceBaseUrl: 'https://media-service.saanjhicreation.com/api',
+        categoryServiceBaseUrl: 'https://category-service.saanjhicreation.com/api',
+        productServiceBaseUrl: 'https://product-service.saanjhicreation.com/api',
+        customerServiceBaseUrl: 'https://customer-service.saanjhicreation.com/api',
+        rentalServiceBaseUrl: 'https://rental-service.saanjhicreation.com/api',
     },
     enableLogging: false
 };

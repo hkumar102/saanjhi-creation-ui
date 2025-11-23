@@ -31,6 +31,13 @@ export class RentalServiceClient {
     );
   }
 
+  getRentalsCalendar(query?: GetRentalsQuery): Promise<PaginatedResult<RentalDto>> {
+    const payload = query || {};
+    return lastValueFrom(
+      this.http.post<PaginatedResult<RentalDto>>(`${this.baseUrl}/rental/calendarsearch`, payload)
+    );
+  }
+
   getRental(id: string): Promise<RentalDto> {
     return lastValueFrom(this.http.get<RentalDto>(`${this.baseUrl}/rental/${id}`));
   }

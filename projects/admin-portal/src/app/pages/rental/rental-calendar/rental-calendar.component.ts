@@ -59,7 +59,7 @@ export class RentalCalendarComponent extends AdminBaseComponent implements OnIni
             toDate: end.toISOString(),
         };
         try {
-            const result = await this.rentalServiceClient.getRentals(query);
+            const result = await this.rentalServiceClient.getRentalsCalendar(query);
             const events = this.mapRentalsToEvents(result.items || [], start, end);
             this.calendarOptions.events = events;
         } catch (err) {

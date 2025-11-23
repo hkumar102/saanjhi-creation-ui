@@ -41,3 +41,10 @@ npm install
 
 # Start dev server
 ng serve
+
+export DOCKER_HUB_USER=hunnysharma102                                                                  
+export TAG=hemantkumar
+
+docker buildx build --build-arg NG_BUILD_CONFIG=development --no-cache -f "Dockerfile" -t "${DOCKER_HUB_USER}/saanjhi.admin.ui:${TAG}" --push .
+
+docker buildx build --no-cache --platform linux/amd64 --build-arg NG_BUILD_CONFIG=production --no-cache -f "Dockerfile" -t "${DOCKER_HUB_USER}/saanjhi.admin.ui:${TAG}" --push .
